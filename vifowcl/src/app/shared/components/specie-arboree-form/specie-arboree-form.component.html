@@ -1,0 +1,104 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="row">
+  <div class="col-md-12 my-4">
+    <div>
+      <div class="row">
+        <div class="col-lg-7 col-md-4 col-12 mb-3">
+          <h2>SPECIE RICHIESTE</h2>
+        </div>
+        <div class="col-lg-5 col-md-4 col-12 mb-3">
+          <p-button
+            label="VAI ALL'ELENCO DELLE SPECIE DISPONIBILI"
+            pTooltip="vai all'elenco delle specie disponibili"
+            tooltipPosition="top"
+            (onClick)="openDialog()"
+          ></p-button>
+          <div
+            *ngIf="submited && listSpecieSelected.length == 0"
+            class="alert alert-danger"
+          >
+            Fare click sul pulsante qui sopra e selezionare almeno una specie.
+          </div>
+        </div>
+      </div>
+      <div style="font-style: oblique">
+        Cliccare sul tasto a fianco e, nella finestra che viene visualizzata,
+        selezionare tutte le specie che si intende richiedere.<br />
+        Al termine della selezione cliccare sul tasto "chiudi" per ritornare
+        alla presente schermata.
+      </div>
+    </div>
+    <hr />
+  </div>
+  <p-dialog
+    header=""
+    [(visible)]="specieArboreaPopUp && !dettaglioSpecie"
+    [style]="{ left: '0px' }"
+    [transitionOptions]="'0ms'"
+    [modal]="true"
+    [closeOnEscape]="true"
+    [closable]="false"
+    id="idDialogSpecieArboree"
+  >
+    <app-specie-arboree
+      [listSpecieSelected]="listSpecieSelected"
+      (emitDettaglioSpecie)="openDettaglioSpecie($event)"
+      (emitAddSpecie)="addSpecie($event)"
+    >
+    </app-specie-arboree>
+    <p-footer>
+      <p-button
+        (click)="closeDialog()"
+        label="CHIUDI"
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+      ></p-button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog
+    header=""
+    [(visible)]="specieArboreaPopUp && dettaglioSpecie && !dettaglioFoto"
+    [style]="{ left: '0px' }"
+    [transitionOptions]="'0ms'"
+    [modal]="true"
+    [closeOnEscape]="true"
+    [closable]="false"
+    id="idDialogSpecieArboreeNoFoto"
+  >
+    <app-specie-arboree-dettaglio
+      *ngIf="dettaglioSpecie"
+      [dettaglioSpecie]="dettaglioSpecie"
+      (emitDettaglioFoto)="openDettaglioFoto($event)"
+    >
+    </app-specie-arboree-dettaglio>
+    <p-footer>
+      <p-button
+        (click)="closeDialog()"
+        label="TORNA ALL'ELENCO"
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+      ></p-button>
+    </p-footer>
+  </p-dialog>
+
+  <p-dialog
+    header=""
+    [(visible)]="specieArboreaPopUp && dettaglioFoto"
+    [style]="{ left: '0px' }"
+    [transitionOptions]="'0ms'"
+    [modal]="true"
+    [closeOnEscape]="true"
+  >
+    <app-visualizza-foto [dettaglioFoto]="dettaglioFoto"> </app-visualizza-foto>
+    <p-footer>
+      <p-button
+        (click)="closeDialog()"
+        label="CHIUDI"
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+      ></p-button>
+    </p-footer>
+  </p-dialog>
+</div>

@@ -1,0 +1,184 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="col-md-12 my-4" *ngIf="domanda && infoDomanda">
+  <div class="grey-form">
+    <div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Identificativo domanda:</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ domanda.idDomanda }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold"
+            >Vivaio a cui è indirizzata la domanda:</label
+          >
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ vivaio }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Stato domanda:</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ domanda.statoDomanda }}{{ getDescrPagamento() }}
+        </div>
+      </div>
+      <div class="row" *ngIf="domanda && domanda.fkTipoDomanda == 1">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Scopo assegnazione gratuita:</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ infoDomanda.scopoAssegnGratuita }}
+        </div>
+      </div>
+      <div class="row" *ngIf="isMarcoBolloEnabled()">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Marca da bollo</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ domanda.numMarcaBollo }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Data invio:</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ infoDomanda.dataInvio }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Protocollo invio:</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ infoDomanda.protocolloInvio }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Note del richiedente:</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ infoDomanda.noteInvio ? infoDomanda.noteInvio : "-" }}
+        </div>
+      </div>
+
+      <ng-container *ngIf="domanda.fkStatoDomanda != 8">
+        <div class="row" *ngIf="domanda.fkStatoDomanda > 3">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold"
+              >Data assegnazione / operatore:</label
+            >
+          </div>
+          <div class="col-lg-8 col-md-3 col-12 mb-3">
+            {{ infoDomanda.dataAssegnazione }}&nbsp;/
+            {{ infoDomanda.operatoreAssegnazione?.nome }}&nbsp;{{
+              infoDomanda.operatoreAssegnazione?.cognome
+            }}
+          </div>
+        </div>
+        <div class="row" *ngIf="domanda.fkStatoDomanda > 3">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Note del vivaista:</label>
+          </div>
+          <div class="col-lg-8 col-md-3 col-12 mb-3">
+            {{ infoDomanda.noteAssegnazione }}
+          </div>
+        </div>
+        <div
+          class="row"
+          *ngIf="domanda.fkTipoDomanda == 2 && domanda.fkStatoDomanda > 4"
+        >
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Data accettazione:</label>
+          </div>
+          <div class="col-lg-8 col-md-3 col-12 mb-3">
+            {{ infoDomanda.dataAccettazione }}
+          </div>
+        </div>
+        <div
+          class="row"
+          *ngIf="domanda.fkTipoDomanda == 2 && domanda.fkStatoDomanda > 4"
+        >
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Protocollo accettazione:</label>
+          </div>
+          <div class="col-lg-8 col-md-3 col-12 mb-3">
+            {{ infoDomanda.protocolloAccettazione }}
+          </div>
+        </div>
+        <!-- <ng-container *ngIf="domanda.fkStatoDomanda == 6">
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label class="font-weight-bold">Data richiesta variazioni:</label>
+            </div>
+            <div class="col-lg-8 col-md-3 col-12 mb-3">
+              {{infoDomanda.dataRichVariazioni}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label class="font-weight-bold">Note di richiesta variazioni:</label>
+            </div>
+            <div class="col-lg-8 col-md-3 col-12 mb-3">
+              {{infoDomanda.noteRichVariazioni}}
+            </div>
+          </div>
+        </ng-container> -->
+        <div class="row" *ngIf="domanda.fkStatoDomanda > 6">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Data ritiro / operatore:</label>
+          </div>
+          <div class="col-lg-8 col-md-3 col-12 mb-3">
+            {{ infoDomanda.dataRitiro }}&nbsp;/
+            {{ infoDomanda.operatoreRitiro?.nome }}&nbsp;{{
+              infoDomanda.operatoreRitiro?.cognome
+            }}
+          </div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="domanda.fkStatoDomanda == 8">
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Data rifiuto / operatore:</label>
+          </div>
+          <div class="col-lg-8 col-md-3 col-12 mb-3">
+            {{ infoDomanda?.dataRifiuto }}&nbsp;/
+            {{ infoDomanda.operatoreRifiuto?.nome }}&nbsp;{{
+              infoDomanda.operatoreRifiuto?.cognome
+            }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Motivo del rifiuto:</label>
+          </div>
+          <div class="col-lg-8 col-md-3 col-12 mb-3">
+            {{ infoDomanda.noteRifiuto }}
+          </div>
+        </div>
+      </ng-container>
+      <div class="row" *ngIf="domanda.fkStatoDomanda == 9">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Data chiusura / operatore:</label>
+        </div>
+        <div class="col-lg-8 col-md-3 col-12 mb-3">
+          {{ infoDomanda.dataChiusura }}&nbsp;/
+          {{ infoDomanda.operatoreChiusura?.nome }}&nbsp;{{
+            infoDomanda.operatoreChiusura?.cognome
+          }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

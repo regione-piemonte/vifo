@@ -1,0 +1,131 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="col-md-12 my-4" *ngIf="richiedente">
+  <div class="grey-form">
+    <div>
+      <div class="row" *ngIf="titolarita && titolarita != 'No data'">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Titolarità:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ titolarita }}
+        </div>
+      </div>
+      <div class="row" *ngIf="richiedente.ragioneSociale">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Tipologia soggetto:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.flgEntePubblico ? "Pubblico" : "Privato" }}
+        </div>
+      </div>
+      <hr *ngIf="titolarita || richiedente.ragioneSociale" />
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Codice fiscale:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.codiceFiscale }}
+        </div>
+      </div>
+      <div class="row" *ngIf="!richiedente.ragioneSociale">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Cognome:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.cognome }}
+        </div>
+      </div>
+      <div class="row" *ngIf="!richiedente.ragioneSociale">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Nome:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.nome }}
+        </div>
+      </div>
+      <div class="row" *ngIf="richiedente.ragioneSociale">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold"
+            >{{
+              richiedente.flgEntePubblico == 1 ? "Codice iPA" : "Partita IVA"
+            }}:</label
+          >
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.partitaIva }}
+        </div>
+      </div>
+      <div class="row" *ngIf="richiedente.ragioneSociale">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Denominazione:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.ragioneSociale }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Indirizzo:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.indirizzo }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Comune:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente?.comune?.nome }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Cap:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.cap }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Mail:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.mail }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Telefono:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.telefono }}
+        </div>
+      </div>
+      <div class="row" *ngIf="richiedente.ragioneSociale">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">PEC:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.pec }}
+        </div>
+      </div>
+      <div
+        class="row"
+        *ngIf="richiedente.ragioneSociale && richiedente.flgEntePubblico"
+      >
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Codice Unico Ufficio:</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ richiedente.codiceBeneficiario }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,48 @@
+/*!
+ * SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+ * 
+ * SPDX-License-Identifier: EUPL-1.2
+*/
+
+  
+  .margin-span{
+    margin-left: 15px;
+  }
+  
+  .icon {
+    font-size: 24px;
+  }
+  
+  .container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .header {
+    font-size: 20px 0px;
+    margin: auto;
+    font-weight: bold;
+  }
+  
+  p {margin: 10px 0px;}
+
+  .grey1 {
+    background: #f2f2f2;
+    padding: 0.5rem;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .f-15 {
+    font-size: 15px;
+    margin-top: 0.5rem;
+    margin-bottom: 0px;
+  }
+
+  .checkboxCustom{
+    height: 18px;
+    width: 18px;
+    margin-right: 7px;
+  }
+  

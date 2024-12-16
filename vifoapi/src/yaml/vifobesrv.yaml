@@ -1,0 +1,5097 @@
+#
+#  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+#  
+#  SPDX-License-Identifier: EUPL-1.2
+#
+swagger: '2.0'
+info:
+  title: VIFO API
+  description: Servizi di fruizione VIFO
+  version: 1.0.0
+host: "dev-vifosrv.csi.it"
+basePath: "/vifoapi/api/v1"
+schemes:
+  - "http"
+paths:
+  '/accreditamenti':
+    post:
+      summary: Inserisce una richiesta di accreditamento.
+      tags:
+        - "Accreditamenti"
+      consumes:
+        - application/json
+      operationId: saveAccreditamento
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AccreditamentoDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/AccreditamentoDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Parameters were not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/accreditamenti/uid/{uid}/valida/{otp}':
+    get:
+      summary: Verifica una richiesta di accreditamento.
+      tags:
+        - "Accreditamenti"
+      operationId: validateAccreditamento
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          type: string
+        - in: path
+          name: otp
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CompilanteDTO'
+            type: array
+        '500':
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti':
+    get:
+      summary: Restituisce l'elenco degli adempimenti attivi.
+      tags:
+        - "Adempimenti"
+      operationId: loadadempimenti
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti/id/{idAdempimento}':
+    get:
+      summary: Restituisce l'adempimento con l'id adempimento passato in input.
+      tags:
+        - "Adempimenti"
+      operationId: loadAdempimentoById
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti/codice/{codAdempimento}':
+    get:
+      summary: Restituisce l'adempimento con il codice adempimento passato in input.
+      tags:
+        - "Adempimenti"
+      operationId: loadAdempimentoByCode
+      parameters:
+        - in: path
+          name: codAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti/id-tipo-adempimento/{idTipoAdempimento}':
+    get:
+      summary: Restituisce gli adempimenti associati all'id tipo adempimento passato in input.
+      tags:
+        - "Adempimenti"
+      operationId: loadAdempimentoByIdTipoAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idTipoAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti/codice-tipo-adempimento/{codTipoAdempimento}':
+    get:
+      summary: Restituisce gli adempimenti associati al codice tipo adempimento passato in input.
+      tags:
+        - "Adempimenti"
+      operationId: loadAdempimentoByCodeTipoAdempimento
+      parameters:
+        - in: path
+          name: codTipoAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti/id-ambito/{idAmbito}':
+    get:
+      summary: Restituisce gli adempimenti associati all'id ambito passato in input.
+      tags:
+        - "Adempimenti"
+      operationId: loadAdempimentoByIdAmbito
+      parameters:
+        - format: int64
+          in: path
+          name: idAmbito
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti/codice-ambito/{codAmbito}':
+    get:
+      summary: Restituisce gli adempimenti associati al codice ambito passato in input.
+      tags:
+        - "Adempimenti"
+      operationId: loadAdempimentoByCodeAmbito
+      parameters:
+        - in: path
+          name: codAmbito
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-config':
+    get:
+      summary: Restituisce le configurazioni degli adempimenti.
+      tags:
+        - "Adempimenti (configurazione)"
+      operationId: loadAdempimentiConfig
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoConfigDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-config/adempimento/{desAdempimento}':
+    get:
+      summary: Restituisce le configurazioni dell'adempimento il cui codice è passato in input.
+      tags:
+        - "Adempimenti (configurazione)"
+      operationId: loadAdempimentoConfigByAdempimento
+      parameters:
+        - in: path
+          name: desAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoConfigDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-config/adempimento/{desAdempimento}/info/{infoVifo}':
+    get:
+      summary: Restituisce le configurazioni dell'adempimento il cui codice e l'informazione sono passati in input.
+      tags:
+        - "Adempimenti (configurazione)"
+      operationId: loadAdempimentoConfigByAdempimentoInformazione
+      parameters:
+        - in: path
+          name: desAdempimento
+          required: true
+          type: string
+        - in: path
+          name: infoVifo
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoConfigDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-config/adempimento/{desAdempimento}/info/{infoVifo}/chiave/{chiave}':
+    get:
+      summary: Restituisce le configurazioni dell'adempimento il cui codice, l'informazione e la chiave sono passati in input.
+      tags:
+        - "Adempimenti (configurazione)"
+      operationId: loadAdempimentoConfigByAdempimentoInformazioneChiave
+      parameters:
+        - in: path
+          name: desAdempimento
+          required: true
+          type: string
+        - in: path
+          name: infoVifo
+          required: true
+          type: string
+        - in: path
+          name: chiave
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoConfigDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-ruoli-compilante':
+    get:
+      summary: Restituisce tutti i ruoli compilante.
+      tags:
+        - "Adempimenti (ruoli compilante)"
+      operationId: getAdempimentiRuoliCompilante
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoRuoloCompilanteExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-ruoli-compilante/id-ruolo-compilante/{idRuoloCompilante}':
+    get:
+      summary: Restituisce il ruolo compilante sulla base dell'id ruolo compilante passato in input.
+      tags:
+        - "Adempimenti (ruoli compilante)"
+      operationId: getAdempimentiRuoloCompilanteByRuoloCompilante
+      parameters:
+        - format: int64
+          in: path
+          name: idRuoloCompilante
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoRuoloCompilanteExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-ruoli-compilante/id-ruolo-compilante/{idRuoloCompilante}/id-adempimento/{idAdempimento}':
+    get:
+      summary: Restituisce il ruolo compilante sulla base dell'id ruolo compilante e sull'id adempimento passati in input.
+      tags:
+        - "Adempimenti (ruoli compilante)"
+      operationId: getAdempimentoRuoloCompilanteByRuoloCompilanteAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idRuoloCompilante
+          required: true
+          type: integer
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoRuoloCompilanteExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/adempimenti-ruoli-compilante/id-adempimento/{idAdempimento}':
+    get:
+      summary: Restituisce i ruoli compilante sulla base dell'id adempimento passato in input.
+      tags:
+        - "Adempimenti (ruoli compilante)"
+      operationId: getAdempimentiRuoloCompilanteByAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoRuoloCompilanteExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/allegati':
+    get:
+      summary: Restituisce l'elenco di tutti gli allegati.
+      tags:
+        - "Allegati"
+      operationId: loadAllegati
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AllegatoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    post:
+      summary: Carica un allegato su piattaforma INDEX e inserisce i metadati su VIFO.
+      tags:
+        - "Allegati"
+      consumes:
+        - multipart/form-data
+      operationId: uploadIndexFile
+      parameters:
+        - in: formData
+          name: allegatoIstanza
+          type: string
+          required: true
+        - in: formData
+          name: file
+          required: true
+          type: file
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AllegatoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna i metadati di un allegato su piattaforma INDEX e su VIFO.
+      tags:
+        - "Allegati"
+      consumes:
+        - application/json
+      operationId: updateIndexFile
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/AllegatoIstanzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AllegatoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/allegati/categorie-adempimento/id-istanza/{idIstanza}':
+    get:
+      summary: Verifica se sono stai associati all’istanza documenti appartenenti alle categorie non previste per l’adempimento.
+      tags:
+        - "Allegati"
+      operationId: loadCategoriaAllegatoMandatoryAdempimentoByIdIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CategoriaAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/allegati/csv/id-istanza/{idIstanza}':
+    get:
+      summary: Generazione e download CSV con elenco allegati associati all’istanza il cui id è passato in input.
+      tags:
+        - "Allegati"
+      operationId: loadAllegatiCSVByIdIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+        - application/octet-stream
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            format: binary
+            type: string
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/allegati/id-istanza/{idIstanza}':
+    get:
+      summary: Restituisce l'elenco degli allegati associati all’istanza il cui id è passato in input.
+      tags:
+        - "Allegati"
+      operationId: loadAllegatiByIdIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+        - default: 1
+          format: int32
+          in: query
+          name: offset
+          required: false
+          type: integer
+        - default: 20
+          format: int32
+          in: query
+          name: limit
+          required: false
+          type: integer
+        - default: ''
+          in: query
+          name: sort
+          required: false
+          type: string
+        - default: false
+          in: query
+          name: sys
+          required: false
+          type: boolean
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AllegatoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/allegati/mandatory-categoria/id-istanza/{idIstanza}':
+    get:
+      summary: Verifica se sono stati associati all’istanza documenti appartenenti alle tipologie obbligatorie previste per l’adempimento.
+      tags:
+        - "Allegati"
+      operationId: loadCategoriaAllegatoMandatoryByIdIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CategoriaAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/allegati/pdf-allegati/id-istanza/{idIstanza}':
+    get:
+      summary: Crea il pdf con l'elenco allegati e lo carica su piattaforma INDEX. I relativi metadati sono salvati su VIFO.
+      tags:
+        - "Allegati"
+      operationId: createPdfAllegatiByIdIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/allegati/uuid-index/{uuidIndex}':
+    delete:
+      summary: Cancella il file da piattaforma INDEX e i relativi metadati da VIFO.
+      tags:
+        - "Allegati"
+      operationId: deleteIndexFile
+      parameters:
+        - in: path
+          name: uuidIndex
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    get:
+      summary: Effettua il download del file da piattaforma INDEX.
+      tags:
+        - "Allegati"
+      operationId: loadAllegatiByUuidIndex
+      parameters:
+        - in: path
+          name: uuidIndex
+          required: true
+          type: string
+      produces:
+        - application/json
+        - application/octet-stream
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            format: binary
+            type: string
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ambiti':
+    get:
+      summary: Restituisce l'elenco degli ambiti.
+      tags:
+        - "Ambiti"
+      operationId: loadAmbiti
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AmbitoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ambiti/codice/{codAmbito}':
+    get:
+      summary: Restituisce l'ambito il cui codice è passato in input.
+      tags:
+        - "Ambiti"
+      operationId: loadAmbitoByCodice
+      parameters:
+        - in: path
+          name: codAmbito
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AmbitoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ambiti/id/{idAmbito}':
+    get:
+      summary: Restituisce l'ambito il cui id è passato in input.
+      tags:
+        - "Ambiti"
+      operationId: loadAmbito
+      parameters:
+        - format: int64
+          in: path
+          name: idAmbito
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AmbitoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/categorie-allegato':
+    get:
+      summary: Restituisce l'elenco delle categorie allegati.
+      tags:
+        - "Categorie allegati"
+      operationId: loadCategorieAllegato
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CategoriaAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/categorie-allegato/code-adempimento/{codAdempimento}':
+    get:
+      summary: Restituisce l'elenco delle categorie allegati il cui codice adempimento è quello passato in input.
+      tags:
+        - "Categorie allegati"
+      operationId: loadCategoriaAllegatoByCodeAdempimento
+      parameters:
+        - in: path
+          name: codAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CategoriaAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/categorie-allegato/id-adempimento/{idAdempimento}':
+    get:
+      summary: Restituisce l'elenco delle categorie allegati il cui id adempimento è quello passato in input.
+      tags:
+        - "Categorie allegati"
+      operationId: loadCategoriaAllegatoByIdAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CategoriaAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/compilanti':
+    get:
+      summary: Restituisce l'elenco dei compilanti.
+      tags:
+        - "Compilanti"
+      operationId: loadCompilanti
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CompilanteDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/compilanti/cf/{codiceFiscale}':
+    get:
+      summary: Restituisce il compilante il cui codice fiscale è quello passato in input.
+      tags:
+        - "Compilanti"
+      operationId: loadCompilanteByCodiceFiscale
+      parameters:
+        - in: path
+          name: codiceFiscale
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CompilanteDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/compilanti/preferenze':
+    post:
+      summary: Restituisce l'elenco dei tipi adempimento preferiti dai compilanti.
+      tags:
+        - "Compilanti"
+      consumes: [ ]
+      operationId: addPreferenza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CompilantePreferenzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/CompilantePreferenzaExtendedDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/compilanti/preferenze/cf/{cfCompilante}':
+    get:
+      summary: Restituisce l'elenco dei tipi di adempimento preferiti dal compilante il cui codice fiscale è quello passato in input.
+      tags:
+        - "Compilanti"
+      operationId: loadPreferenzeByCfCompilante
+      parameters:
+        - in: path
+          name: cfCompilante
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CompilantePreferenzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/compilanti/preferenze/id-compilante/{idCompilante}':
+    get:
+      summary: Restituisce l'elenco dei tipi di adempimento preferiti dal compilante il cui id è quello passato in input.
+      tags:
+        - "Compilanti"
+      operationId: loadPreferenzeByCompilante
+      parameters:
+        - format: int64
+          in: path
+          name: idCompilante
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/CompilantePreferenzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/compilanti/preferenze/{idPreferenza}':
+    delete:
+      summary: Elimina la preferenza dei tipi di adempimento con l'id indicato in input.
+      tags:
+        - "Compilanti"
+      operationId: deletePreferenza
+      parameters:
+        - format: int64
+          in: path
+          name: idPreferenza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/configura-ruoli-soggetti':
+    get:
+      summary: Restituisce l'elenco dei ruoli soggetto.
+      tags:
+        - "Ruoli Soggetti"
+      operationId: loadConfiguraRuoliSoggetto
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ConfiguraRuoloSoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/configura-ruoli-soggetti/ruolo-compilante/{idRuoloCompilante}':
+    get:
+      summary: Restituisce l'elenco dei ruoli soggetto sulla base dell'id ruolo compilante passato in input.
+      tags:
+        - "Ruoli Soggetti"
+      operationId: loadConfiguraRuoliSoggettoByRuoloCompilante
+      parameters:
+        - format: int64
+          in: path
+          name: idRuoloCompilante
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ConfiguraRuoloSoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/configura-ruoli-soggetti/ruolo-soggetto/{idRuoloSoggetto}':
+    get:
+      summary: Restituisce l'elenco dei ruoli soggetto sulla base dell'id ruolo soggetto passato in input.
+      tags:
+        - "Ruoli Soggetti"
+      operationId: loadConfiguraRuoliSoggettoByRuoloSoggetto
+      parameters:
+        - format: int64
+          in: path
+          name: idRuoloSoggetto
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ConfiguraRuoloSoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/configura-ruoli-soggetti/adempimento/{idAdempimento}':
+    get:
+      summary: Restituisce l'elenco dei ruoli soggetto sulla base dell'id adempimento passato in input.
+      tags:
+        - "Ruoli Soggetti"
+      operationId: loadConfiguraRuoliSoggettoByAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ConfiguraRuoloSoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/configurazioni':
+    get:
+      summary: Restituisce l'elenco dei parametri di configurazione.
+      tags:
+        - "Configurazioni"
+      operationId: loadConfigurazioni
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ConfigurazioneDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/configurazioni/key/{key}':
+    get:
+      summary: Restituisce il parametro di configurazione la cui chiave è quella passata in input.
+      tags:
+        - "Configurazioni"
+      operationId: loadConfigurazioneByKey
+      parameters:
+        - in: path
+          name: key
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ConfigurazioneDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/estensioni-allegato':
+    get:
+      summary: Restituisce l'elenco delle estensioni degli allegati per tutti gli adempimenti.
+      tags:
+        - "Estensioni allegato"
+      operationId: loadAdempimentiEstensioniAllegati
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoEstensioneAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/estensioni-allegato/code-adempimento/{codAdempimento}':
+    get:
+      summary: Restituisce l'elenco delle estensioni degli allegati per l'adempimento il cui codice è quello passato in input.
+      tags:
+        - "Estensioni allegato"
+      operationId: loadAdempimentoEstensioneAllegatoByCodAdempimento
+      parameters:
+        - in: path
+          name: codAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoEstensioneAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/estensioni-allegato/id-adempimento/{idAdempimento}':
+    get:
+      summary: Restituisce l'elenco delle estensioni degli allegati per l'adempimento il cui id è quello passato in input.
+      tags:
+        - "Estensioni allegato"
+      operationId: loadAdempimentoEstensioneAllegatoByIdAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoEstensioneAllegatoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/geeco/id-ruolo-applicativo/{idRuoloApplicativo}/id-oggetto-istanza/{idOggettoIstanza}':
+    get:
+      summary: Restituisce l'url della sessione Geeco con le georeferenziazioni degli oggetti istanza passati in input.
+      tags:
+        - "Geeco"
+      operationId: getGeecoUrl
+      parameters:
+        - format: int32
+          in: path
+          name: idRuoloApplicativo
+          required: true
+          type: integer
+        - format: int64
+          in: path
+          name: idOggettoIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/GeecoUrlDTO'
+  '/geeco/{environment}/{id_editing_session}/layers/{layer_id}':
+    post:
+      summary: Inserisce su VIFO le geometrie salvate su Geeco.
+      tags:
+        - "Geeco"
+      consumes:
+        - application/json
+      operationId: insertFeatureForEditingLayer
+      parameters:
+        - in: path
+          name: environment
+          required: true
+          type: string
+        - in: path
+          name: layer_id
+          required: true
+          type: string
+        - in: path
+          name: id_editing_session
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Feature'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/Feature'
+  '/geeco/{environment}/{id_editing_session}/layers/{layer_id}/{feature_id}':
+    delete:
+      summary: Cancella da VIFO le geometrie salvate su Geeco.
+      tags:
+        - "Geeco"
+      operationId: deleteFeatureForEditingLayer
+      parameters:
+        - in: path
+          name: environment
+          required: true
+          type: string
+        - in: path
+          name: layer_id
+          required: true
+          type: string
+        - in: path
+          name: feature_id
+          required: true
+          type: string
+        - in: path
+          name: id_editing_session
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/Feature'
+    put:
+      summary: Aggiorna su VIFO le geometrie salvate su Geeco.
+      tags:
+        - "Geeco"
+      consumes:
+        - application/json
+      operationId: updateFeatureForEditingLayer
+      parameters:
+        - in: path
+          name: environment
+          required: true
+          type: string
+        - in: path
+          name: layer_id
+          required: true
+          type: string
+        - in: path
+          name: feature_id
+          required: true
+          type: string
+        - in: path
+          name: id_editing_session
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/Feature'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/Feature'
+  '/help':
+    get:
+      summary: Restituisce l'elenco degli help
+      tags:
+        - "Help"
+      operationId: loadHelp
+      parameters: []
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/HelpExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/help/chiave/{chiaveHelp}':
+    get:
+      summary: Restituisce l'elenco degli help la cui chiave è quella indicata in input
+      tags:
+        - "Help"
+      operationId: loadHelpByChiave
+      parameters:
+        - in: path
+          name: chiaveHelp
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/HelpExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/help/id/{idHelp}':
+    get:
+      summary: Restituisce l'elenco degli help il cui id è quello indicato in input
+      tags:
+        - "Help"
+      operationId: loadHelpById
+      parameters:
+        - format: int64
+          in: path
+          name: idHelp
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/HelpExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze':
+    get:
+      summary: Restituisce l'elenco di tutte le istanze.
+      tags:
+        - "Istanze"
+      operationId: loadIstanze
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/IstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    post:
+      summary: Inserisce l'istanza passata in input.
+      tags:
+        - "Istanze"
+      consumes:
+        - application/json
+      operationId: saveIstanza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/IstanzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/IstanzaExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna l'istanza passata in input.
+      tags:
+        - "Istanze"
+      consumes:
+        - application/json
+      operationId: updateIstanza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/IstanzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/IstanzaExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/check-istanza/id-istanza/{idIstanza}/adempimento/{codAdempimento}':
+    get:
+      summary: Verifica che l'istanza il cui id è passato in input abbia le informazioni minime previste in base alla configurazione dell'adempimento.
+      tags:
+        - "Istanze"
+      operationId: checkIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+        - in: path
+          name: codAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/compilante/cf/{cfCompilante}':
+    get:
+      summary: Restituisce l'elenco di tutte le istanze che fanno capo al compilante il cui codice fiscale è passato in input.
+      tags:
+        - "Istanze"
+      operationId: loadIstanzeByCfCompilante
+      parameters:
+        - in: path
+          name: cfCompilante
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/IstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/compilante/{idCompilante}':
+    get:
+      summary: Restituisce l'elenco di tutte le istanze che fanno capo al compilante il cui id è passato in input.
+      tags:
+        - "Istanze"
+      operationId: loadIstanzeByIdCompilante
+      parameters:
+        - format: int64
+          in: path
+          name: idCompilante
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/IstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/id/{idIstanza}':
+    get:
+      summary: Restituisce l'istanza il cui id è passato in input.
+      tags:
+        - "Istanze"
+      operationId: loadIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/IstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    delete:
+      summary: Elimina l'istanza il cui id è passato in input.
+      tags:
+        - "Istanze"
+      operationId: deleteIstanzaById
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/{uid}':
+    delete:
+      summary: Elimina l'istanza il cui uid è passato in input.
+      tags:
+        - "Istanze"
+      operationId: deleteIstanza
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/pdf/{idIstanza}':
+    get:
+      summary: Restituisce un file riepilogativo dell'istanza il cui id è passato in input.
+      tags:
+        - "Istanze"
+      operationId: createPDF
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+        - application/pdf
+      responses:
+        '200':
+          description: Document created successful.
+          schema:
+            items:
+              format: byte
+              type: string
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/pdf-allegati/{idIstanza}':
+    get:
+      summary: Restituisce un file riepilogativo degli allegati all'istanza il cui id è passato in input.
+      tags:
+        - "Istanze"
+      operationId: downloadPDFAllegati
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+        - application/pdf
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            format: binary
+            type: string
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/pdf-modulo-firmato-istanza/{idIstanza}':
+    post:
+      summary: Carica l'allegato del modulo firmato dell'istanza su piattaforma INDEX e inserisce i metadati su VIFO.
+      tags:
+        - "Istanze"
+      consumes:
+        - multipart/form-data
+      operationId: uploadPDFModuloFirmatoIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+        - in: formData
+          name: file
+          required: true
+          type: file
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/stato-istanza/uid-istanza/{uidIstanza}/id-stato-istanza/{idStatoIstanza}':
+    put:
+      summary: Aggiorna lo stato dell'istanza il cui uid è passato in input.
+      tags:
+        - "Istanze"
+      operationId: updateStatoIstanza
+      parameters:
+        - in: path
+          name: uidIstanza
+          required: true
+          type: string
+        - format: int64
+          in: path
+          name: idStatoIstanza
+          required: true
+          type: integer
+        - in: query
+          name: gestAttoreUpd
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/IstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/referenti':
+    post:
+      summary: Inserisce il referente dell'istanza.
+      tags:
+        - "Referenti"
+      consumes: [ ]
+      operationId: addReferente
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReferenteIstanzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/ReferenteIstanzaExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna il referente dell'istanza.
+      tags:
+        - "Referenti"
+      consumes: [ ]
+      operationId: updateReferente
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/ReferenteIstanzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/ReferenteIstanzaExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/referenti/codice-istanza/{codeIstanza}':
+    get:
+      summary: Restituisce l'elenco dei referenti dell'istanza il cui codice è passato in input.
+      tags:
+        - "Referenti"
+      operationId: loadReferentiByCodeIstanza
+      parameters:
+        - in: path
+          name: codeIstanza
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ReferenteIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/referenti/id-istanza/{idIstanza}':
+    get:
+      summary: Restituisce l'elenco dei referenti dell'istanza il cui id è passato in input.
+      tags:
+        - "Referenti"
+      operationId: loadReferentiByIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ReferenteIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/referenti/id/{idReferenteIstanza}':
+    delete:
+      summary: Elimina il referente dell'istanza il cui id è passato in input.
+      tags:
+        - "Referenti"
+      operationId: deleteReferenteById
+      parameters:
+        - format: int64
+          in: path
+          name: idReferenteIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze/referenti/{uid}':
+    delete:
+      summary: Elimina il referente dell'istanza il cui uid è passato in input.
+      tags:
+        - "Referenti"
+      operationId: deleteReferente
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze-template-quadri':
+    post:
+      summary: Inserisce la configurazione quadro e template associato.
+      tags:
+        - "Istanze (Template)"
+      consumes:
+        - application/json
+      operationId: saveIstanzaTemplateQuadro
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/IstanzaTemplateQuadroExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/IstanzaTemplateQuadroExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna la configurazione quadro e template associato.
+      tags:
+        - "Istanze (Template)"
+      consumes:
+        - application/json
+      operationId: updateIstanzaTemplateQuadro
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/IstanzaTemplateQuadroExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/IstanzaTemplateQuadroExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze-template-quadri/id-istanza/{idIstanza}':
+    get:
+      summary: Restituisce l'elenco di tutti i quadri del template associato all'istanza il cui id è passato in input.
+      tags:
+        - "Istanze (Template)"
+      operationId: loadIstanzaTemplateQuadroByIdIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/IstanzaTemplateQuadroExtendedDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/istanze-template-quadri/id-istanza/{idIstanza}/id-template-quadro/{idTemplateQuadro}':
+    delete:
+      summary: Elimina la configurazione template-quadro dell'istanza i cui id sono passati in input.
+      tags:
+        - "Istanze (Template)"
+      operationId: deleteIstanzaTemplateQuadro
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+        - format: int64
+          in: path
+          name: idTemplateQuadro
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    get:
+      summary: Restituisce la configurazione template-quadro dell'istanza i cui id sono passati in input.
+      tags:
+        - "Istanze (Template)"
+      operationId: loadIstanzaTemplateQuadro
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+        - format: int64
+          in: path
+          name: idTemplateQuadro
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/IstanzaTemplateQuadroExtendedDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/messaggi':
+    get:
+      summary: Restituisce l'elenco di tutti i messaggi.
+      tags:
+        - "Messaggi"
+      operationId: loadMessaggi
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/MessaggioExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/messaggi/codice-messaggio/{codMessaggio}':
+    get:
+      summary: Restituisce il messaggio il cui codice è quello passato in input.
+      tags:
+        - "Messaggi"
+      operationId: loadMessaggioByCode
+      parameters:
+        - in: path
+          name: codMessaggio
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/MessaggioExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/messaggi/codice-tipo-messaggio/{codTipoMessaggio}':
+    get:
+      summary: Restituisce l'elenco dei messaggi del tipo il cui codice è quello passato in input.
+      tags:
+        - "Messaggi"
+      operationId: loadMessaggiByCodeTipoMessaggio
+      parameters:
+        - in: path
+          name: codTipoMessaggio
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/MessaggioExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/messaggi/id-messaggio/{idMessaggio}':
+    get:
+      summary: Restituisce il messaggio il cui id è quello passato in input.
+      tags:
+        - "Messaggi"
+      operationId: loadMessaggio
+      parameters:
+        - format: int64
+          in: path
+          name: idMessaggio
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/MessaggioExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti':
+    get:
+      summary: Restituisce l'elenco di tutti gli oggetti.
+      tags:
+        - "Oggetti"
+      operationId: loadOggetti
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    post:
+      summary: Inserisce l'oggetto passato in input.
+      tags:
+        - "Oggetti"
+      consumes:
+        - application/json
+      operationId: saveOggetto
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna l'oggetto passato in input.
+      tags:
+        - "Oggetti"
+      consumes:
+        - application/json
+      operationId: updateOggetto
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti/id-comune/{idComune}':
+    get:
+      summary: Restituisce l'elenco di tutti gli oggetti dislocati nel comune il cui id è passato in input.
+      tags:
+        - "Oggetti Istanza"
+      operationId: loadOggettoByIdComune
+      parameters:
+        - format: int64
+          in: path
+          name: idComune
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti/id/{idOggetto}':
+    get:
+      summary: Restituisce l'oggetto il cui id è specificato in input.
+      tags:
+        - "Oggetti"
+      operationId: loadOggettoById
+      parameters:
+        - format: int64
+          in: path
+          name: idOggetto
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti/search':
+    post:
+      summary: Restituisce l'elenco di tutti gli oggetti i cui criteri di ricerca rispettano quanto passato in input.
+      tags:
+        - "Oggetti"
+      consumes:
+        - application/json
+      operationId: searchOggetto
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SearchOggettoDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+            type: array
+        '404':
+          description: No instance found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti/{uidOggetto}':
+    delete:
+      summary: Elimina l'oggetto il cui uid è quello passato in input.
+      tags:
+        - "Oggetti"
+      operationId: deleteOggetto
+      parameters:
+        - in: path
+          name: uidOggetto
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    get:
+      summary: Restituisce l'oggetto il cui uid è quello passato in input.
+      tags:
+        - "Oggetti"
+      operationId: loadOggettoByUID
+      parameters:
+        - in: path
+          name: uidOggetto
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti-istanza':
+    get:
+      summary: Restituisce l'elenco di tutti gli oggetti-istanza.
+      tags:
+        - "Oggetti Istanza"
+      operationId: loadOggettiIstanza
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    post:
+      summary: Inserisce l'oggetto-istanza passato in input.
+      tags:
+        - "Oggetti Istanza"
+      consumes:
+        - application/json
+      operationId: saveOggettoIstanza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna l'oggetto-istanza passato in input.
+      tags:
+        - "Oggetti Istanza"
+      consumes:
+        - application/json
+      operationId: updateOggettoIstanza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti-istanza/id/{idOggettoIstanza}':
+    get:
+      summary: Restituisce l'oggetto-istanza il cui id è quello passato in input.
+      tags:
+        - "Oggetti Istanza"
+      operationId: loadOggettoIstanzaById
+      parameters:
+        - format: int64
+          in: path
+          name: idOggettoIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti-istanza/adempimento/{codAdempimento}/id-istanza/{idIstanza}':
+    get:
+      summary: Verifica la georeferenziazione di tutti gli oggetti-istanza che fanno riferimento all'istanza il cui id è passato in input.
+      tags:
+        - "Oggetti Istanza"
+      operationId: verificaGeoreferenziazione
+      parameters:
+        - in: path
+          name: codAdempimento
+          required: true
+          type: string
+        - in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/VerificaGeoRefDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti-istanza/search':
+    post:
+      summary: Restituisce l'elenco di tutti gli oggetti-istanza i cui criteri di ricerca rispecchiano quanto passato in input.
+      tags:
+        - "Oggetti Istanza"
+      consumes:
+        - application/json
+      operationId: searchOggettoIstanza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SearchOggettoDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/oggetti-istanza/{uidOggettoIstanza}':
+    get:
+      summary: Restituisce l'oggetto-istanza il cui uid è quello passato in input.
+      tags:
+        - "Oggetti Istanza"
+      operationId: loadOggettoIstanzaByUID
+      parameters:
+        - in: path
+          name: uidOggettoIstanza
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/OggettoIstanzaUbicazioneExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    delete:
+      summary: Elimina l'oggetto-istanza il cui uid è quello passato in input.
+      tags:
+        - "Oggetti Istanza"
+      operationId: deleteOggettoIstanza
+      parameters:
+        - in: path
+          name: uidOggettoIstanza
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ping':
+    get:
+      summary: Verifica la connessione al db.
+      tags:
+        - "Ping"
+      operationId: ping
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/Ping'
+            type: array
+  '/province':
+    get:
+      summary: Restituisce l'elenco di tutte le province.
+      tags:
+        - "Province"
+      operationId: getProvincie
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ProvinciaDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/province/{siglaProvincia}/comuni':
+    get:
+      summary: Restituisce l'elenco di tutti i comuni che fanno capo alla provincia la cui sigla è quella passata in input.
+      tags:
+        - "Province - Comuni"
+      operationId: getComuniByProvincia
+      parameters:
+        - in: path
+          name: siglaProvincia
+          required: true
+          type: string
+        - in: query
+          name: fields
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/ComuneDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-compilante':
+    get:
+      summary: Restituisce l'elenco di tutti i ruoli compilante.
+      tags:
+        - "Ruoli compilante"
+      operationId: loadRuoliCompilante
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloCompilanteDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-compilante/codice/{codRuoloCompilante}':
+    get:
+      summary: Restituisce il ruolo compilante il cui codice è quello passato in input.
+      tags:
+        - "Ruoli compilante"
+      operationId: loadRuoloCompilanteByCode
+      parameters:
+        - in: path
+          name: codRuoloCompilante
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloCompilanteDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-compilante/id-adempimento/{idAdempimento}':
+    get:
+      summary: Restituisce l'elenco dei ruoli compilante afferenti all'adempimento il cui id è quello passato in input.
+      tags:
+        - "Ruoli compilante"
+      operationId: loadRuoliCompilanteByAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloCompilanteDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-compilante/id/{idRuoloCompilante}':
+    get:
+      summary: Restituisce il ruolo compilante il cui id è quello passato in input.
+      tags:
+        - "Ruoli compilante"
+      operationId: loadRuoloCompilante
+      parameters:
+        - format: int64
+          in: path
+          name: idRuoloCompilante
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloCompilanteDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-soggetto':
+    get:
+      summary: Restituisce l'elenco di tutti i ruoli soggetto.
+      tags:
+        - "Ruoli soggetto"
+      operationId: loadRuoliSoggetto
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloSoggettoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-soggetto/codice/{codRuoloSoggetto}':
+    get:
+      summary: Restituisce il ruolo soggetto il cui codice è quello passato in input.
+      tags:
+        - "Ruoli soggetto"
+      operationId: loadRuoloSoggettoByCode
+      parameters:
+        - in: path
+          name: codRuoloSoggetto
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloSoggettoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-soggetto/id-adempimento/{idAdempimento}/id-ruolo-compilante/{idRuoloCompilante}':
+    get:
+      summary: Restituisce l'elenco dei ruoli soggetto afferenti all'adempimento e al ruolo compilante i cui id sono quelli passati in input.
+      tags:
+        - "Ruoli soggetto"
+      operationId: loadRuoliSoggettoByIdRuoloCompilanteAndAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+        - format: int64
+          in: path
+          name: idRuoloCompilante
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloSoggettoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/ruoli-soggetto/id/{idRuoloSoggetto}':
+    get:
+      summary: Restituisce il ruolo soggetto il cui id è quello passato in input.
+      tags:
+        - "Ruoli soggetto"
+      operationId: loadRuoloSoggetto
+      parameters:
+        - format: int64
+          in: path
+          name: idRuoloSoggetto
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/RuoloSoggettoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/search/istanze':
+    post:
+      summary: Restituisce un elenco di informazioni relative alle istanze che rispecchiano i criteri di ricerca passati in input.
+      tags:
+        - "Ricerca (istanze)"
+      consumes: [ ]
+      operationId: searchIstanze
+      parameters:
+        - format: int32
+          in: query
+          name: offset
+          required: false
+          type: integer
+        - format: int32
+          in: query
+          name: limit
+          required: false
+          type: integer
+        - default: ''
+          in: query
+          name: sort
+          required: false
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SearchDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/IstanzaSearchResultDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti':
+    get:
+      summary: Restituisce l'elenco di tutti i soggetti.
+      tags:
+        - "Soggetti"
+      operationId: loadSoggetti
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    post:
+      summary: Inserisce il soggetto passato in input.
+      tags:
+        - "Soggetti"
+      consumes:
+        - application/json
+      operationId: saveSoggetto
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SoggettoExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/SoggettoExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna il soggetto passato in input.
+      tags:
+        - "Soggetti"
+      consumes:
+        - application/json
+      operationId: updateSoggetto
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SoggettoExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/SoggettoExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti/cf-impresa/{codiceFiscaleImpresa}/cf-soggetto/{codiceFiscaleSoggetto}/tipo-soggetto/{tipoSoggetto}/tipo-adempimento/{tipoAdempimento}':
+    get:
+      summary: Restituisce il soggetto il cui tipo e codice fiscale sono quelli passati in input ricercandoli anche su AAEP tra i rappresentanti dell'impresa il cui codice fiscale è passato in input.
+      tags:
+        - "Soggetti"
+      operationId: loadSoggettoImpresa
+      parameters:
+        - in: path
+          name: codiceFiscaleImpresa
+          required: true
+          type: string
+        - in: path
+          name: codiceFiscaleSoggetto
+          required: true
+          type: string
+        - in: path
+          name: tipoSoggetto
+          required: true
+          type: string
+        - in: path
+          name: tipoAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti/cf/{codiceFiscale}/tipo-soggetto/{tipoSoggetto}/tipo-adempimento/{tipoAdempimento}':
+    get:
+      summary: Restituisce il soggetto il cui tipo e codice fiscale sono quelli passati in input.
+      tags:
+        - "Soggetti"
+      operationId: loadSoggettoByCodiceFiscaleAndTipo
+      parameters:
+        - in: path
+          name: codiceFiscale
+          required: true
+          type: string
+        - in: path
+          name: tipoSoggetto
+          required: true
+          type: string
+        - in: path
+          name: tipoAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti/id-tipo-soggetto/{idTipoSoggetto}':
+    get:
+      summary: Restituisce l'elenco dei soggetti il cui tipo è è quello dell'id passato in input.
+      tags:
+        - "Soggetti"
+      operationId: loadSoggettiByTipoSoggetto
+      parameters:
+        - format: int64
+          in: path
+          name: idTipoSoggetto
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti/id/{idSoggetto}':
+    get:
+      summary: Restituisce il soggetto il cui id è quello passato in input.
+      tags:
+        - "Soggetti"
+      operationId: loadSoggettoById
+      parameters:
+        - format: int64
+          in: path
+          name: idSoggetto
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    delete:
+      summary: Elimina il soggetto il cui id è quello passato in input.
+      tags:
+        - "Soggetti"
+      operationId: deleteSoggettoById
+      parameters:
+        - format: int64
+          in: path
+          name: idSoggetto
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti/{uid}':
+    delete:
+      summary: Elimina il soggetto il cui uid è quello passato in input.
+      tags:
+        - "Soggetti"
+      operationId: deleteSoggetto
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti-istanza':
+    get:
+      summary: Restituisce l'elenco dei soggetti-istanza.
+      tags:
+        - "Soggetti Istanza"
+      operationId: loadSoggettiIstanza
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    post:
+      summary: Inserisce il soggetto-istanza passato in input.
+      tags:
+        - "Soggetti Istanza"
+      consumes:
+        - application/json
+      operationId: saveSoggettoIstanza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '201':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    put:
+      summary: Aggiorna il soggetto-istanza passato in input.
+      tags:
+        - "Soggetti Istanza"
+      consumes:
+        - application/json
+      operationId: updateSoggettoIstanza
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+        '400':
+          description: Validation error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti-istanza/cf/{codiceFiscale}':
+    get:
+      summary: Restituisce l'elenco dei soggetti-istanza il cui codice fiscale è quello passato in input.
+      tags:
+        - "Soggetti Istanza"
+      operationId: loadSoggettiIstanzaByCodiceFiscaleSoggetto
+      parameters:
+        - in: path
+          name: codiceFiscale
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti-istanza/id-istanza/{idIstanza}':
+    get:
+      summary: Restituisce l'elenco dei soggetti-istanza afferenti all'istanza il cui id è quello passato in input.
+      tags:
+        - "Soggetti Istanza"
+      operationId: loadSoggettoIstanzaByIdIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti-istanza/id-padre/{idSoggettoPadre}':
+    get:
+      summary: Restituisce l'elenco dei soggetti-istanza il cui id padre è quello passato in input.
+      tags:
+        - "Soggetti Istanza"
+      operationId: loadSoggettoIstanzaByIdSoggettoPadre
+      parameters:
+        - format: int64
+          in: path
+          name: idSoggettoPadre
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti-istanza/id/{idSoggettoIstanza}':
+    delete:
+      summary: Elimina il soggetto-istanza il cui id è quello passato in input.
+      tags:
+        - "Soggetti Istanza"
+      operationId: deleteSoggettoIstanzaById
+      parameters:
+        - format: int64
+          in: path
+          name: idSoggettoIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+    get:
+      summary: Restituisce il soggetto-istanza il cui id è quello passato in input.
+      tags:
+        - "Soggetti Istanza"
+      operationId: loadSoggettoIstanza
+      parameters:
+        - format: int64
+          in: path
+          name: idSoggettoIstanza
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/SoggettoIstanzaExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/soggetti-istanza/{uid}':
+    delete:
+      summary: Elimina il soggetto-istanza il cui uid è quello passato in input.
+      tags:
+        - "Soggetti Istanza"
+      operationId: deleteSoggettoIstanza
+      parameters:
+        - in: path
+          name: uid
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/stati-istanza':
+    get:
+      summary: Restituisce l'elenco di tutti gli stati-istanza.
+      tags:
+        - "Stati Istanza"
+      operationId: loadStatiiIstanza
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/StatoIstanzaDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/template-quadri/code-adempimento/{codeAdempimento}':
+    get:
+      summary: Restituisce la configurazione template-quadri relativi all'adempimento il cui codice è passato in input.
+      tags:
+        - "Template"
+      operationId: loadTemplateQuadryByCodeAdempimento
+      parameters:
+        - in: path
+          name: codeAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TemplateQuadroExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/template-quadri/code-template/{codeTemplate}':
+    get:
+      summary: Restituisce la configurazione template-quadri il cui codice template è quello passato in input.
+      tags:
+        - "Template"
+      operationId: loadTemplateQuadryByCodeTemplate
+      parameters:
+        - in: path
+          name: codeTemplate
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TemplateQuadroExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/template-quadri/id-template-quadro/{idTemplateQuadro}':
+    get:
+      summary: Restituisce la configurazione template-quadri il cui id è quello passato in input.
+      tags:
+        - "Template"
+      operationId: loadTemplateQuadriByIdTemplateQuadro
+      parameters:
+        - format: int64
+          in: path
+          name: idTemplateQuadro
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TemplateQuadroExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-adempimento':
+    get:
+      summary: Restituisce l'elenco di tutti i tipi di adempimento.
+      tags:
+        - "Tipi Adempimento"
+      operationId: loadTipiAdempimento
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-adempimento/id/{idTipoAdempimento}':
+    get:
+      summary: Restituisce il tipo di adempimento il cui id è quello passato in input.
+      tags:
+        - "Tipi Adempimento"
+      operationId: loadTipoAdempimentoById
+      parameters:
+        - in: path
+          name: idTipoAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-adempimento/codice/{codTipoAdempimento}':
+    get:
+      summary: Restituisce il tipo di adempimento il cui codice è quello passato in input.
+      tags:
+        - "Tipi Adempimento"
+      operationId: loadTipoAdempimentoByCode
+      parameters:
+        - in: path
+          name: codTipoAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-adempimento/id-ambito/{idAmbito}':
+    get:
+      summary: Restituisce l'elenco dei tipi di adempimento che fanno riferimento all'ambito il cui id è quello passato in input.
+      tags:
+        - "Tipi Adempimento"
+      operationId: loadTipiAdempimentoPerAmbito
+      parameters:
+        - format: int64
+          in: path
+          name: idAmbito
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-adempimento/codice-ambito/{codeAmbito}':
+    get:
+      summary: Restituisce l'elenco dei tipi di adempimento che fanno riferimento all'ambito il cui codice è quello passato in input.
+      tags:
+        - "Tipi Adempimento"
+      operationId: loadTipiAdempimentoPerCodiceAmbito
+      parameters:
+        - format: int64
+          in: path
+          name: codeAmbito
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-adempimento/id-compilante/{idCompilante}':
+    get:
+      summary: Restituisce l'elenco dei tipi di adempimento preferiti dal compilante il cui id è quello passato in input.
+      tags:
+        - "Tipi Adempimento (preferenze compilante)"
+      operationId: loadTipiAdempimentoConPreferenze
+      parameters:
+        - format: int64
+          in: path
+          name: idCompilante
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+
+  '/tipi-messaggio':
+    get:
+      summary: Restituisce l'elenco dei tipi messaggio.
+      tags:
+        - "Tipi messaggio"
+      operationId: loadTipiMessaggio
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoMessaggioDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-messaggio/codice-tipo-messaggio/{codTipoMessaggio}':
+    get:
+      summary: Restituisce il tipo messaggio il cui codice è quello passato in input.
+      tags:
+        - "Tipi messaggio"
+      operationId: loadTipoMessaggioByCode
+      parameters:
+        - in: path
+          name: codTipoMessaggio
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoMessaggioDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-messaggio/id-tipo-messaggio/{idTipoMessaggio}':
+    get:
+      summary: Restituisce il tipo messaggio il cui id è quello passato in input.
+      tags:
+        - "Tipi messaggio"
+      operationId: loadTipoMessaggio
+      parameters:
+        - format: int64
+          in: path
+          name: idTipoMessaggio
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoMessaggioDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-messaggio/{idTipoMessaggio}':
+    delete:
+      summary: Elimina il tipo messaggio il cui id è quello passato in input.
+      tags:
+        - "Tipi messaggio"
+      operationId: deleteTipoMessaggio
+      parameters:
+        - format: int64
+          in: path
+          name: idTipoMessaggio
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '204':
+          description: Successful operation.
+        '404':
+          description: Item was not found.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-natura-giuridica':
+    get:
+      summary: Restituisce l'elenco dei tipi natura giuridica.
+      tags:
+        - "Tipi natura giuridica"
+      operationId: loadTipiNaturaGiuridica
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoNaturaGiuridicaDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-natura-giuridica/codice/{codTipoNaturaGiuridica}':
+    get:
+      summary: Restituisce il tipo natura giuridica il cui codice è quello passato in input.
+      tags:
+        - "Tipi natura giuridica"
+      operationId: loadTipoNaturaGiuridicaByCode
+      parameters:
+        - in: path
+          name: codTipoNaturaGiuridica
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoNaturaGiuridicaDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-natura-giuridica/id/{idTipoNaturaGiuridica}':
+    get:
+      summary: Restituisce il tipo natura giuridica il cui id è quello passato in input.
+      tags:
+        - "Tipi natura giuridica"
+      operationId: loadTipoNaturaGiuridica
+      parameters:
+        - format: int64
+          in: path
+          name: idTipoNaturaGiuridica
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoNaturaGiuridicaDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-soggetto':
+    get:
+      summary: Restituisce l'elenco di tutti i tipi soggetto.
+      tags:
+        - "Tipi soggetto"
+      operationId: getTipiSoggetto
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoSoggettoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-soggetto/codice/{codTipoSoggetto}':
+    get:
+      summary: Restituisce il tipo soggetto il cui codice è quello passato in input.
+      tags:
+        - "Tipi soggetto"
+      operationId: getTipoSoggettoByCode
+      parameters:
+        - in: path
+          name: codTipoSoggetto
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoSoggettoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipi-soggetto/id/{idTipoSoggetto}':
+    get:
+      summary: Restituisce il tipo soggetto il cui id è quello passato in input.
+      tags:
+        - "Tipi soggetto"
+      operationId: getTipoSoggetto
+      parameters:
+        - format: int64
+          in: path
+          name: idTipoSoggetto
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/TipoSoggettoDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipologie-allegato':
+    get:
+      summary: Restituisce l'elenco di tutte le tipologie allegato.
+      tags:
+        - "Tipologie allegato"
+      operationId: loadTipologieAllegato
+      parameters: [ ]
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoTipoAllegatoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipologie-allegato/code-adempimento/{codAdempimento}':
+    get:
+      summary: Restituisce l'elenco delle tipologie allegato afferenti all'adempimento il cui codice è passato in input.
+      tags:
+        - "Tipologie allegato"
+      operationId: loadTipologiaAllegatoByCodeAdempimento
+      parameters:
+        - in: path
+          name: codAdempimento
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoTipoAllegatoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipologie-allegato/code-adempimento/{codAdempimento}/code-categoria/{codCategoria}':
+    get:
+      summary: Restituisce l'elenco delle tipologie allegato afferenti all'adempimento e alla categoria i cui codici sono passati in input.
+      tags:
+        - "Tipologie allegato"
+      operationId: loadTipologieAllegatoByCodeAdempimentoAndCodeCategoria
+      parameters:
+        - in: path
+          name: codAdempimento
+          required: true
+          type: string
+        - in: path
+          name: codCategoria
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoTipoAllegatoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+  '/tipologie-allegato/id-adempimento/{idAdempimento}':
+    get:
+      summary: Restituisce l'elenco delle tipologie allegato afferenti all'adempimento il cui id è passato in input.
+      tags:
+        - "Tipologie allegato"
+      operationId: loadTipologiaAllegatoByIdAdempimento
+      parameters:
+        - format: int64
+          in: path
+          name: idAdempimento
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Successful operation.
+          schema:
+            items:
+              $ref: '#/definitions/AdempimentoTipoAllegatoExtendedDTO'
+            type: array
+        '500':
+          description: Unexpected error.
+          schema:
+            $ref: '#/definitions/ErrorDTO'
+definitions:
+  AccreditamentoDTO:
+    properties:
+      cf_accredito:
+        type: string
+      cognome_accredito:
+        type: string
+      des_email_accredito:
+        type: string
+      flg_autorizza_dati_personali:
+        type: boolean
+      gestUID:
+        type: string
+      id_compilante:
+        format: int64
+        type: integer
+      id_richiesta_accredito:
+        format: int64
+        type: integer
+      nome_accredito:
+        type: string
+    type: object
+  AdempimentoConfigDTO:
+    properties:
+      chiave:
+        type: string
+      des_adempimento:
+        type: string
+      des_informazione_vifo:
+        type: string
+      gestUID:
+        type: string
+      id_adempimento:
+        format: int64
+        type: integer
+      id_adempimento_config:
+        format: int64
+        type: integer
+      id_informazione_vifo:
+        format: int64
+        type: integer
+      note:
+        type: string
+      ordinamento:
+        format: int32
+        type: integer
+      valore:
+        type: string
+    type: object
+  AdempimentoEstensioneAllegatoDTO:
+    properties:
+      des_estensione_allegato:
+        type: string
+      estensione_allegato:
+        type: string
+      id_adempimento:
+        format: int64
+        type: integer
+    type: object
+  AdempimentoExtendedDTO:
+    properties:
+      cod_adempimento:
+        type: string
+      des_adempimento:
+        type: string
+      des_estesa_adempimento:
+        type: string
+      id_adempimento:
+        format: int64
+        type: integer
+      id_tipo_adempimento:
+        format: int64
+        type: integer
+      ordinamento_adempimento:
+        format: int32
+        type: integer
+      tipo_adempimento:
+        $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+    type: object
+  AdempimentoRuoloCompilanteExtendedDTO:
+    properties:
+      adempimento:
+        $ref: '#/definitions/AdempimentoExtendedDTO'
+      flg_modulo_delega:
+        type: boolean
+      flg_modulo_procura:
+        type: boolean
+      flg_popola_richiedente:
+        type: boolean
+      flg_ruolo_default:
+        type: boolean
+      gestUID:
+        type: string
+      ruolo_compilante:
+        $ref: '#/definitions/RuoloCompilanteDTO'
+    type: object
+  AdempimentoTipoAllegatoExtendedDTO:
+    properties:
+      adempimento:
+        $ref: '#/definitions/AdempimentoExtendedDTO'
+      flg_firma_digitale:
+        type: boolean
+      flg_firma_non_valida_bloccante:
+        type: boolean
+      flg_integrazione:
+        type: boolean
+      flg_nascondi_fo:
+        type: boolean
+      flg_nota:
+        type: boolean
+      flg_obbligo:
+        type: boolean
+      flg_riservato:
+        type: boolean
+      id_adempimento:
+        format: int64
+        type: integer
+      id_tipologia_allegato:
+        format: int64
+        type: integer
+      tipologia_allegato:
+        $ref: '#/definitions/TipologiaAllegatoExtendedDTO'
+    type: object
+  AllegatoIstanzaExtendedDTO:
+    properties:
+      cod_allegato:
+        type: string
+      data_cancellazione:
+        format: date-time
+        type: string
+      data_integrazione:
+        format: date-time
+        type: string
+      data_upload:
+        format: date-time
+        type: string
+      dimensione_upload:
+        format: int64
+        type: integer
+      flg_cancellato:
+        type: boolean
+      flg_riservato:
+        type: boolean
+      gestUID:
+        type: string
+      id_allegato_istanza:
+        format: int64
+        type: integer
+      id_istanza:
+        format: int64
+        type: integer
+      ind_firma:
+        format: int32
+        type: integer
+      nome_allegato:
+        type: string
+      note:
+        type: string
+      tipo_integra_allegato:
+        $ref: '#/definitions/TipoIntegraAllegatoDTO'
+      tipologia_allegato:
+        $ref: '#/definitions/TipologiaAllegatoExtendedDTO'
+      uuid_index:
+        type: string
+    type: object
+  AmbitoDTO:
+    properties:
+      cod_ambito:
+        type: string
+      des_ambito:
+        type: string
+      des_estesa_ambito:
+        type: string
+      gestUID:
+        type: string
+      id_ambito:
+        format: int64
+        type: integer
+    type: object
+  CategoriaAllegatoDTO:
+    properties:
+      cod_categoria_allegato:
+        type: string
+      des_categoria_allegato:
+        type: string
+      flg_attivo:
+        type: boolean
+      id_categoria_allegato:
+        format: int64
+        type: integer
+      ordinamento_categoria_allegato:
+        format: int32
+        type: integer
+    type: object
+  CompilanteDTO:
+    properties:
+      cf_compilante:
+        type: string
+      cognome_compilante:
+        type: string
+      des_email_compilante:
+        type: string
+      gestUID:
+        type: string
+      id_compilante:
+        format: int64
+        type: integer
+      nome_compilante:
+        type: string
+    type: object
+  CompilantePreferenzaExtendedDTO:
+    properties:
+      compilante:
+        $ref: '#/definitions/CompilanteDTO'
+      gestUID:
+        type: string
+      id_preferenza:
+        format: int64
+        type: integer
+      tipo_adempimento:
+        $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+    type: object
+  ComponenteAppDTO:
+    properties:
+      cod_componente_app:
+        type: string
+      des_componente_app:
+        type: string
+      id_componente_app:
+        format: int64
+        type: integer
+    type: object
+  ComuneDTO:
+    properties:
+      cap_comune:
+        type: string
+      codice_istat_comune:
+        type: string
+      des_provincia:
+        type: string
+      id_comune:
+        format: int64
+        type: integer
+      sigla_provincia:
+        type: string
+      toponimo:
+        type: string
+    type: object
+  ConfiguraRuoloSoggettoExtendedDTO:
+    properties:
+      gestUID:
+        type: string
+      ruolo_compilante:
+        $ref: '#/definitions/RuoloCompilanteDTO'
+      ruolo_soggetto:
+        $ref: '#/definitions/RuoloSoggettoDTO'
+      adempimento:
+        $ref: '#/definitions/AdempimentoExtendedDTO'
+    type: object
+  ConfigurazioneDTO:
+    properties:
+      chiave:
+        type: string
+      note:
+        type: string
+      valore:
+        type: string
+    type: object
+  ErrorDTO:
+    properties:
+      status:
+        type: string
+      code:
+        type: string
+      title:
+        type: string
+      detail:
+        type: object
+        additionalProperties:
+          type: string
+      links:
+        type: array
+        items:
+          type: string
+    type: object
+  Feature:
+    properties:
+      geometry:
+        $ref: '#/definitions/Geometry'
+      id:
+        format: int64
+        type: integer
+      properties:
+        additionalProperties:
+          type: object
+        type: object
+      type:
+        type: string
+    type: object
+  GeecoUrlDTO:
+    properties:
+      url:
+        type: string
+    type: object
+  Geometry:
+    properties:
+      type:
+        type: string
+    type: object
+  HelpExtendedDTO:
+    properties:
+      chiave_help:
+        type: string
+      des_testo_help:
+        type: string
+      id_help:
+        format: int64
+        type: integer
+      id_livello_help:
+        format: int64
+        type: integer
+      id_tipo_help:
+        format: int64
+        type: integer
+      livello_help:
+        $ref: '#/definitions/LivelloHelpDTO'
+      note_help:
+        type: string
+      tipo_help:
+        $ref: '#/definitions/TipoHelpDTO'
+      valore_campo_help:
+        type: string
+    type: object
+  InputPart:
+    properties:
+      bodyAsString:
+        type: string
+      contentTypeFromMessage:
+        type: boolean
+      headers:
+        additionalProperties:
+          items:
+            type: string
+          type: array
+        properties:
+          empty:
+            type: boolean
+        type: object
+      mediaType:
+        properties:
+          parameters:
+            additionalProperties:
+              type: string
+            type: object
+          subtype:
+            type: string
+          type:
+            type: string
+          wildcardSubtype:
+            type: boolean
+          wildcardType:
+            type: boolean
+        type: object
+    type: object
+  IstanzaExtendedDTO:
+    properties:
+      adempimento:
+        $ref: '#/definitions/AdempimentoExtendedDTO'
+      anno_istanza:
+        format: int64
+        type: integer
+      cod_istanza:
+        type: string
+      cod_pratica:
+        type: string
+      data_inserimento_istanza:
+        format: date-time
+        type: string
+      data_modifica_istanza:
+        format: date-time
+        type: string
+      gestUID:
+        type: string
+      id_istanza:
+        format: int64
+        type: integer
+      json_data:
+        type: string
+      prog_anno:
+        format: int64
+        type: integer
+      stato_istanza:
+        $ref: '#/definitions/StatoIstanzaDTO'
+      uuid_index:
+        type: string
+    type: object
+  IstanzaSearchResultDTO:
+    properties:
+      attore_gestione_istanza:
+        type: string
+      cod_adempimento:
+        type: string
+      cod_istanza:
+        type: string
+      cod_pratica:
+        type: string
+      cod_stato_istanza:
+        type: string
+      comune:
+        type: string
+      data_inserimento_istanza:
+        format: date-time
+        type: string
+      data_presentazione_istanza:
+        format: date-time
+        type: string
+      den_oggetto:
+        type: string
+      den_soggetto:
+        type: string
+      des_estesa_adempimento:
+        type: string
+      des_stato_istanza:
+        type: string
+      id_istanza:
+        format: int64
+        type: integer
+      tipi_adempimento_ogg_app:
+        items:
+          $ref: '#/definitions/TipoAdempimentoOggettoAppExtendedDTO'
+        type: array
+    type: object
+  IstanzaTemplateQuadroExtendedDTO:
+    properties:
+      gestUID:
+        type: string
+      id_istanza:
+        format: int64
+        type: integer
+      json_data_quadro:
+        type: string
+      template_quadro:
+        $ref: '#/definitions/TemplateQuadroExtendedDTO'
+    type: object
+  LivelloHelpDTO:
+    properties:
+      cod_livello_help:
+        type: string
+      des_livello_help:
+        type: string
+      id_livello_help:
+        format: int64
+        type: integer
+    type: object
+  MessaggioExtendedDTO:
+    properties:
+      cod_messaggio:
+        type: string
+      des_testo_messaggio:
+        type: string
+      gestUID:
+        type: string
+      id_messaggio:
+        format: int64
+        type: integer
+      tipo_messaggio:
+        $ref: '#/definitions/TipoMessaggioDTO'
+    type: object
+  MultipartFormDataInput:
+    properties:
+      formDataMap:
+        additionalProperties:
+          items:
+            $ref: '#/definitions/InputPart'
+          type: array
+        type: object
+      parts:
+        items:
+          $ref: '#/definitions/InputPart'
+        type: array
+      preamble:
+        type: string
+    type: object
+  NaturaOggettoDTO:
+    properties:
+      cod_natura_oggetto:
+        type: string
+      des_natura_oggetto:
+        type: string
+      gestUID:
+        type: string
+      id_natura_oggetto:
+        format: int64
+        type: integer
+    type: object
+  OggettoAppExtendedDTO:
+    properties:
+      cod_oggetto_app:
+        type: string
+      des_oggetto_app:
+        type: string
+      id_oggetto_app:
+        format: int64
+        type: integer
+      id_tipo_ogg_app:
+        format: int64
+        type: integer
+      tipoOggettoApp:
+        $ref: '#/definitions/TipoOggettoAppDTO'
+    type: object
+  OggettoIstanzaUbicazioneExtendedDTO:
+    properties:
+      cod_vifo:
+        format: int64
+        type: integer
+      cod_sira:
+        format: int64
+        type: integer
+      coordinata_x:
+        format: float
+        type: number
+      coordinata_y:
+        format: float
+        type: number
+      den_oggetto:
+        type: string
+      des_oggetto:
+        type: string
+      flg_esistente:
+        type: boolean
+      gestUID:
+        type: string
+      id_istanza:
+        format: int64
+        type: integer
+      id_masterdata:
+        format: int64
+        type: integer
+      id_masterdata_origine:
+        format: int64
+        type: integer
+      id_oggetto:
+        format: int64
+        type: integer
+      id_oggetto_istanza:
+        format: int64
+        type: integer
+      id_tipologia_oggetto:
+        format: int64
+        type: integer
+      ind_geo_stato:
+        type: string
+      istanza:
+        $ref: '#/definitions/IstanzaExtendedDTO'
+      tipologia_oggetto:
+        $ref: '#/definitions/TipologiaOggettoExtendedDTO'
+      ubicazione_oggetto:
+        items:
+          $ref: '#/definitions/UbicazioneOggettoIstanzaExtendedDTO'
+        type: array
+    type: object
+  OggettoUbicazioneExtendedDTO:
+    properties:
+      cod_vifo:
+        format: int64
+        type: integer
+      cod_sira:
+        format: int64
+        type: integer
+      coordinata_x:
+        format: float
+        type: number
+      coordinata_y:
+        format: float
+        type: number
+      den_oggetto:
+        type: string
+      des_oggetto:
+        type: string
+      flg_esistente:
+        type: boolean
+      gestUID:
+        type: string
+      id_masterdata:
+        format: int64
+        type: integer
+      id_masterdata_origine:
+        format: int64
+        type: integer
+      id_oggetto:
+        format: int64
+        type: integer
+      stato_oggetto:
+        $ref: '#/definitions/StatoOggettoDTO'
+      tipologia_oggetto:
+        $ref: '#/definitions/TipologiaOggettoExtendedDTO'
+      ubicazione_oggetto:
+        items:
+          $ref: '#/definitions/UbicazioneOggettoExtendedDTO'
+        type: array
+    type: object
+  Ping:
+    properties:
+      label:
+        type: string
+      status:
+        type: string
+    type: object
+  ProcedimentoConfigDTO:
+    properties:
+      chiave:
+        type: string
+      des_informazione_vifo:
+        type: string
+      des_tipo_procedimento:
+        type: string
+      gestUID:
+        type: string
+      id_informazione_vifo:
+        format: int64
+        type: integer
+      id_procedimento_config:
+        format: int64
+        type: integer
+      id_tipo_procedimento:
+        format: int64
+        type: integer
+      note:
+        type: string
+      ordinamento:
+        format: int32
+        type: integer
+      valore:
+        type: string
+    type: object
+  ProcedimentoRuoloCompilanteExtendedDTO:
+    properties:
+      flg_modulo_delega:
+        type: boolean
+      flg_modulo_procura:
+        type: boolean
+      flg_popola_richiedente:
+        type: boolean
+      flg_ruolo_default:
+        type: boolean
+      gestUID:
+        type: string
+      ruolo_compilante:
+        $ref: '#/definitions/RuoloCompilanteDTO'
+      tipo_procedimento:
+        $ref: '#/definitions/TipoProcedimentoExtendedDTO'
+    type: object
+  ProfiloAppExtendedDTO:
+    properties:
+      cod_profilo_app:
+        type: string
+      componente_app:
+        $ref: '#/definitions/ComponenteAppDTO'
+      des_profilo_app:
+        type: string
+      flg_competenza:
+        type: boolean
+      flg_profilo_iride:
+        type: boolean
+      id_componente_app:
+        format: int64
+        type: integer
+      id_profilo_app:
+        format: int64
+        type: integer
+    type: object
+  ProvinciaDTO:
+    properties:
+      des_provincia:
+        type: string
+      sigla_provincia:
+        type: string
+    type: object
+  QuadroExtendedDTO:
+    properties:
+      flg_tipo_gestione:
+        type: string
+      gestUID:
+        type: string
+      id_quadro:
+        format: int64
+        type: integer
+      json_configura_quadro:
+        type: string
+      json_configura_riepilogo:
+        type: string
+      num_versione:
+        format: int32
+        type: integer
+      tipo_quadro:
+        $ref: '#/definitions/TipoQuadroDTO'
+    type: object
+  ReferenteIstanzaExtendedDTO:
+    properties:
+      cognome_referente:
+        type: string
+      des_email_referente:
+        type: string
+      des_mansione_referente:
+        type: string
+      gestUID:
+        type: string
+      id_referente_istanza:
+        format: int64
+        type: integer
+      istanza:
+        $ref: '#/definitions/IstanzaExtendedDTO'
+      nome_referente:
+        type: string
+      num_tel_referente:
+        type: string
+    type: object
+  RuoloCompilanteDTO:
+    properties:
+      cod_ruolo_compilante:
+        type: string
+      des_ruolo_compilante:
+        type: string
+      gestUID:
+        type: string
+      id_ruolo_compilante:
+        format: int64
+        type: integer
+    type: object
+  RuoloSoggettoDTO:
+    properties:
+      cod_ruolo_soggetto:
+        type: string
+      des_ruolo_soggetto:
+        type: string
+      gestUID:
+        type: string
+      id_ruolo_soggetto:
+        format: int64
+        type: integer
+    type: object
+  SearchDTO:
+    properties:
+      adempimento:
+        type: string
+      cf_compilante:
+        type: string
+      cf_soggetto:
+        type: string
+      comune_oggetto_istanza:
+        type: string
+      data_inserimento_from:
+        format: date-time
+        type: string
+      data_inserimento_to:
+        format: date-time
+        type: string
+      data_presentazione_from:
+        format: date-time
+        type: string
+      data_presentazione_to:
+        format: date-time
+        type: string
+      provincia_oggetto_istanza:
+        type: string
+      simple_search:
+        type: string
+      stato_istanza:
+        type: string
+    type: object
+  SearchOggettoDTO:
+    properties:
+      id_comune:
+        format: int64
+        type: integer
+      id_istanza:
+        format: int64
+        type: integer
+      id_soggetti:
+        items:
+          format: int64
+          type: integer
+        type: array
+    type: object
+  SoggettoExtendedDTO:
+    properties:
+      cf_soggetto:
+        type: string
+      citta_estera_nascita:
+        type: string
+      citta_estera_residenza:
+        type: string
+      cognome:
+        type: string
+      comune_nascita:
+        $ref: '#/definitions/ComuneDTO'
+      comune_residenza:
+        $ref: '#/definitions/ComuneDTO'
+      comune_sede_legale:
+        $ref: '#/definitions/ComuneDTO'
+      data_cessazione_soggetto:
+        format: date-time
+        type: string
+      data_nascita_soggetto:
+        format: date-time
+        type: string
+      den_anno_cciaa:
+        format: int32
+        type: integer
+      den_numero_cciaa:
+        type: string
+      den_provincia_cciaa:
+        type: string
+      den_soggetto:
+        type: string
+      des_email:
+        type: string
+      des_pec:
+        type: string
+      gestUID:
+        type: string
+      id_masterdata:
+        format: int64
+        type: integer
+      id_masterdata_origine:
+        format: int64
+        type: integer
+      id_soggetto:
+        format: int64
+        type: integer
+      indirizzo_soggetto:
+        type: string
+      nome:
+        type: string
+      num_civico_indirizzo:
+        type: string
+      num_telefono:
+        type: string
+      partita_iva_soggetto:
+        type: string
+      stato_estero_nascita:
+        type: string
+      tipo_natura_giuridica:
+        $ref: '#/definitions/TipoNaturaGiuridicaDTO'
+      tipo_soggetto:
+        $ref: '#/definitions/TipoSoggettoDTO'
+    type: object
+  SoggettoIstanzaExtendedDTO:
+    properties:
+      cf_soggetto:
+        type: string
+      citta_estera_nascita:
+        type: string
+      citta_estera_residenza:
+        type: string
+      cognome:
+        type: string
+      comune_nascita:
+        $ref: '#/definitions/ComuneDTO'
+      comune_residenza:
+        $ref: '#/definitions/ComuneDTO'
+      comune_sede_legale:
+        $ref: '#/definitions/ComuneDTO'
+      data_cessazione_soggetto:
+        format: date-time
+        type: string
+      data_nascita_soggetto:
+        format: date-time
+        type: string
+      den_anno_cciaa:
+        format: int32
+        type: integer
+      den_numero_cciaa:
+        type: string
+      den_provincia_cciaa:
+        type: string
+      den_soggetto:
+        type: string
+      des_email:
+        type: string
+      des_pec:
+        type: string
+      gestUID:
+        type: string
+      id_masterdata:
+        format: int64
+        type: integer
+      id_masterdata_origine:
+        format: int64
+        type: integer
+      id_ruolo_compilante:
+        format: int64
+        type: integer
+      id_ruolo_soggetto:
+        format: int64
+        type: integer
+      id_soggetto:
+        format: int64
+        type: integer
+      id_soggetto_istanza:
+        format: int64
+        type: integer
+      id_soggetto_padre:
+        format: int64
+        type: integer
+      id_tipo_natura_giuridica:
+        format: int64
+        type: integer
+      id_tipo_soggetto:
+        format: int64
+        type: integer
+      indirizzo_soggetto:
+        type: string
+      istanza:
+        $ref: '#/definitions/IstanzaExtendedDTO'
+      nome:
+        type: string
+      num_civico_indirizzo:
+        type: string
+      num_telefono:
+        type: string
+      partita_iva_soggetto:
+        type: string
+      ruolo_compilante:
+        $ref: '#/definitions/RuoloCompilanteDTO'
+      ruolo_soggetto:
+        $ref: '#/definitions/RuoloSoggettoDTO'
+      soggetto:
+        $ref: '#/definitions/SoggettoExtendedDTO'
+      stato_estero_nascita:
+        type: string
+      tipo_natura_giuridica:
+        $ref: '#/definitions/TipoNaturaGiuridicaDTO'
+      tipo_soggetto:
+        $ref: '#/definitions/TipoSoggettoDTO'
+    type: object
+  StatoIstanzaDTO:
+    properties:
+      codice_stato_istanza:
+        type: string
+      descrizione_stato_istanza:
+        type: string
+      flg_storico_istanza:
+        type: boolean
+      id_stato_istanza:
+        format: int64
+        type: integer
+      ind_visibile:
+        type: string
+    type: object
+  StatoOggettoDTO:
+    properties:
+      cod_stato_oggetto:
+        type: string
+      des_stato_oggetto:
+        type: string
+      gestUID:
+        type: string
+      id_stato_oggetto:
+        format: int64
+        type: integer
+    type: object
+  TemplateExtendedDTO:
+    properties:
+      adempimento:
+        $ref: '#/definitions/AdempimentoExtendedDTO'
+      cod_template:
+        type: string
+      data_cessazione:
+        format: date-time
+        type: string
+      data_inizio_validita:
+        format: date-time
+        type: string
+      des_template:
+        type: string
+      gestUID:
+        type: string
+      id_template:
+        format: int64
+        type: integer
+      json_configura_template:
+        type: string
+      pdf_template:
+        type: string
+    type: object
+  TemplateQuadroExtendedDTO:
+    properties:
+      flg_quadro_obbigatorio:
+        type: boolean
+      gestUID:
+        type: string
+      id_template_quadro:
+        format: int64
+        type: integer
+      ordinamento_template_quadro:
+        format: int32
+        type: integer
+      quadro:
+        $ref: '#/definitions/QuadroExtendedDTO'
+      template:
+        $ref: '#/definitions/TemplateExtendedDTO'
+    type: object
+  TipoAdempimentoExtendedDTO:
+    properties:
+      ambito:
+        $ref: '#/definitions/AmbitoDTO'
+      cod_tipo_adempimento:
+        type: string
+      des_estesa_tipo_adempimento:
+        type: string
+      des_tipo_adempimento:
+        type: string
+      id_ambito:
+        format: int64
+        type: integer
+      id_tipo_adempimento:
+        format: int64
+        type: integer
+      ordinamento_tipo_adempimento:
+        format: int32
+        type: integer
+      preferito:
+        format: int64
+        type: integer
+      uuid_index:
+        type: string
+    type: object
+  TipoAdempimentoOggettoAppExtendedDTO:
+    properties:
+      flg_clona_istanza:
+        type: boolean
+      id_adempimento_clona_istanza:
+        format: int64
+        type: integer
+      id_oggetto_app:
+        format: int64
+        type: integer
+      id_stato_istanza:
+        format: int64
+        type: integer
+      id_tipo_adempi_ogg_app:
+        format: int64
+        type: integer
+      id_tipo_adempi_profilo:
+        format: int64
+        type: integer
+      oggetto_app:
+        $ref: '#/definitions/OggettoAppExtendedDTO'
+      stato_istanza:
+        $ref: '#/definitions/StatoIstanzaDTO'
+      tipo_adempi_profilo:
+        $ref: '#/definitions/TipoAdempimentoProfiloExtendedDTO'
+    type: object
+  TipoAdempimentoProfiloExtendedDTO:
+    properties:
+      flg_sola_lettura:
+        type: boolean
+      id_profilo_app:
+        format: int64
+        type: integer
+      id_tipo_adempi_profilo:
+        format: int64
+        type: integer
+      id_tipo_adempimento:
+        format: int64
+        type: integer
+      profilo_app:
+        $ref: '#/definitions/ProfiloAppExtendedDTO'
+      tipo_adempimento:
+        $ref: '#/definitions/TipoAdempimentoExtendedDTO'
+    type: object
+  TipoHelpDTO:
+    properties:
+      cod_tipo_help:
+        type: string
+      des_tipo_help:
+        type: string
+      id_tipo_help:
+        format: int64
+        type: integer
+    type: object
+  TipoIntegraAllegatoDTO:
+    properties:
+      cod_tipo_integra_allegato:
+        type: string
+      des_tipo_integra_allegato:
+        type: string
+      id_tipo_integra_allegato:
+        format: int64
+        type: integer
+    type: object
+  TipoMessaggioDTO:
+    properties:
+      cod_tipo_messaggio:
+        type: string
+      des_tipo_messaggio:
+        type: string
+      id_tipo_messaggio:
+        format: int64
+        type: integer
+    type: object
+  TipoNaturaGiuridicaDTO:
+    properties:
+      cod_tipo_natura_giuridica:
+        type: string
+      des_tipo_natura_giuridica:
+        type: string
+      gestUID:
+        type: string
+      id_tipo_natura_giuridica:
+        format: int64
+        type: integer
+      sigla_tipo_natura_giuridica:
+        type: string
+    type: object
+  TipoOggettoAppDTO:
+    properties:
+      cod_tipo_oggetto_app:
+        type: string
+      des_tipo_oggetto_app:
+        type: string
+      id_tipo_oggetto_app:
+        format: int64
+        type: integer
+    type: object
+  TipoProcedimentoExtendedDTO:
+    properties:
+      ambito:
+        $ref: '#/definitions/AmbitoDTO'
+      des_estesa_tipo_procedimento:
+        type: string
+      des_tipo_procedimento:
+        type: string
+      gestUID:
+        type: string
+      id_tipo_procedimento:
+        format: int64
+        type: integer
+      ordinamento_tipo_procedimento:
+        format: int32
+        type: integer
+      preferito:
+        type: boolean
+    type: object
+  TipoQuadroDTO:
+    properties:
+      cod_tipo_quadro:
+        type: string
+      des_tipo_quadro:
+        type: string
+      id_tipo_quadro:
+        format: int64
+        type: integer
+    type: object
+  TipoSoggettoDTO:
+    properties:
+      cod_tipo_soggetto:
+        type: string
+      des_tipo_soggetto:
+        type: string
+      gestUID:
+        type: string
+      id_tipo_soggetto:
+        format: int64
+        type: integer
+    type: object
+  TipologiaAllegatoExtendedDTO:
+    properties:
+      categoria_allegato:
+        $ref: '#/definitions/CategoriaAllegatoDTO'
+      cod_tipologia_allegato:
+        type: string
+      des_tipologia_allegato:
+        type: string
+      flg_attivo:
+        type: boolean
+      id_categoria_allegato:
+        format: int64
+        type: integer
+      id_tipologia_allegato:
+        format: int64
+        type: integer
+      ordinamento_tipologia_allegato:
+        format: int32
+        type: integer
+    type: object
+  TipologiaOggettoExtendedDTO:
+    properties:
+      adempimento:
+        $ref: '#/definitions/AdempimentoExtendedDTO'
+      cod_tipologia_oggetto:
+        type: string
+      des_tipologia_oggetto:
+        type: string
+      gestUID:
+        type: string
+      id_tipologia_oggetto:
+        format: int64
+        type: integer
+      natura_oggetto:
+        $ref: '#/definitions/NaturaOggettoDTO'
+    type: object
+  UbicazioneOggettoExtendedDTO:
+    properties:
+      comune:
+        $ref: '#/definitions/ComuneDTO'
+      den_indirizzo:
+        type: string
+      des_localita:
+        type: string
+      gestUID:
+        type: string
+      id_oggetto:
+        format: int64
+        type: integer
+      id_ubicazione_oggetto:
+        format: int64
+        type: integer
+      ind_geo_provenienza:
+        type: string
+      num_civico:
+        type: string
+    type: object
+  UbicazioneOggettoIstanzaExtendedDTO:
+    properties:
+      comune:
+        $ref: '#/definitions/ComuneDTO'
+      den_indirizzo:
+        type: string
+      des_localita:
+        type: string
+      gestUID:
+        type: string
+      id_oggetto_istanza:
+        format: int64
+        type: integer
+      id_ubicazione_oggetto_istanza:
+        format: int64
+        type: integer
+      ind_geo_provenienza:
+        type: string
+      num_civico:
+        type: string
+    type: object
+  VerificaGeoRefDTO:
+    properties:
+      geoRefOk:
+        type: boolean
+    type: object
+x-components: { }

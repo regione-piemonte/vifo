@@ -1,0 +1,10 @@
+/*!
+ * SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+ * 
+ * SPDX-License-Identifier: EUPL-1.2
+*/
+// Screen Readers
+// -------------------------
+
+.sr-only { @include sr-only; }
+.sr-only-focusable { @include sr-only-focusable; }

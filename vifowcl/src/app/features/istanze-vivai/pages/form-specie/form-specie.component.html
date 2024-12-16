@@ -1,0 +1,714 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>Gestione dati specie botanica</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="row" [formGroup]="specieForm" *ngIf="specieForm">
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div class="row">
+          <div class="col-lg-3 col-md-4 col-12 mb-3">
+            <label for="codiceSpecie" class="font-weight-bold ml-1"
+              >Codice specie</label
+            >
+          </div>
+          <div class="col-lg-2 col-md-4 col-12 mb-3">
+            <input type="hidden" formControlName="idSpecie" />
+            <input
+              type="text"
+              formControlName="codiceSpecie"
+              id="codiceSpecie"
+              class="form-control"
+              maxlength="5"
+            />
+            <div
+              *ngIf="
+                specieForm.controls['codiceSpecie'].invalid &&
+                (submited ||
+                  specieForm.controls['codiceSpecie'].dirty ||
+                  specieForm.controls['codiceSpecie'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['codiceSpecie'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-4 col-12 mb-3">
+            <label for="nomeScientifico" class="font-weight-bold ml-1"
+              >Nome scientifico</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-4 col-12 mb-3">
+            <input
+              type="text"
+              formControlName="nomeScientifico"
+              id="nomeScientifico"
+              class="form-control"
+              maxlength="50"
+            />
+            <div
+              *ngIf="
+                specieForm.controls['nomeScientifico'].invalid &&
+                (submited ||
+                  specieForm.controls['nomeScientifico'].dirty ||
+                  specieForm.controls['nomeScientifico'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div
+                *ngIf="specieForm.controls['nomeScientifico'].errors.required"
+              >
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-4 col-12 mb-3">
+            <label for="nomeComune" class="font-weight-bold ml-1"
+              >Nome comune</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-4 col-12 mb-3">
+            <input
+              type="text"
+              formControlName="nomeComune"
+              id="nomeComune"
+              class="form-control"
+              maxlength="50"
+            />
+            <div
+              *ngIf="
+                specieForm.controls['nomeComune'].invalid &&
+                (submited ||
+                  specieForm.controls['nomeComune'].dirty ||
+                  specieForm.controls['nomeComune'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['nomeComune'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-4 col-12 mb-3">
+            <label for="famiglia" class="font-weight-bold ml-1">Famiglia</label>
+          </div>
+          <div class="col-lg-6 col-md-4 col-12 mb-3">
+            <!-- <input type="text" formControlName='famiglia' id="famiglia"  class="form-control" maxlength="50"> -->
+            <p-autoComplete
+              formControlName="famiglia"
+              [required]="'true'"
+              autoHighlight="true"
+              [suggestions]="listFamiglieSpecieFiltered"
+              dropdown="true"
+              (completeMethod)="filterFamiglia($event)"
+              inputId="famiglia"
+              [minLength]="3"
+              [forceSelection]="false"
+              (focusout)="onFamigliaChange()"
+              emptyMessage="Nessuna famiglia trovata"
+              [styleClass]="
+                'autoComplete d-flex formControlName.invalid?autoComplete-touched:autoComplete-touched'
+              "
+              [inputStyleClass]="'autoComplete-input'"
+            >
+            </p-autoComplete>
+
+            <div
+              *ngIf="
+                specieForm.controls['famiglia'].invalid &&
+                (submited ||
+                  specieForm.controls['famiglia'].dirty ||
+                  specieForm.controls['famiglia'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['famiglia'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="fkGruppo" class="font-weight-bold ml-1">Gruppo</label>
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <p-dropdown
+              [options]="listGruppiSpecie"
+              autoHighlight="true"
+              [autoWidth]="false"
+              inputId="fkGruppo"
+              placeholder="Selezionare"
+              formControlName="fkGruppo"
+              [styleClass]="
+                'autoComplete form-control d-flex justify-content-end'
+              "
+            >
+            </p-dropdown>
+            <div
+              *ngIf="
+                specieForm.controls['fkGruppo'].invalid &&
+                (submited ||
+                  specieForm.controls['fkGruppo'].dirty ||
+                  specieForm.controls['fkGruppo'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['fkGruppo'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold ml-1">Attitudine</label>
+          </div>
+          <div class="col-lg-2 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="attitudineR"
+              id="attitudineR"
+            />
+            <label for="attitudineR"><strong>R</strong></label>
+          </div>
+          <div class="col-lg-2 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="attitudineA"
+              id="attitudineA"
+            />
+            <label for="attitudineA"><strong>A</strong></label>
+          </div>
+          <div class="col-lg-2 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="attitudineF"
+              id="attitudineF"
+            />
+            <label for="attitudineF"><strong>F</strong></label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="flgProdotta" class="font-weight-bold ml-1"
+              >Specie prodotta</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="flgProdotta"
+              id="flgProdotta"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="flgSpecieZp" class="font-weight-bold ml-1"
+              >Specie in regime Zona Protetta (ZP)</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="flgSpecieZp"
+              id="flgSpecieZp"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="flgSpecie386" class="font-weight-bold ml-1"
+              >Specie soggetta al Dlgs 386/03</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="flgSpecie386"
+              id="flgSpecie386"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="flgTipoControllo" class="font-weight-bold ml-1"
+              >Tipo controllo</label
+            >
+          </div>
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <input
+              type="radio"
+              value="L"
+              class="checkboxSpecie"
+              formControlName="flgTipoControllo"
+              id="metroLineare"
+            />
+            <label for="metroLineare">Metro lineare</label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input
+              type="radio"
+              value="Q"
+              class="checkboxSpecie"
+              formControlName="flgTipoControllo"
+              id="metroQuadrato"
+            />
+            <label for="metroQuadrato">Metro quadrato</label>
+            <div
+              *ngIf="
+                specieForm.controls['flgTipoControllo'].invalid &&
+                (submited ||
+                  specieForm.controls['flgTipoControllo'].dirty ||
+                  specieForm.controls['flgTipoControllo'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div
+                *ngIf="specieForm.controls['flgTipoControllo'].errors.required"
+              >
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="densita" class="font-weight-bold ml-1">Densità</label>
+          </div>
+          <div class="col-lg-2 col-md-3 col-12 mb-3">
+            <input
+              type="text"
+              formControlName="densita"
+              id="densita"
+              class="form-control"
+              maxlength="7"
+            />
+            <div
+              *ngIf="
+                specieForm.controls['densita'].invalid &&
+                (submited ||
+                  specieForm.controls['densita'].dirty ||
+                  specieForm.controls['densita'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['densita'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+              <div *ngIf="specieForm.controls['densita'].errors.pattern">
+                Attenzione! Il campo ammette solo valori numerici interi
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="zonaOrigine" class="font-weight-bold ml-1"
+              >Zona origine e diffuzione</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <textarea
+              formControlName="zonaOrigine"
+              id="zonaOrigine"
+              [rows]="2"
+              maxlength="500"
+              class="form-control"
+            >
+            </textarea>
+            <div
+              *ngIf="
+                specieForm.controls['zonaOrigine'].invalid &&
+                (submited ||
+                  specieForm.controls['zonaOrigine'].dirty ||
+                  specieForm.controls['zonaOrigine'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['zonaOrigine'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="dimensione" class="font-weight-bold ml-1"
+              >Dimensione e portamento</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <textarea
+              formControlName="dimensione"
+              id="dimensione"
+              [rows]="2"
+              maxlength="500"
+              class="form-control"
+            >
+            </textarea>
+            <div
+              *ngIf="
+                specieForm.controls['dimensione'].invalid &&
+                (submited ||
+                  specieForm.controls['dimensione'].dirty ||
+                  specieForm.controls['dimensione'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['dimensione'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="foglia" class="font-weight-bold ml-1">Foglie</label>
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <textarea
+              formControlName="foglia"
+              id="foglia"
+              [rows]="2"
+              maxlength="500"
+              class="form-control"
+            >
+            </textarea>
+            <div
+              *ngIf="
+                specieForm.controls['foglia'].invalid &&
+                (submited ||
+                  specieForm.controls['foglia'].dirty ||
+                  specieForm.controls['foglia'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['foglia'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="fioreFrutto" class="font-weight-bold ml-1"
+              >Fiori e frutti</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <textarea
+              formControlName="fioreFrutto"
+              id="fioreFrutto"
+              [rows]="2"
+              maxlength="500"
+              class="form-control"
+            >
+            </textarea>
+            <div
+              *ngIf="
+                specieForm.controls['fioreFrutto'].invalid &&
+                (submited ||
+                  specieForm.controls['fioreFrutto'].dirty ||
+                  specieForm.controls['fioreFrutto'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['fioreFrutto'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="ecologia" class="font-weight-bold ml-1">Ecologia</label>
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <textarea
+              formControlName="ecologia"
+              id="ecologia"
+              [rows]="2"
+              maxlength="500"
+              class="form-control"
+            >
+            </textarea>
+            <div
+              *ngIf="
+                specieForm.controls['ecologia'].invalid &&
+                (submited ||
+                  specieForm.controls['ecologia'].dirty ||
+                  specieForm.controls['ecologia'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['ecologia'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="impiego" class="font-weight-bold ml-1"
+              >Impieghi e utilizzi</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <textarea
+              formControlName="impiego"
+              id="impiego"
+              [rows]="2"
+              maxlength="500"
+              class="form-control"
+            >
+            </textarea>
+            <div
+              *ngIf="
+                specieForm.controls['impiego'].invalid &&
+                (submited ||
+                  specieForm.controls['impiego'].dirty ||
+                  specieForm.controls['impiego'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div *ngIf="specieForm.controls['impiego'].errors.required">
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="noteCaratteristiche" class="font-weight-bold ml-1"
+              >Note caratteristiche</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <textarea
+              formControlName="noteCaratteristiche"
+              id="noteCaratteristiche"
+              [rows]="2"
+              maxlength="500"
+              class="form-control"
+            >
+            </textarea>
+            <div
+              *ngIf="
+                specieForm.controls['noteCaratteristiche'].invalid &&
+                (submited ||
+                  specieForm.controls['noteCaratteristiche'].dirty ||
+                  specieForm.controls['noteCaratteristiche'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div
+                *ngIf="
+                  specieForm.controls['noteCaratteristiche'].errors.required
+                "
+              >
+                Attenzione! Campo obbligatorio
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="flgSchedaPubblicabile" class="font-weight-bold ml-1"
+              >Scheda pubblicabile</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="flgSchedaPubblicabile"
+              id="flgSchedaPubblicabile"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label for="flgSpeciePubblicabile" class="font-weight-bold ml-1"
+              >Specie pubblicabile</label
+            >
+          </div>
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <input
+              type="checkbox"
+              class="checkboxSpecie"
+              formControlName="flgSpeciePubblicabile"
+              id="flgSpeciePubblicabile"
+            />
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-lg-2 col-md-3 col-12 mb-3">
+            <a href="javascript:void(0)" (click)="showFoto(1)">
+              <img alt="immagine specie" height="100" [src]="ulrImgSpecie" />
+            </a>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label
+              for="fotoSpecie"
+              class="font-weight-bold"
+              style="margin-top: 30px"
+              >Foto specie</label
+            >
+          </div>
+          <div class="col-lg-7 col-md-3 col-12 mb-3">
+            <input
+              type="file"
+              id="fotoSpecie"
+              accept="image/png, image/gif, image/jpeg, image/jpeg"
+              style="margin-top: 30px"
+              maxFileSize="1000000"
+              (change)="handleFileInput(0, $event.target.files)"
+              customUpload="false"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2 col-md-3 col-12 mb-3">
+            <a href="javascript:void(0)" (click)="showFoto(2)">
+              <img
+                alt="immagine specie"
+                height="100"
+                [src]="ulrImgSpecieInVivaio"
+              />
+            </a>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label
+              for="fotoInVivaio"
+              class="font-weight-bold"
+              style="margin-top: 30px"
+              >Foto della pianta in vivaio</label
+            >
+          </div>
+          <div class="col-lg-7 col-md-3 col-12 mb-3">
+            <input
+              type="file"
+              id="fotoInVivaio"
+              accept="image/png, image/gif, image/jpeg, image/jpeg"
+              style="margin-top: 30px"
+              maxFileSize="1000000"
+              (change)="handleFileInput(1, $event.target.files)"
+              customUpload="false"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-2 col-md-3 col-12 mb-3">
+            <a href="javascript:void(0)" (click)="showFoto(3)">
+              <img
+                alt="immagine specie"
+                height="100"
+                [src]="ulrImgSpecieDettaglio"
+              />
+            </a>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <label
+              for="fotoDiParticolare"
+              class="font-weight-bold"
+              style="margin-top: 30px"
+              >Foto di un particolare</label
+            >
+          </div>
+          <div class="col-lg-7 col-md-3 col-12 mb-3">
+            <input
+              type="file"
+              id="fotoDiParticolare"
+              accept="image/png, image/gif, image/jpeg, image/jpeg"
+              style="margin-top: 30px"
+              maxFileSize="1000000"
+              (change)="handleFileInput(2, $event.target.files)"
+              customUpload="false"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-right">
+    <p-button
+      class="full-width-media"
+      label="CONFERMA DATI"
+      (onClick)="conferma()"
+      [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+    >
+    </p-button>
+  </div>
+  <div class="col-md-12">
+    <p-button
+      class="full-width-media"
+      label="INDIETRO"
+      (onClick)="indietro()"
+      [styleClass]="'mb-3 btn-outline-primary'"
+    >
+    </p-button>
+  </div>
+
+  <p-dialog
+    header=""
+    [(visible)]="urlIngrandisciFoto"
+    [style]="{ left: '0px' }"
+    [transitionOptions]="'0ms'"
+    (click)="closeDialog()"
+    [modal]="true"
+    [closeOnEscape]="true"
+  >
+    <app-visualizza-foto [dettaglioFoto]="urlIngrandisciFoto">
+    </app-visualizza-foto>
+    <p-footer>
+      <p-button
+        (click)="closeDialog()"
+        label="CHIUDI"
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+      ></p-button>
+    </p-footer>
+  </p-dialog>
+
+  <app-alert-utente
+    [typeMessage]="popUpType"
+    [textMessage]="popUpMsg"
+    [btn1Label]="popUpBtn1"
+    (btn1Emitter)="closePopUp()"
+  >
+  </app-alert-utente>
+</div>

@@ -1,0 +1,82 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd">
+
+    <import resource="dao-beans.xml" />
+
+    <bean
+        class="it.csi.vifo.vifobo.business.SpringApplicationContextHelper"></bean>
+
+    <bean id="dataSource"
+        class="org.springframework.jndi.JndiObjectFactoryBean">
+        <property name="jndiName" value="@vifo.datasource@" />
+        <property name="proxyInterface" value="javax.sql.DataSource" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <constructor-arg name="dataSource" ref="dataSource"></constructor-arg>
+        <!--property
+        name="dataSource" ref="dataSource" /-->
+    </bean>
+
+    <bean id="transactionTemplate"
+        class="org.springframework.transaction.support.TransactionTemplate">
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+
+    <bean id="template"
+        class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg ref="dataSource" />
+    </bean>
+
+    <bean id="jdbcTemplate"
+        class="org.springframework.jdbc.core.JdbcTemplate">
+        <constructor-arg ref="dataSource" />
+    </bean>
+
+
+    <bean id="indexServiceHelper"
+        class="it.csi.vifo.vifobo.business.be.service.helper.IndexServiceHelper">
+        <constructor-arg index="0" value="@index.ws.url@" />
+        <!--constructor-arg
+        index="0"
+        value="http://tst-applogic.reteunitaria.piemonte.it/ecmenginews-exp02/services/EcmEngineManagement?wsdl"/-->
+    </bean>
+
+    <!--     <bean id="aaeporchServiceHelper"  -->
+    <!--      	class="it.csi.vifo.vifobo.business.be.service.helper.AaeporchServiceHelper"> -->
+    <!--      	<constructor-arg index="0"
+    value="http://tst-applogic.reteunitaria.piemonte.it/aaeporch/OrchestratoreService?wsdl" /> -->
+    <!--     </bean> -->
+
+
+    <bean id="apiManagerServiceHelper"
+        class="it.csi.vifo.vifobo.business.be.service.helper.ApiManagerServiceHelper">
+        <constructor-arg index="0" value="@apimanager.token.url@" />
+    </bean>
+
+    <bean id="limmAmmEnteServiceHelper"
+        class="it.csi.vifo.vifobo.business.be.service.helper.LimmAmmEnteServiceHelper">
+        <constructor-arg index="0" value="@limamm.ente.api.url@"></constructor-arg>
+        <property name="apiManagerServiceHelper" ref="apiManagerServiceHelper" />
+    </bean>
+
+
+    <context:component-scan base-package="it.csi.vifo.vifobo.business.impl" />
+    <context:component-scan base-package="it.csi.vifo.vifobo.business.be.*" />
+    <context:component-scan base-package="it.csi.vifo.vifobo.util" />
+
+</beans>

@@ -1,0 +1,262 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+
+<br />
+<div *ngIf="userProfile != 'GESTORE'">
+  <div class="nav-ico">
+    <a routerLink="/content/form-domanda/1">
+      <i class="far fa-edit" aria-hidden="true"></i>
+      <span class="icon margin-span"
+        >Inserisci nuova domanda per assegnazione gratuita di piantine</span
+      >
+    </a>
+    <a
+      class="nav-link"
+      href="#"
+      data-toggle="modal"
+      data-target="#info-assegnazione-gratuita"
+      title="Informazioni nuova domanda per assegnazione gratuita"
+      ><i class="fas fa-info-circle"></i
+      ><span class="sr-only"
+        >Informazioni nuova domanda per assegnazione gratuita</span
+      ></a
+    >
+  </div>
+  <hr />
+  <div class="nav-ico">
+    <a routerLink="/content/form-domanda/2">
+      <i class="far fa-edit" aria-hidden="true"></i>
+      <span class="icon margin-span"
+        >Inserisci nuova domanda per assegnazione onerosa di piantine
+        (vendita)</span
+      >
+    </a>
+    <a
+      class="nav-link"
+      href="#"
+      data-toggle="modal"
+      data-target="#info-assegnazione-onerosa"
+      title="Informazioni nuova domanda per assegnazione onerosa"
+      ><i class="fas fa-info-circle"></i
+      ><span class="sr-only"
+        >Informazioni nuova domanda per assegnazione onerosa</span
+      ></a
+    >
+  </div>
+  <hr />
+</div>
+
+<div *ngIf="userProfile != 'RICHIEDENTE'">
+  <div class="nav-ico">
+    <a routerLink="/content/ricerca">
+      <i class="fas fa-search" aria-hidden="true"></i>
+      <span class="icon margin-span">Ricerca in archivio</span>
+    </a>
+  </div>
+  <hr />
+  <div class="nav-ico">
+    <a routerLink="/content/inventari">
+      <i class="fas fa-cog" aria-hidden="true"></i>
+      <span class="icon margin-span">Gestione inventari</span>
+    </a>
+  </div>
+  <hr />
+  <div class="nav-ico">
+    <a routerLink="/content/anagrafiche">
+      <i class="fas fa-cog" aria-hidden="true"></i>
+      <span class="icon margin-span">Gestione anagrafiche</span>
+    </a>
+  </div>
+  <hr />
+</div>
+
+<div *ngIf="tableData && userProfile == 'RICHIEDENTE'">
+  <div class="row">
+    <div class="col-md-12 mb-4" *ngIf="tableData && tableData.length > 0">
+      <h1 class="mt-4">Visualizza le domande che hai inserito in archivio</h1>
+    </div>
+  </div>
+
+  <app-domande-no-select-table
+    [first]="first"
+    [totalSize]="totalCount"
+    [initiallySortedColumn]="sortedColumn"
+    [headers]="tableHeaders"
+    [data]="tableData ? tableData : []"
+    (rowIdEmitter)="getRowId($event)"
+    (updateTableChanges)="getUpdatedTable($event)"
+    [visualizaTable]="true"
+    [view]="true"
+    [edit]="true"
+    [delete]="true"
+    [fieldToEdit]="'idDomanda'"
+    [fieldToDelete]="'idDomanda'"
+    (editRowEmitter)="editRow($event)"
+    (viewRowEmitter)="viewDomanda($event)"
+    (deleteRowEmitter)="deleteRow($event)"
+  ></app-domande-no-select-table>
+</div>
+
+<!-- Modal info Assegnazione gratuita  -->
+<div
+  class="modal fade"
+  id="info-assegnazione-gratuita"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="info"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Assegnazione gratuita di piante forestali</h2>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Chiudi"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="headerModalInfo">
+        <div class="grey mb-5 pt-4 text-left">
+          <h2>Chi può fare domanda?</h2>
+          <p>
+            Le piante forestali vengono assegnate gratuitamente ai soggetti di
+            seguito indicati esclusivamente per la realizzazione di specifici
+            interventi in territorio piemontese:
+          </p>
+          <ul>
+            <li>
+              <strong>Enti Pubblici e Onlus</strong> per realizzare progetti di
+              educazione e didattica ambientale, sperimentazione e divulgazione
+              sulle tematiche della biodiversità vegetale e forestale, della
+              vivaistica forestale, della selvicoltura e dell'arboricoltura da
+              legno, nel caso in cui non siano previsti specifici finanziamenti
+              per la loro attuazione. L’assegnazione gratuita riguarderà al
+              massimo 50 piantine di dimensioni inferiori ai 70 cm di altezza
+              (oltre a tali limiti si applicheranno le normali tariffe di
+              listino);
+            </li>
+            <li>
+              <strong>Enti Pubblici</strong> per finalità di recupero
+              ambientale, imboschimento, rinaturalizzazione e sistemazione del
+              territorio, nel caso in cui non siano previsti specifici
+              finanziamenti per la realizzazione di questi progetti (le piante
+              assegnate saranno di dimensioni inferiori ai 70 cm di altezza);
+            </li>
+            <li>
+              <strong>Comuni</strong> piemontesi per gli adempimenti previsti
+              dalla
+              <a
+                href="http://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:legge:1992-01-29;113%21vig%20="
+                target="_blank"
+                >L. 113/92</a
+              >
+              (relativa al collocamento a dimora di un albero per ogni nato);
+            </li>
+            <li>
+              <strong>Comuni e Istituti Scolastici</strong> aderenti alla
+              “Giornata Nazionale dell’Albero”;
+            </li>
+            <li>
+              <strong>Soggetti pubblici o privati</strong> per interventi di
+              ricostituzione di boschi danneggiati da incendi e altre calamità
+              naturali, che non beneficino di specifico finanziamento; le piante
+              verranno assegnate in base alla verifica di specifico progetto di
+              recupero redatto da tecnico competente, da allegare alla richiesta
+              (le piante assegnate saranno di dimensioni inferiori ai 70 cm di
+              altezza).
+            </li>
+          </ul>
+          <h3 class="mt-5">Modalità di richiesta</h3>
+          <p>
+            Per i privati è previsto il pagamento di marca da bollo da 16 €; a
+            corredo della domanda andrà inviato il progetto di recupero e
+            attestazione ufficiale dell'evento calamitoso.
+          </p>
+          <p>
+            I termini per la presentazione delle domande di assegnazione
+            gratuita sono fissati al <strong>15 febbraio</strong> (distribuzione
+            primaverile) e al <strong>15 settembre</strong> (distribuzione
+            autunnale) di ogni anno.
+          </p>
+          <h3 class="mt-5">Distribuzione piante</h3>
+          <p>
+            La distribuzione delle piante viene effettuata due volte l'anno:
+          </p>
+          <ul>
+            <li>
+              <strong>fine ottobre - novembre</strong> per le domande pervenute
+              entro e non oltre il 15 settembre;
+            </li>
+            <li>
+              <strong>fine marzo - aprile</strong> per le domande pervenute
+              entro e non oltre il 15 febbraio.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal info Assegnazione onerosa  -->
+<div
+  class="modal fade"
+  id="info-assegnazione-onerosa"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="info"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Vendita di piante forestali</h2>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Chiudi"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="headerModalInfo">
+        <div class="grey mb-5 pt-4 text-left">
+          <h2>Chi può fare domanda?</h2>
+          <p>
+            La vendita è rivolta ai
+            <strong>Soggetti pubblici e privati</strong> che ne facciano
+            richiesta, a prescindere dallo scopo e dalla localizzazione del
+            terreno di messa a dimora.
+          </p>
+
+          <h3 class="mt-5">Distribuzione piante</h3>
+          <p>
+            Le piante richieste vengono assegnate e distribuite durante
+            <strong>tutto l’anno</strong>, compatibilmente con la disponibilità
+            d’inventario e le esigenze organizzative interne.
+          </p>
+          <p>
+            Prima del ritiro il richiedente dovrà provvedere al pagamento delle
+            piante assegnate o direttamente online, o scaricando l’avviso di
+            pagamento e utilizzando una delle modalità previste da PagoPA.
+          </p>
+          <p>
+            Il costo è comunicato al richiedente tramite lettera di
+            assegnazione, trasmessa attraverso ViFo; i prezzi applicati sono
+            quelli riportati nel “Listino prezzi per la vendita delle piante
+            prodotte dai vivai forestali regionali” approvato dalla Giunta
+            Regionale e pubblicato sul sito istituzionale di Regione.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

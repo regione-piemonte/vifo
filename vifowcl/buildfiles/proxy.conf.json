@@ -1,0 +1,6 @@
+{
+  "/restfacade": {
+    "target": "http://www.example.com",
+    "secure": false
+  }
+}

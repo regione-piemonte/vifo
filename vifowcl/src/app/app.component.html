@@ -1,0 +1,23 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<!--The content below is only a placeholder and can be replaced.-->
+
+<app-loader [hidden]="!isLoadingOperation"></app-loader>
+<a class="skip-link" href="#content">Salta al contenuto</a>
+<app-header></app-header>
+<div class="container" id="content">
+  <router-outlet></router-outlet>
+</div>
+<app-error-dialog></app-error-dialog>
+<app-footer></app-footer>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

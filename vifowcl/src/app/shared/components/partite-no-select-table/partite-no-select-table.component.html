@@ -1,0 +1,190 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div
+  id="myTable"
+  [ngClass]="{ fullscreen: isFullScreen }"
+  class="custom-overflow"
+>
+  <div
+    class="col-md-12 text-right"
+    style="padding: 10px"
+    *ngIf="data.length > 0"
+  >
+    <a
+      href="javascript:void(0)"
+      (click)="espandiRiduci()"
+      class="link-expand-table"
+    >
+      {{ isFullScreen ? "Riduci" : "Espandi" }} tabella
+    </a>
+  </div>
+
+  <p-table
+    [hidden]="data.length === 0"
+    [(first)]="first"
+    [columns]="headers"
+    [rows]="rowsPerPageOptions[0]"
+    [value]="data ? data : []"
+    [lazy]="true"
+    [paginator]="simpleTable ? false : true"
+    [scrollable]="true"
+    [scrollHeight]="getScrollHeight()"
+    [totalRecords]="totalSize ? totalSize : 5"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    (onLazyLoad)="updateData($event)"
+    [customSort]="simpleTable ? false : true"
+    [sortField]="simpleTable ? null : initiallySortedColumn"
+    [sortOrder]="simpleTable ? null : 1"
+    [sortMode]="simpleTable ? 'off' : 'single'"
+    [tableStyleClass]="'no-select-table'"
+    [styleClass]="'mb-3'"
+    [resizableColumns]="true"
+    [responsive]="true"
+    [autoLayout]="true"
+  >
+    >
+    <ng-template pTemplate="header" let-columns>
+      <tr>
+        <th
+          *ngIf="download || delete || edit || view || export"
+          style="width: 60px"
+        ></th>
+        <th
+          style="width: 110px"
+          *ngFor="let col of columns"
+          [pSortableColumn]="col.field"
+          [ngSwitch]="col.field"
+        >
+          {{ col.header }}
+          <p-sortIcon [field]="col.field"></p-sortIcon>
+        </th>
+        <th
+          *ngIf="download || delete || edit || view || export"
+          style="width: 60px"
+        ></th>
+      </tr>
+    </ng-template>
+    <ng-template
+      pTemplate="body"
+      let-item
+      let-columns="columns"
+      let-index="rowIndex"
+    >
+      <tr>
+        <td
+          *ngIf="download || delete || edit || view || export"
+          style="width: 60px"
+        >
+          <button
+            type="button"
+            *ngIf="view && isViewAllowd(item)"
+            (click)="viewRow(item)"
+            title="Visualizza elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="far fa-file-alt" aria-hidden="true"></em>
+          </button>
+          <button
+            type="button"
+            *ngIf="edit && visualizaTable && isEditAllowd(item)"
+            (click)="editRow(item)"
+            title="Modifica elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="fas fa-pencil-alt" aria-hidden="true"></em>
+          </button>
+          <button
+            type="button"
+            *ngIf="export && visualizaTable && isExportAllowed(item)"
+            (click)="exportRow(item)"
+            title="Richiedi elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <i class="fas fa-exchange-alt"></i>
+          </button>
+          <button
+            type="button"
+            *ngIf="download"
+            (click)="downloadRow(item[fieldToDownload])"
+            title="Scarica elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="fas fa-download" aria-hidden="true"></em>
+          </button>
+          <button
+            type="button"
+            *ngIf="delete && visualizaTable && item['stato'] === 'BOZZA'"
+            (click)="deleteRow(item)"
+            title="Elimina elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="fa fa-trash" aria-hidden="true"></em>
+          </button>
+        </td>
+        <td *ngFor="let col of columns" style="width: 110px" class="break-word">
+          <span title="{{ getTitle(item) }}">{{
+            getValue(item[col.field])
+          }}</span>
+        </td>
+        <td
+          *ngIf="download || delete || edit || view || export"
+          style="width: 60px"
+        >
+          <button
+            type="button"
+            *ngIf="view && isViewAllowd(item)"
+            (click)="viewRow(item)"
+            title="Visualizza elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="far fa-file-alt" aria-hidden="true"></em>
+          </button>
+          <button
+            type="button"
+            *ngIf="edit && visualizaTable && isEditAllowd(item)"
+            (click)="editRow(item)"
+            title="Modifica elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="fas fa-pencil-alt" aria-hidden="true"></em>
+          </button>
+          <button
+            type="button"
+            *ngIf="export && visualizaTable && isExportAllowed(item)"
+            (click)="exportRow(item)"
+            title="Richiedi elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <i class="fas fa-exchange-alt"></i>
+          </button>
+          <button
+            type="button"
+            *ngIf="download"
+            (click)="downloadRow(item[fieldToDownload])"
+            title="Scarica elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="fas fa-download" aria-hidden="true"></em>
+          </button>
+          <button
+            type="button"
+            *ngIf="delete && visualizaTable && item['stato'] === 'BOZZA'"
+            (click)="deleteRow(item)"
+            title="Elimina elemento {{ getDescr(item) }}"
+            class="action-button"
+          >
+            <em class="fa fa-trash" aria-hidden="true"></em>
+          </button>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
+<div
+  *ngIf="isFullScreen"
+  class="ui-widget-overlay ui-dialog-mask"
+  style="z-index: 1006"
+></div>

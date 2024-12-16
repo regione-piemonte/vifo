@@ -1,0 +1,1109 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div
+  *ngIf="
+    showAssociaCertificato == false &&
+    showEditCertificato == false &&
+    richiestaTrasferimentoPartita == null
+  "
+>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1 *ngIf="idInventario == null && fkInventarioSemi != null">
+    Inserisci Partita Piantine da Partita Semi
+  </h1>
+  <h1 *ngIf="idInventario == null && fkInventarioPiante != null">
+    Inserisci Partita Piantine da Partita Piantine
+  </h1>
+  <h1
+    *ngIf="
+      idInventario == null &&
+      fkInventarioSemi == null &&
+      fkInventarioPiante == null
+    "
+  >
+    Inserisci Nuova Partita Piantine
+  </h1>
+  <h1 *ngIf="idInventario != null">
+    <span *ngIf="isEdit == false">Modifica</span> Partita Piantine
+  </h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div
+    class="row"
+    [ngClass]="{ disabledALL: !isEdit }"
+    [formGroup]="partitaPianteForm"
+    *ngIf="partitaPianteForm"
+  >
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idInventarioSemi" class="font-weight-bold"
+                >ID Partita Piante</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <strong>{{ idInventario ? idInventario : "-" }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="idInventarioPiante"
+                id="idInventarioPiante"
+              />
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="idProvenienza"
+                id="idProvenienza"
+              />
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="fkInventarioSemi != null || idInventario != null"
+          >
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkInventarioSemi" class="font-weight-bold"
+                >ID Riferimento Partita Semi</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <strong>{{ fkInventarioSemi ? fkInventarioSemi : "-" }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="fkInventarioSemi"
+                id="fkInventarioSemi"
+              />
+            </div>
+          </div>
+          <div
+            class="row"
+            *ngIf="fkInventarioPiante != null || idInventario != null"
+          >
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkInventarioPiante" class="font-weight-bold"
+                >ID Riferimento Partita Piante</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <strong>{{
+                fkInventarioPiante ? fkInventarioPiante : "-"
+              }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="fkInventarioPiante"
+                id="fkInventarioPiante"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkVivaio" class="font-weight-bold">Vivaio</label>
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <span *ngIf="idInventario != null">{{
+                getDescrizioneVivaio()
+              }}</span>
+              <p-dropdown
+                *ngIf="idInventario == null"
+                [options]="listVivai"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkVivaio"
+                placeholder="Selezionare"
+                formControlName="fkVivaio"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+                [readonly]="
+                  idUserVivaio || disabledFieldsCertificato || isPianteFather
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['fkVivaio'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['fkVivaio'].dirty ||
+                    partitaPianteForm.controls['fkVivaio'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="partitaPianteForm.controls['fkVivaio'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            [ngClass]="{
+              disabledALL:
+                fkInventarioSemi != null || fkInventarioPiante != null
+            }"
+          >
+            <div class="row">
+              <div class="col-lg-6 col-md-3 col-12 mb-3">
+                <input
+                  type="radio"
+                  name="certificatoType"
+                  formControlName="certificatoType"
+                  id="certificatoType_c"
+                  [checked]="certificatoType == 'C'"
+                  (change)="changeSpecieRadio('C')"
+                  value="C"
+                />
+                <label
+                  for="certificatoType_c"
+                  style="padding-left: 15px"
+                  class="font-weight-bold"
+                >
+                  Specie Allegato I del DLgs 386/03 - Certificato di provenienza
+                  (calcolato)
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                {{ codiceCertificato }}
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <p-button
+                  class="full-width-media"
+                  label="APRI ANAGRAFICA"
+                  [disabled]="'C' != certificatoType"
+                  (onClick)="apriAnagrafica()"
+                  [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+                >
+                </p-button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6 col-md-3 col-12 mb-3">
+                <input
+                  type="radio"
+                  name="certificatoType"
+                  formControlName="certificatoType"
+                  id="certificatoType_l"
+                  [checked]="certificatoType == 'L'"
+                  (change)="changeSpecieRadio('L')"
+                  value="L"
+                />
+                <label
+                  for="certificatoType_l"
+                  style="padding-left: 15px"
+                  class="font-weight-bold"
+                >
+                  Specie Allegato I del DLgs 386/03 - Certificato di provenienza
+                  (libero)
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <input
+                  type="text"
+                  class="form-control-inline"
+                  [readonly]="certificatoType != 'L' || isPianteFather"
+                  formControlName="codiceCertificato"
+                  id="codiceCertificato"
+                  maxlength="50"
+                />
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['codiceCertificato'].invalid &&
+                    (submited ||
+                      partitaPianteForm.controls['codiceCertificato'].dirty ||
+                      partitaPianteForm.controls['codiceCertificato'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      partitaPianteForm.controls['codiceCertificato'].errors
+                        .required
+                    "
+                  >
+                    Attenzione! Campo obbligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6 col-md-3 col-12 mb-3">
+                <input
+                  type="radio"
+                  name="certificatoType"
+                  formControlName="certificatoType"
+                  id="certificatoType_n"
+                  [checked]="certificatoType == 'N'"
+                  (change)="changeSpecieRadio('N')"
+                  value="N"
+                />
+                <label
+                  for="certificatoType_n"
+                  style="padding-left: 15px"
+                  class="font-weight-bold"
+                >
+                  Specie Allegato I del DLgs 386/03 - Non per fini forestali
+                </label>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-6 col-md-3 col-12 mb-3">
+                <input
+                  type="radio"
+                  name="certificatoType"
+                  formControlName="certificatoType"
+                  id="certificatoType_a"
+                  [checked]="certificatoType == 'A'"
+                  (change)="changeSpecieRadio('A')"
+                  value="A"
+                />
+                <label
+                  for="certificatoType_a"
+                  style="padding-left: 15px"
+                  class="font-weight-bold"
+                >
+                  Altra specie
+                </label>
+              </div>
+            </div>
+            <div
+              *ngIf="
+                partitaPianteForm.controls['certificatoType'].invalid &&
+                (submited ||
+                  partitaPianteForm.controls['certificatoType'].dirty ||
+                  partitaPianteForm.controls['certificatoType'].touched)
+              "
+              class="alert alert-danger"
+            >
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['certificatoType'].errors.required
+                "
+              >
+                Attenzione! La scelta di una delle 4 opzioni è obbligatoria
+              </div>
+            </div>
+            <br />
+
+            <div class="row">
+              <div class="col-lg-4 col-md-3 col-12 mb-3">
+                <label for="fkSpecie" class="font-weight-bold">Specie</label>
+              </div>
+              <div class="col-lg-6 col-md-3 col-12 mb-3">
+                <p-dropdown
+                  [options]="listSpecieFiltered"
+                  autoHighlight="true"
+                  [autoWidth]="false"
+                  inputId="fkSpecie"
+                  placeholder="Selezionare"
+                  formControlName="fkSpecie"
+                  [styleClass]="
+                    'autoComplete form-control d-flex justify-content-end'
+                  "
+                  [readonly]="disabledFieldsCertificato || isPianteFather"
+                >
+                </p-dropdown>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['fkSpecie'].invalid &&
+                    (submited ||
+                      partitaPianteForm.controls['fkSpecie'].dirty ||
+                      partitaPianteForm.controls['fkSpecie'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      partitaPianteForm.controls['fkSpecie'].errors.required
+                    "
+                  >
+                    Attenzione! Campo obbligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="row"
+              *ngIf="certificatoType == 'C' || certificatoType == 'L'"
+            >
+              <div class="col-lg-4 col-md-3 col-12 mb-3">
+                <label for="dataCertificato" class="font-weight-bold"
+                  >Data certificato</label
+                >
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <p-calendar
+                  [locale]="it"
+                  [yearNavigator]="true"
+                  [disabled]="disabledFieldsCertificato"
+                  [monthNavigator]="true"
+                  yearRange="1970:{{ currentYear }}"
+                  dateFormat="dd/mm/yy"
+                  inputId="dataCertificato"
+                  formControlName="dataCertificato"
+                  showButtonBar="true"
+                  [showIcon]="true"
+                >
+                </p-calendar>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['dataCertificato'].invalid &&
+                    (submited ||
+                      partitaPianteForm.controls['dataCertificato'].dirty ||
+                      partitaPianteForm.controls['dataCertificato'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      partitaPianteForm.controls['dataCertificato'].errors
+                        .required
+                    "
+                  >
+                    Attenzione! Campo obbligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4 col-md-3 col-12 mb-3">
+                <label for="provenienza" class="font-weight-bold"
+                  >Provenienza</label
+                >
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <input
+                  type="text"
+                  [readonly]="disabledFieldsCertificato || isPianteFather"
+                  class="form-control"
+                  formControlName="provenienza"
+                  id="provenienza"
+                  maxlength="100"
+                />
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['provenienza'].invalid &&
+                    (submited ||
+                      partitaPianteForm.controls['provenienza'].dirty ||
+                      partitaPianteForm.controls['provenienza'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      partitaPianteForm.controls['provenienza'].errors.required
+                    "
+                  >
+                    Attenzione! Campo obbligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="row"
+              *ngIf="certificatoType == 'C' || certificatoType == 'L'"
+            >
+              <div class="col-lg-4 col-md-3 col-12 mb-3">
+                <label for="fkCategMateriale" class="font-weight-bold"
+                  >Tipo materiale</label
+                >
+              </div>
+              <div class="col-lg-6 col-md-3 col-12 mb-3">
+                <p-dropdown
+                  [options]="listCategoriaMateriali"
+                  autoHighlight="true"
+                  [autoWidth]="false"
+                  inputId="fkCategMateriale"
+                  placeholder="Selezionare"
+                  formControlName="fkCategMateriale"
+                  [styleClass]="
+                    'autoComplete form-control d-flex justify-content-end'
+                  "
+                  [readonly]="disabledFieldsCertificato || isPianteFather"
+                >
+                </p-dropdown>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['fkCategMateriale'].invalid &&
+                    (submited ||
+                      partitaPianteForm.controls['fkCategMateriale'].dirty ||
+                      partitaPianteForm.controls['fkCategMateriale'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      partitaPianteForm.controls['fkCategMateriale'].errors
+                        .required
+                    "
+                  >
+                    Attenzione! Campo obbligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-4 col-md-3 col-12 mb-3">
+                <label for="produttore" class="font-weight-bold"
+                  >Produttore</label
+                >
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <input
+                  type="text"
+                  [readonly]="disabledFieldsCertificato || isPianteFather"
+                  class="form-control"
+                  formControlName="produttore"
+                  id="produttore"
+                  maxlength="100"
+                />
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['produttore'].invalid &&
+                    (submited ||
+                      partitaPianteForm.controls['produttore'].dirty ||
+                      partitaPianteForm.controls['produttore'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      partitaPianteForm.controls['produttore'].errors.required
+                    "
+                  >
+                    Attenzione! Campo obbligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkTipoAllevamento" class="font-weight-bold"
+                >Allevamento</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listTipiAllevamento"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkTipoAllevamento"
+                placeholder="Selezionare"
+                formControlName="fkTipoAllevamento"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['fkTipoAllevamento'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['fkTipoAllevamento'].dirty ||
+                    partitaPianteForm.controls['fkTipoAllevamento'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['fkTipoAllevamento'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="eta" class="font-weight-bold">Età</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <!-- <input type="text" [readonly]="disabledFieldsCertificato || isPianteFather" 
+                class="form-control" formControlName='eta' id="eta" maxlength="20"> -->
+              <p-autoComplete
+                formControlName="eta"
+                [required]="'true'"
+                autoHighlight="true"
+                [suggestions]="listEtaFiltered"
+                dropdown="false"
+                (completeMethod)="filterEta($event)"
+                inputId="eta"
+                [minLength]="1"
+                [forceSelection]="false"
+                emptyMessage="Nessuna voce trovata"
+                [styleClass]="
+                  'autoComplete d-flex formControlName.invalid?autoComplete-touched:autoComplete-touched'
+                "
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['eta'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['eta'].dirty ||
+                    partitaPianteForm.controls['eta'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="partitaPianteForm.controls['eta'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="altezza" class="font-weight-bold">Altezza (cm)</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="altezza"
+                id="altezza"
+                maxlength="20"
+              />
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['altezza'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['altezza'].dirty ||
+                    partitaPianteForm.controls['altezza'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="partitaPianteForm.controls['altezza'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="annoRadicazioneSeme" class="font-weight-bold"
+                >Anno radicazione seme</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                maxlength="4"
+                formControlName="annoRadicazioneSeme"
+                id="annoRadicazioneSeme"
+              />
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['annoRadicazioneSeme'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['annoRadicazioneSeme'].dirty ||
+                    partitaPianteForm.controls['annoRadicazioneSeme'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['annoRadicazioneSeme'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['annoRadicazioneSeme'].errors
+                      .minlength
+                  "
+                >
+                  Attenzione! Il valore del campo deve essere numerico di 4
+                  cifre
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="prezzoUnitario" class="font-weight-bold"
+                >Prezzo unitario (EURO)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="prezzoUnitario"
+                id="prezzoUnitario"
+                (keyup)="onPrezzoChange($event)"
+                maxlength="10"
+              />
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['prezzoUnitario'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['prezzoUnitario'].dirty ||
+                    partitaPianteForm.controls['prezzoUnitario'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['prezzoUnitario'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['prezzoUnitario'].errors.pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici con due
+                  cifre decimali
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="fkInventarioSemi">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaScaricoSemiKg" class="font-weight-bold"
+                >Quantità scarico semi (Kg)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaScaricoSemiKg"
+                id="qtaScaricoSemiKg"
+                maxlength="7"
+                (keyup)="onValueChange('qtaScaricoSemiKg')"
+              />
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['qtaScaricoSemiKg'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['qtaScaricoSemiKg'].dirty ||
+                    partitaPianteForm.controls['qtaScaricoSemiKg'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaScaricoSemiKg'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaScaricoSemiKg'].errors
+                      .pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici con massimo
+                  3 decimali
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaScaricoSemiKg'].errors
+                      .maxValue
+                  "
+                >
+                  Attenzione! Quantità massima disponibile:
+                  {{ utilService.getItNum(qtaFkSemiResidua) }} Kg
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="dataCarico" class="font-weight-bold"
+                >Data carico</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <p-calendar
+                [locale]="it"
+                [yearNavigator]="true"
+                [monthNavigator]="true"
+                yearRange="1970:{{ currentYear }}"
+                dateFormat="dd/mm/yy"
+                inputId="dataCarico"
+                formControlName="dataCarico"
+                showButtonBar="true"
+                [showIcon]="true"
+              >
+              </p-calendar>
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['dataCarico'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['dataCarico'].dirty ||
+                    partitaPianteForm.controls['dataCarico'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['dataCarico'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaCarico" class="font-weight-bold"
+                >Quantità totale (N)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaCarico"
+                id="qtaCarico"
+                maxlength="7"
+                (keyup)="checkValidation('qtaCarico')"
+              />
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['qtaCarico'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['qtaCarico'].dirty ||
+                    partitaPianteForm.controls['qtaCarico'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaCarico'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="partitaPianteForm.controls['qtaCarico'].errors.pattern"
+                >
+                  Attenzione! Il campo ammette solo valori numerici interi
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaCarico'].errors.maxValue
+                  "
+                >
+                  Attenzione! Quantità massima disponibile:
+                  {{ utilService.getItNum(qtaFkPiantineResidua) }}
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaCarico'].errors
+                      .quantitaNegative
+                  "
+                >
+                  Attenzione! La “quantità totale” non può essere inferiore a
+                  nr. {{ -qtaDisponibileDelta }} piante, altrimenti la “quantità
+                  disponibile residua” assume un valore negativo
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaNonAssegnabile" class="font-weight-bold"
+                >Quantità NON assegnabile (N)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaNonAssegnabile"
+                id="qtaNonAssegnabile"
+                maxlength="7"
+                (keyup)="checkValidation('qtaNonAssegnabile')"
+              />
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['qtaNonAssegnabile'].invalid &&
+                  (submited ||
+                    isAnyTouched([
+                      'qtaCarico',
+                      'qtaNonAssegnabile',
+                      'qtaDistruzione'
+                    ]))
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaNonAssegnabile'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaNonAssegnabile'].errors
+                      .pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici interi
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaNonAssegnabile'].errors
+                      .quantitaOk && !idInventario
+                  "
+                >
+                  Attenzione! Il valore non può essere maggiore della "Quantità
+                  totale"
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaNonAssegnabile'].errors
+                      .quantitaOk && idInventario
+                  "
+                >
+                  Attenzione! La somma “quantità non assegnabile” e “quantità
+                  distruzione rimanenze” non può essere superiore a nr.
+                  {{ getQtaDisponibile() }} piante, altrimenti la “quantità
+                  disponibile residua” assume un valore negativo
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="idInventario">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaDistruzione" class="font-weight-bold"
+                >Distruzione rimanenza (N)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaDistruzione"
+                id="qtaDistruzione"
+                maxlength="7"
+                (keyup)="checkValidation('qtaDistruzione')"
+              />
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['qtaDistruzione'].invalid &&
+                  (submited ||
+                    isAnyTouched([
+                      'qtaCarico',
+                      'qtaNonAssegnabile',
+                      'qtaDistruzione'
+                    ]))
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaDistruzione'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaDistruzione'].errors.pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici interi
+                </div>
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['qtaDistruzione'].errors
+                      .quantitaOk
+                  "
+                >
+                  Attenzione! La somma “quantità non assegnabile” e “quantità
+                  distruzione rimanenze” non può essere superiore a nr.
+                  {{ getQtaDisponibile() }} piante, altrimenti la “quantità
+                  disponibile residua” assume un valore negativo
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="posizionePartita" class="font-weight-bold"
+                >Posizione in vivaio</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <textarea
+                formControlName="posizionePartita"
+                id="posizionePartita"
+                [rows]="2"
+                maxlength="50"
+                class="form-control"
+              >
+              </textarea>
+              <div
+                *ngIf="
+                  partitaPianteForm.controls['posizionePartita'].invalid &&
+                  (submited ||
+                    partitaPianteForm.controls['posizionePartita'].dirty ||
+                    partitaPianteForm.controls['posizionePartita'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaPianteForm.controls['posizionePartita'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <!-- <p-button class="full-width-media" label="SCARICA QRCODE PARTITA" *ngIf="idInventario != null"
+        (onClick)="scaricaQRcode()" [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'">
+        </p-button> -->
+
+      <p-button
+        class="full-width-media"
+        label="CONFERMA {{ idInventario == null ? '' : 'MODIFICHE' }}"
+        *ngIf="isEdit"
+        (onClick)="conferma()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+
+      <p-button
+        class="full-width-media"
+        label="ELIMINA PARTITA"
+        *ngIf="idInventario != null && isEdit"
+        [disabled]="isPianteFather || numAssegnazioni > 0"
+        (onClick)="eliminaPartita()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+
+      <p-button
+        class="full-width-media"
+        label="TRASFERISCI PARTITA AD ALTRO VIVAIO"
+        *ngIf="idInventario != null && isEdit"
+        [disabled]="qtaPerCreaPiantine <= 0"
+        (onClick)="trasferisciPartitaPiante()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="CREA PARTITA PIANTE DA QUESTA PARTITA PIANTE"
+        *ngIf="idInventario != null && isEdit"
+        [disabled]="qtaPerCreaPiantine <= 0"
+        (onClick)="creaPartitaPianteDaPiante()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-inventario-certificati
+  *ngIf="showAssociaCertificato == true"
+  [tipoPartita]="'piante'"
+  (emitIndietro)="hideAssociaCertificato()"
+  (emitCertificato)="editCertificato($event)"
+  (emitAssocciaCertificato)="associaCertificato($event)"
+>
+</app-inventario-certificati>
+
+<app-form-certificato
+  *ngIf="showEditCertificato == true"
+  [idProvenienza]="idProvenienza"
+  [isInternalPage]="true"
+  (emitIndietro)="apriAnagrafica()"
+>
+</app-form-certificato>
+
+<app-form-richiesta-trasf
+  *ngIf="richiestaTrasferimentoPartita != null"
+  [richiestaTrasferimentoPartita]="richiestaTrasferimentoPartita"
+  (emitBack)="closeRichietaTrasferimento($event)"
+>
+</app-form-richiesta-trasf>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  [btn2Label]="popUpBtn2"
+  (btn1Emitter)="closePopUp()"
+  (btn2Emitter)="salvaPartita()"
+>
+</app-alert-utente>

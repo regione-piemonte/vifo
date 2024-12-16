@@ -1,0 +1,226 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="container-fluid" *ngIf="dettaglioSpecie">
+  <div class="row">
+    <div class="col-md-12 my-4">
+      <div>
+        <h2>Dettaglio scheda specie</h2>
+      </div>
+    </div>
+  </div>
+  <hr />
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Codice specie</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.codiceSpecie }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Nome scientifico</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.nomeScientifico }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Nome comune</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.nomeComune }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Famiglia</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.famiglia }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Gruppo</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.gruppoDescr }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Attitudine</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.attitudine }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Specie prodotta</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.flgProdotta == true ? "SI" : "NO" }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Specie in regime Zona Protetta (ZP)</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.flgSpecieZp == true ? "SI" : "NO" }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Specie soggetta al Dlgs 386/03</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.flgSpecie386 == true ? "SI" : "NO" }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Tipo controllo</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{
+        dettaglioSpecie.flgTipoControllo == "Q"
+          ? "Metro quadrato"
+          : "Metro lineare"
+      }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Densità</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.densita }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Zone di origine e diffusione</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.zonaOrigine }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Dimensione e portamento</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.dimensione }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Foglie</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.foglia }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Fiori e frutti</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.fioreFrutto }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Ecologia (Fattori legati allo sviluppo della pianta)</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.ecologia }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Impieghi ed utilizzi</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.impiego }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Note caratteristiche e curiosità</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      {{ dettaglioSpecie.noteCaratteristiche }}
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Foto specie</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      <p-button
+        label="Apri foto"
+        [disabled]="!dettaglioSpecie.fotoSpecie && noPhoto(1)"
+        pTooltip="Apri foto"
+        tooltipPosition="top"
+        (onClick)="openFoto(1)"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Foto in vivaio</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      <p-button
+        label="Apri foto"
+        [disabled]="!dettaglioSpecie && noPhoto(2)"
+        pTooltip="Apri foto"
+        tooltipPosition="top"
+        (onClick)="openFoto(2)"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 col-md-4 col-12 mb-3">
+      <strong>Foto di un particolare</strong>
+    </div>
+    <div class="col-lg-9 col-md-4 col-12 mb-3">
+      <p-button
+        label="Apri foto"
+        [disabled]="!dettaglioSpecie.fotoDiParticolare && noPhoto(3)"
+        pTooltip="Apri foto"
+        tooltipPosition="top"
+        (onClick)="openFoto(3)"
+      ></p-button>
+    </div>
+  </div>
+</div>

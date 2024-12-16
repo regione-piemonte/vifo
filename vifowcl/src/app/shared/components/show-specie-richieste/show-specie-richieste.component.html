@@ -1,0 +1,12 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="row" *ngIf="listSpecie && listSpecie.length > 0">
+  <app-reusable-front-table
+    [initiallySortedColumn]="sortedColumn"
+    [headers]="tableHeaders"
+    [data]="listSpecie"
+  ></app-reusable-front-table>
+</div>

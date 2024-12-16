@@ -1,0 +1,408 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+
+<div class="row">
+  <div class="col-md-12 text-center input-fattura">
+    <span class="radio-label">Fattura richiesta</span>
+    <input
+      type="radio"
+      name="fattura"
+      (change)="changeFattura('S')"
+      value="S"
+    />
+    <label
+      style="padding-left: 5px; padding-right: 30px"
+      class="font-weight-bold"
+    >
+      SI
+    </label>
+    <input
+      type="radio"
+      name="fattura"
+      (change)="changeFattura('N')"
+      value="N"
+    />
+    <label
+      style="padding-left: 5px; padding-right: 30px"
+      class="font-weight-bold"
+    >
+      NO
+    </label>
+  </div>
+</div>
+<div *ngIf="showIstruzioniFattura">
+  <div class="row row-space20">
+    A decorrere dal 1 gennaio 2019 e' in vigore l'obbligo di emissione della
+    fattura elettronica. Il sistema utilizza per questa richiesta la fattura
+    elettronica tramite il Sistema di Interscambio nazionale, per cui si è
+    necessario inserire il Codice Destinatario (campo alfanumerico di 7
+    caratteri che rappresenta l'indirizzo telematico che verrà utilizzato dal
+    Sistema di Interscambio per il recapito delle fatture in formato XML). In
+    caso di persona fisica richiedente fattura, inserire il codice ‘0000000’.
+  </div>
+  <div class="row row-space20">
+    Si richiede inoltre di controllare la correttezza degli estremi di
+    fatturazione.
+  </div>
+  <div class="row row-space20">
+    NOTA: l’intestatario della fattura deve obbligatoriamente essere il
+    richiedente che compare nella domanda onerosa di piantine in oggetto.
+  </div>
+</div>
+
+<div
+  class="grey-form"
+  [formGroup]="fatturaForm"
+  *ngIf="fatturaForm"
+  style="padding-left: 100 px"
+>
+  <div class="row">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="codiceFiscale" class="font-weight-bold ml-1"
+        >Codice fiscale</label
+      >
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        formControlName="codiceFiscale"
+        id="codiceFiscale"
+        class="form-control"
+        maxlength="16"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['codiceFiscale'].invalid &&
+          (submited ||
+            fatturaForm.controls['codiceFiscale'].dirty ||
+            fatturaForm.controls['codiceFiscale'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['codiceFiscale'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+        <div *ngIf="fatturaForm.controls['codiceFiscale'].errors.minlength">
+          Attenzione! Il valore del campo deve essere di 16 caratteri
+        </div>
+        <div
+          *ngIf="
+            personalOrCompanyForm.controls['codiceFiscale'].errors.codiceFiscale
+          "
+        >
+          Attenzione! Codice fiscale errato. Controllare errori di battitura
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="!isPagatorePF">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="piva" class="font-weight-bold ml-1">
+        {{ pagatore.flgEntePubblico == 1 ? "Codice iPA" : "Partita IVA" }}
+      </label>
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="piva"
+        formControlName="piva"
+        class="form-control"
+        maxlength="11"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['piva'].invalid &&
+          (submited ||
+            fatturaForm.controls['piva'].dirty ||
+            fatturaForm.controls['piva'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['piva'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+        <div *ngIf="fatturaForm.controls['piva'].errors.pattern">
+          Attenzione! Il campo ammette solo valori numerici
+        </div>
+        <div *ngIf="fatturaForm.controls['piva'].errors.minlength">
+          Attenzione! Il valore del campo deve essere di 11 caratteri
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="!isPagatorePF">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="denominazione" class="font-weight-bold ml-1"
+        >Denominazione</label
+      >
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="denominazione"
+        class="form-control"
+        formControlName="denominazione"
+        maxlength="50"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['denominazione'].invalid &&
+          (submited ||
+            fatturaForm.controls['denominazione'].dirty ||
+            fatturaForm.controls['denominazione'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['denominazione'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="isPagatorePF">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="nome" class="font-weight-bold ml-1">Nome</label>
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="nome"
+        class="form-control"
+        formControlName="nome"
+        maxlength="50"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['nome'].invalid &&
+          (submited ||
+            fatturaForm.controls['nome'].dirty ||
+            fatturaForm.controls['nome'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['nome'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="isPagatorePF">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="cognome" class="font-weight-bold ml-1">Cognome</label>
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="cognome"
+        class="form-control"
+        formControlName="cognome"
+        maxlength="50"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['cognome'].invalid &&
+          (submited ||
+            fatturaForm.controls['cognome'].dirty ||
+            fatturaForm.controls['cognome'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['cognome'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="pec" class="font-weight-bold ml-1">Pec</label>
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="pec"
+        class="form-control"
+        formControlName="pec"
+        maxlength="50"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['pec'].invalid &&
+          (submited ||
+            fatturaForm.controls['pec'].dirty ||
+            fatturaForm.controls['pec'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['pec'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+        <div *ngIf="fatturaForm.controls['pec'].errors.pattern">
+          Attenzione! Email non valida
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div class="row">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="indirizzo" class="font-weight-bold ml-1">Indirizzo</label>
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="indirizzo"
+        class="form-control"
+        formControlName="indirizzo"
+        maxlength="100"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['indirizzo'].invalid &&
+          (submited ||
+            fatturaForm.controls['indirizzo'].dirty ||
+            fatturaForm.controls['indirizzo'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['indirizzo'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="cap" class="font-weight-bold ml-1">C.A.P</label>
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="cap"
+        class="form-control"
+        formControlName="cap"
+        maxlength="5"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['cap'].invalid &&
+          (submited ||
+            fatturaForm.controls['cap'].dirty ||
+            fatturaForm.controls['cap'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['cap'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+        <div *ngIf="fatturaForm.controls['cap'].errors.minlength">
+          Attenzione! Il valore del campo deve essere di 11 caratteri
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="comune" class="font-weight-bold ml-1">Comune</label>
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        id="comune"
+        class="form-control"
+        formControlName="comune"
+        maxlength="50"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['comune'].invalid &&
+          (submited ||
+            fatturaForm.controls['comune'].dirty ||
+            fatturaForm.controls['comune'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['comune'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <div class="row">
+    <div class="col-lg-2 col-md-4 col-12 mb-3"></div>
+    <div class="col-lg-2 col-md-4 col-12 mb-3">
+      <label for="codiceDestinatario" class="font-weight-bold ml-1"
+        >Codice Destinatario</label
+      >
+    </div>
+    <div class="col-lg-6 col-md-4 col-12 mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="codiceDestinatario"
+        formControlName="codiceDestinatario"
+        maxlength="7"
+      />
+      <div
+        *ngIf="
+          fatturaForm.controls['codiceDestinatario'].invalid &&
+          (submited ||
+            fatturaForm.controls['codiceDestinatario'].dirty ||
+            fatturaForm.controls['codiceDestinatario'].touched)
+        "
+        class="alert alert-danger"
+      >
+        <div *ngIf="fatturaForm.controls['codiceDestinatario'].errors.required">
+          Attenzione! Campo obbligatorio
+        </div>
+        <div
+          *ngIf="fatturaForm.controls['codiceDestinatario'].errors.minlength"
+        >
+          Attenzione! Il valore del campo deve essere di 7 caratteri
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<div class="row">
+  <div class="col-md-12 text-right">
+    <p-button
+      class="full-width-media"
+      label="Procedi con il pagamento"
+      [disabled]="!codicePagamento || (fatturaForm && fatturaForm.invalid)"
+      (onClick)="redirectToPagamento()"
+      [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+    >
+    </p-button>
+  </div>
+  <div class="col-md-12">
+    <p-button
+      class="full-width-media"
+      label="INDIETRO"
+      (onClick)="indietro()"
+      [styleClass]="'mb-3 btn-outline-primary'"
+    >
+    </p-button>
+  </div>
+</div>

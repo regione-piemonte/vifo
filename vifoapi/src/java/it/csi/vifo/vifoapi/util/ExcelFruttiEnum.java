@@ -1,0 +1,22 @@
+/*
+ * SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+ * 
+ * SPDX-License-Identifier: EUPL-1.2
+*/
+package it.csi.vifo.vifoapi.util;
+
+public enum ExcelFruttiEnum {
+	ID_PARTITA_FRUTTI,
+	CERTIFICATO_PROVENIENZA,
+	SPECIE,
+	DATA_CERTIFICATO,
+	PROVENIENZA,
+	TIPO_MATERIALE,
+	PRODUTTORE,
+	DATA_CARICO,
+	QUANTITA_CARICO,
+	QUANTITA_SCARICO_IN_SEMI,
+	QUANTITA_SCARICO_VENDITA,
+	DISTRUZIONE_RIMANENZE,
+	QUANTITA_RESIDUA;
+}

@@ -1,0 +1,73 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<p-table
+  [columns]="headers"
+  [value]="data"
+  [scrollable]="true"
+  [rows]="25"
+  scrollHeight="550px"
+  [virtualScroll]="true"
+  [virtualRowHeight]="40"
+  widt
+>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th *ngFor="let col of columns" width="120px">
+        {{ col.header }}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-rowData
+    let-rowIndex="rowIndex"
+    let-columns="columns"
+  >
+    <tr style="height: 40px">
+      <td *ngIf="download || delete || edit || view" width="120px">
+        <button
+          type="button"
+          *ngIf="view"
+          (click)="viewRow(rowData)"
+          title="Visualizza"
+          class="action-button"
+        >
+          <em class="far fa-file-alt" aria-hidden="true"></em>
+        </button>
+        <button
+          type="button"
+          *ngIf="edit"
+          (click)="editRow(rowData)"
+          title="Modifica"
+          class="action-button"
+        >
+          <em class="fas fa-pencil-alt" aria-hidden="true"></em>
+        </button>
+        <button
+          type="button"
+          *ngIf="download"
+          (click)="downloadRow(rowData[fieldToDownload])"
+          title="Scarica"
+          class="action-button"
+        >
+          <em class="fas fa-download" aria-hidden="true"></em>
+        </button>
+        <button
+          type="button"
+          *ngIf="delete"
+          (click)="deleteRow(rowData)"
+          title="Elimina"
+          class="action-button"
+        >
+          <em class="fa fa-trash" aria-hidden="true"></em>
+        </button>
+      </td>
+      <td *ngFor="let col of columns" width="120px">
+        {{ rowData[col.field] }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

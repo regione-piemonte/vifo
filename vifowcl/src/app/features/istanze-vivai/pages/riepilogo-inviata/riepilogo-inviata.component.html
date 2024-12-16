@@ -1,0 +1,182 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+
+  <h1 *ngIf="domanda && tipoDomanda == 'gratuita'">
+    Riepilogo domanda per assegnazione gratuita di piantine
+  </h1>
+  <h1 *ngIf="domanda && tipoDomanda == 'vendita'">
+    Riepilogo domanda per assegnazione onerosa di piantine
+  </h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+  <hr />
+
+  <app-header-riepilogo
+    [domanda]="domanda"
+    [infoDomanda]="infoDomanda"
+    [personData]="personData"
+    [vivaio]="vivaio"
+  ></app-header-riepilogo>
+
+  <p-accordion [styleClass]="'my-4'">
+    <p-accordionTab header="DATI DEL RICHIEDENTE">
+      <app-show-richiedente
+        [titolarita]="infoDomanda?.titolarita"
+        [richiedente]="personData"
+      >
+      </app-show-richiedente>
+    </p-accordionTab>
+    <p-accordionTab header="DESTINAZIONI" *ngIf="tipoDomanda == 'gratuita'">
+      <app-show-destinazioni
+        [listDestinazioni]="listDestinazioni"
+      ></app-show-destinazioni>
+    </p-accordionTab>
+    <p-accordionTab header="SPECIE RICHIESTE">
+      <app-show-specie-richieste
+        [listSpecie]="listSpecie"
+      ></app-show-specie-richieste>
+    </p-accordionTab>
+    <p-accordionTab header="ELENCO ALLEGATI CARICATI">
+      <app-show-allegati [listDocumenti]="listDocumenti"></app-show-allegati>
+    </p-accordionTab>
+  </p-accordion>
+  <hr />
+
+  <div class="row" *ngIf="isUserRichiedente == false">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="INSERISCI ASSEGNAZIONE"
+        (onClick)="inserisciAssegnazione()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="RIFIUTA DOMANDA"
+        (onClick)="rifiutaDomanda()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="CHIUDI DOMANDA"
+        (onClick)="chiudiDomanda()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<p-dialog
+  header=""
+  [(visible)]="filePopUp"
+  [contentStyle]="{ 'max-height': '600px' }"
+  [transitionOptions]="'0ms'"
+  [modal]="true"
+>
+  <p-header> Rifiuto domanda </p-header>
+  <div class="row" [formGroup]="rifiutoForm" *ngIf="rifiutoForm">
+    <div style="width: 900px; height: 300px">
+      <div class="grey-form">
+        <div>
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="motivoRifiuto" class="font-weight-bold"
+                >Motivo del rifiuto:</label
+              >
+            </div>
+            <div class="col-lg-8 col-md-3 col-12 mb-3">
+              <textarea
+                formControlName="motivoRifiuto"
+                id="motivoRifiuto"
+                [rows]="3"
+                maxlength="200"
+                class="form-control"
+              >
+              </textarea>
+              <div
+                *ngIf="
+                  rifiutoForm.controls['motivoRifiuto'].invalid &&
+                  (rifiutoForm.controls['motivoRifiuto'].dirty ||
+                    rifiutoForm.controls['motivoRifiuto'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="rifiutoForm.controls['motivoRifiuto'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="rifiutoForm.controls['motivoRifiuto'].errors.minlength"
+                >
+                  Attenzione! Il valore del campo deve essere di almeno 20
+                  caratteri
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 text-center">
+              <p-button
+                class="full-width-media"
+                label="Rifiuta"
+                [disabled]="rifiutoForm.invalid"
+                (onClick)="eseguiRifiuto()"
+                [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+              >
+              </p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-footer>
+    <p-button
+      (click)="closePopUpEnd()"
+      label="Chiudi"
+      [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+    ></p-button>
+  </p-footer>
+</p-dialog>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+  [btn2Label]="popUpBtn2"
+  (btn2Emitter)="eseguiChiudiDomanda()"
+>
+</app-alert-utente>

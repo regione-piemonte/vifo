@@ -1,0 +1,141 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>Anagrafica certificati di provenienza</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="row" [formGroup]="searchForm" *ngIf="searchForm">
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div>
+          <div class="row">
+            <div class="col-lg-2 col-md-4 col-12 mb-3">
+              <label class="font-weight-bold" for="nomeSpecie"
+                >Filtra per specie</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-4 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                id="nomeSpecie"
+                formControlName="nomeSpecie"
+                maxlength="50"
+                (keyup.enter)="filterSpecie()"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-2 col-md-4 col-12 mb-3">
+              <label class="font-weight-bold" for="annata"
+                >Filtra per anno</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-4 col-12 mb-3">
+              <p-dropdown
+                [options]="listAnni"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="annata"
+                placeholder="Selezionare"
+                formControlName="annata"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-12 mb-3">
+              <p-button
+                label="APPLICA FILTRO"
+                pTooltip="Applica filtro"
+                tooltipPosition="top"
+                (onClick)="filterSpecie()"
+              ></p-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-12" *ngIf="tableData && searchForm">
+    <div>
+      <strong>Risultati trovati: {{ totalCount }}</strong>
+    </div>
+    <br />
+    <app-certificati-no-select-table
+      [first]="first"
+      [totalSize]="totalCount"
+      [rowsPerPageOptions]="[25, 50, 100]"
+      [initiallySortedColumn]="sortedColumn"
+      [headers]="tableHeaders"
+      [data]="tableData ? tableData : []"
+      (updateTableChanges)="getUpdatedTable($event)"
+      [visualizaTable]="true"
+      (viewRowEmitter)="viewRow($event)"
+      [edit]="true"
+      [connect]="tipoPartita && tipoPartita.length > 0"
+      (editRowEmitter)="editRow($event)"
+      (connectEmitter)="associaCertificato($event)"
+    ></app-certificati-no-select-table>
+    <div>
+      <strong>Risultati trovati: {{ totalCount }}</strong>
+    </div>
+  </div>
+  <div class="col-md-12" *ngIf="totalCount == 0">
+    <div>
+      <strong>Risultati trovati: {{ totalCount }}</strong>
+    </div>
+    <br />
+  </div>
+  <br />
+
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="INSERISCI NUOVO CERTIFICATO"
+        (onClick)="insertNuovoCertificato()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

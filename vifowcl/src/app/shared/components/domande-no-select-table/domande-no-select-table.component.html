@@ -1,0 +1,91 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<p-table
+  [hidden]="data.length === 0"
+  [(first)]="first"
+  [columns]="headers"
+  [rows]="rowsPerPageOptions[0]"
+  [value]="data ? data : []"
+  [lazy]="true"
+  [paginator]="simpleTable ? false : true"
+  [totalRecords]="totalSize ? totalSize : 5"
+  [rowsPerPageOptions]="rowsPerPageOptions"
+  (onLazyLoad)="updateData($event)"
+  [customSort]="simpleTable ? false : true"
+  [sortField]="simpleTable ? null : initiallySortedColumn"
+  [sortOrder]="simpleTable ? null : 1"
+  [sortMode]="simpleTable ? 'off' : 'single'"
+  [tableStyleClass]="'no-select-table'"
+  [styleClass]="'mb-3'"
+  [resizableColumns]="true"
+  [responsive]="true"
+  [autoLayout]="true"
+>
+  >
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th
+        *ngFor="let col of columns"
+        [pSortableColumn]="col.field"
+        [ngSwitch]="col.field"
+      >
+        {{ col.header }}
+        <p-sortIcon [field]="col.field"></p-sortIcon>
+      </th>
+      <th *ngIf="download || delete || edit || view"></th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-item
+    let-columns="columns"
+    let-index="rowIndex"
+  >
+    <tr>
+      <td *ngFor="let col of columns">
+        {{ item[col.field] }}
+      </td>
+      <td *ngIf="download || delete || edit || view">
+        <button
+          type="button"
+          *ngIf="view && !isEditAllowd(item)"
+          (click)="viewRow(item)"
+          title="Visualizza elemento {{ getDescr(item) }}"
+          class="action-button"
+        >
+          <em class="far fa-file-alt" aria-hidden="true"></em>
+        </button>
+        <button
+          type="button"
+          *ngIf="edit && isEditAllowd(item)"
+          (click)="editRow(item)"
+          title="Modifica elemento {{ getDescr(item) }}"
+          class="action-button"
+        >
+          <em class="fas fa-pencil-alt" aria-hidden="true"></em>
+        </button>
+        <button
+          type="button"
+          *ngIf="download"
+          (click)="downloadRow(item[fieldToDownload])"
+          title="Scarica elemento {{ getDescr(item) }}"
+          class="action-button"
+        >
+          <em class="fas fa-download" aria-hidden="true"></em>
+        </button>
+        <button
+          type="button"
+          *ngIf="delete && visualizaTable && item['stato'] === 'BOZZA'"
+          (click)="deleteRow(item)"
+          title="Elimina elemento {{ getDescr(item) }}"
+          class="action-button"
+        >
+          <em class="fa fa-trash" aria-hidden="true"></em>
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

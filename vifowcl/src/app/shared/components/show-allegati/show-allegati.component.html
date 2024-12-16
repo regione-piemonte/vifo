@@ -1,0 +1,20 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="row" *ngIf="listDocumenti && listDocumenti.length > 0">
+  <app-reusable-front-table
+    [initiallySortedColumn]="sortedColumn"
+    [headers]="tableHeaders"
+    [data]="listDocumenti"
+    [download]="true"
+    [fieldToDownload]="'idAllegato'"
+    (downloadEmitter)="downloadAllegato($event)"
+  >
+    ></app-reusable-front-table
+  >
+</div>
+<div class="row" *ngIf="!listDocumenti || listDocumenti.length == 0">
+  Nessun documento disponibile
+</div>

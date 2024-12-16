@@ -1,0 +1,26 @@
+/*!
+ * SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+ * 
+ * SPDX-License-Identifier: EUPL-1.2
+*/
+.fullscreen{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1100;
+    background-color: white;
+}
+
+.link-expand-table{
+    text-decoration-line: underline;
+    padding-right: 30px;
+}
+
+.break-word {
+    overflow-wrap: break-word;
+  }
+
+  .custom-overflow{
+    overflow-x: hidden;
+  }

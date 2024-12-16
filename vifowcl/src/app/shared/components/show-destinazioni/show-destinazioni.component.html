@@ -1,0 +1,13 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+
+<div class="row" *ngIf="listDestinazioni && listDestinazioni.length > 0">
+  <app-reusable-front-table
+    [initiallySortedColumn]="sortedColumn"
+    [headers]="tableHeaders"
+    [data]="listDestinazioni"
+  ></app-reusable-front-table>
+</div>

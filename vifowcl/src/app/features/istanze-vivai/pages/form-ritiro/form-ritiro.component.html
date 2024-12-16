@@ -1,0 +1,200 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1 *ngIf="domanda">Inserisci ritiro piantine</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+  <hr />
+  <div class="col-md-12 my-4" *ngIf="domanda">
+    <div class="grey-form">
+      <div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Identificativo domanda:</label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            {{ idDomanda }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Data ritiro:</label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            {{ today }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Operatore:</label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            {{ user.nome }} {{ user.cognome }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <h2>SPECIE RITIRATE</h2>
+    <div class="grey-form" [formGroup]="datiAssegnazioneForm">
+      <table>
+        <tr>
+          <th style="width: 200px" class="font-weight-bold">SPECIE</th>
+          <th class="font-weight-bold">ID PARTITA</th>
+          <th style="width: 200px" class="font-weight-bold">VIVAIO</th>
+          <th class="font-weight-bold">ALLEVAMENTO</th>
+          <th class="font-weight-bold">ETA'</th>
+          <th class="font-weight-bold">ALTEZZA (cm)</th>
+          <th class="font-weight-bold">CERTIFICAZIONE PROVENIENZA</th>
+          <th *ngIf="isDomandaOnerosa" class="font-weight-bold">
+            PREZZO UNITARIO (euro)
+          </th>
+          <th class="font-weight-bold">QUANTITA' ASSEGNATA</th>
+          <th class="font-weight-bold">QUANTITA' RITIRATA</th>
+        </tr>
+        <ng-container
+          *ngFor="let spForm of datiAssegnazioneForm.controls; let i = index"
+        >
+          <tr [formGroupName]="i">
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="nomeSpecie"
+                title="{{ tooltip(i, 'nomeSpecie') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="idPartita"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="nomeVivaio"
+                title="{{ tooltip(i, 'nomeVivaio') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="descrTipoAllevamento"
+                title="{{ tooltip(i, 'descrTipoAllevamento') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="eta"
+                title="{{ tooltip(i, 'eta') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="altezza"
+                title="{{ tooltip(i, 'altezza') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="certificato"
+                title="{{ tooltip(i, 'certificato') }}"
+              />
+            </td>
+            <td *ngIf="isDomandaOnerosa">
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="prezzoUnitario"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="qtaAssegnata"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaRitirata"
+                maxlength="7"
+              />
+            </td>
+          </tr>
+        </ng-container>
+      </table>
+      <br />
+    </div>
+  </div>
+
+  <div *ngIf="userProfile != 'RICHIEDENTE' && tipoDomanda == 'gratuita'">
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <p-button
+          class="full-width-media"
+          label="CONFERMA"
+          (onClick)="confermaRitiro()"
+          [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+        >
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

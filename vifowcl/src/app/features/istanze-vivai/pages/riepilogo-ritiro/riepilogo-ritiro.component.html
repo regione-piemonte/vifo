@@ -1,0 +1,178 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+
+  <h1 *ngIf="domanda && tipoDomanda == 'gratuita'">
+    Riepilogo domanda per assegnazione gratuita di piantine
+  </h1>
+  <h1 *ngIf="domanda && tipoDomanda == 'vendita'">
+    Riepilogo domanda per assegnazione onerosa di piantine
+  </h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+  <hr />
+
+  <app-header-riepilogo
+    [domanda]="domanda"
+    [infoDomanda]="infoDomanda"
+    [personData]="personData"
+    [vivaio]="vivaio"
+  ></app-header-riepilogo>
+
+  <p-accordion [styleClass]="'my-4'">
+    <p-accordionTab header="DATI DEL RICHIEDENTE">
+      <app-show-richiedente
+        [titolarita]="infoDomanda?.titolarita"
+        [richiedente]="personData"
+      >
+      </app-show-richiedente>
+    </p-accordionTab>
+    <p-accordionTab header="DESTINAZIONI" *ngIf="tipoDomanda == 'gratuita'">
+      <app-show-destinazioni
+        [listDestinazioni]="listDestinazioni"
+      ></app-show-destinazioni>
+    </p-accordionTab>
+    <p-accordionTab header="SPECIE RICHIESTE">
+      <app-show-specie-richieste
+        [listSpecie]="listSpecie"
+      ></app-show-specie-richieste>
+    </p-accordionTab>
+    <p-accordionTab header="ELENCO ALLEGATI CARICATI">
+      <app-show-allegati [listDocumenti]="listDocumenti"></app-show-allegati>
+    </p-accordionTab>
+    <p-accordionTab
+      *ngIf="isUserRichiedente == false"
+      header="DATI RELATIVI ALL'ASSEGNAZIONE DI PIANTINE DA PARTE DEL VIVAIO"
+    >
+      <app-show-assegnazioni
+        [tipoDomanda]="tipoDomanda"
+        [listAssegnazioni]="listAssegnazioni"
+      >
+      </app-show-assegnazioni>
+    </p-accordionTab>
+    <p-accordionTab
+      *ngIf="isUserRichiedente == false && tipoDomanda == 'vendita'"
+      header="ELENCO DDT"
+      [selected]="true"
+    >
+      <app-reusable-front-table
+        *ngIf="listDDT.length > 0"
+        [initiallySortedColumn]="sortedColumn"
+        [headers]="ddtTableHeaders"
+        [data]="listDDT"
+        [view]="true"
+        [fieldToView]="'numeroDdt'"
+        (viewRowEmitter)="viewRow($event)"
+      ></app-reusable-front-table>
+      <div *ngIf="listDDT.length == 0">Nessun DDT presente</div>
+    </p-accordionTab>
+    <p-accordionTab
+      *ngIf="isUserRichiedente == false"
+      header="{{
+        tipoDomanda == 'vendita'
+          ? 'PROSPETTO RITIRI DELLE PIANTINE NEI DDT'
+          : 'RITIRO DELLE PIANTINE'
+      }}"
+      [selected]="true"
+    >
+      <app-show-ritiri
+        [tipoDomanda]="tipoDomanda"
+        [listAssegnazioni]="listAssegnazioni"
+      >
+      </app-show-ritiri>
+    </p-accordionTab>
+  </p-accordion>
+
+  <app-sezione-importi
+    *ngIf="domanda && tipoDomanda == 'vendita'"
+    [domanda]="domanda"
+  >
+  </app-sezione-importi>
+
+  <hr />
+  <div class="row" *ngIf="isUserRichiedente == false">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="STAMPA ETICHETTE"
+        (onClick)="stampaEticchette()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="MODIFICA RITIRO"
+        *ngIf="tipoDomanda != 'vendita'"
+        (onClick)="modificaRitiro()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="CREA DDT"
+        *ngIf="tipoDomanda == 'vendita'"
+        [disabled]="qtaAssegnataRimanente == 0"
+        (onClick)="creaDdt()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="CHIUDI DOMANDA"
+        (onClick)="chiudiDomanda()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+
+      <span *ngIf="tipoDomanda == 'vendita' && infoDomanda">
+        <p-button
+          class="full-width-media"
+          label="SCARICA RICEVUTA DI PAGAMENTO"
+          *ngIf="
+            tipoDomanda == 'vendita' &&
+            infoDomanda.statoPagamento == 'Pagamento eseguito'
+          "
+          (onClick)="downloadRicevutaPagamento()"
+          [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+        >
+        </p-button>
+      </span>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 mt-5 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+  [btn2Label]="popUpBtn2"
+  (btn2Emitter)="eseguiChiudiDomanda()"
+>
+</app-alert-utente>

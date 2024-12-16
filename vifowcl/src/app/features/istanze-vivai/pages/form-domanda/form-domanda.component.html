@@ -1,0 +1,483 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+
+  <h1 *ngIf="tipoDomanda == 1">
+    Nuova domanda per assegnazione gratuita di piantine
+  </h1>
+  <h1 *ngIf="tipoDomanda == 2">
+    Nuova domanda per assegnazione onerosa di piantine
+  </h1>
+
+  <div class="row" *ngIf="datiDomandaForm" [formGroup]="datiDomandaForm">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+  <div
+    [ngClass]="{ disabledALL: viewType != 'partOne' }"
+    class="row"
+    [formGroup]="datiDomandaForm"
+    *ngIf="datiDomandaForm"
+  >
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div>
+          <div class="row" *ngIf="idDomanda">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idDomanda" class="font-weight-bold"
+                >Identificativo domanda</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="idDomanda"
+                id="idDomanda"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idVivaio" class="font-weight-bold"
+                >Vivaio a cui è indirizzata la domanda
+                <span class="text-danger" title="campo obbligatorio"
+                  >*</span
+                ></label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listVivai"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="idVivaio"
+                placeholder="Selezionare"
+                formControlName="idVivaio"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  datiDomandaForm.controls['idVivaio'].invalid &&
+                  (submited ||
+                    datiDomandaForm.controls['idVivaio'].dirty ||
+                    datiDomandaForm.controls['idVivaio'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="datiDomandaForm.controls['idVivaio'].errors">
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="statoDomanda" class="font-weight-bold"
+                >Stato domanda</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="statoDomanda"
+                id="statoDomanda"
+              />
+            </div>
+          </div>
+          <div class="row" *ngIf="tipoDomanda == 1">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="scopoAssegnGratuita" class="font-weight-bold"
+                >Scopo assegnazione gratuita
+                <span class="text-danger" title="campo obbligatorio"
+                  >*</span
+                ></label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listScopo"
+                autoHighlight="true"
+                placeholder="Selezionare"
+                formControlName="scopoAssegnGratuita"
+                [autoWidth]="false"
+                (onChange)="onChangeScopo($event)"
+                inputId="scopoAssegnGratuita"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  datiDomandaForm.controls['scopoAssegnGratuita'].invalid &&
+                  (submited ||
+                    datiDomandaForm.controls['scopoAssegnGratuita'].dirty ||
+                    datiDomandaForm.controls['scopoAssegnGratuita'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    datiDomandaForm.controls['scopoAssegnGratuita'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12 my-4">
+          <h2>DATI DEL RICHIEDENTE</h2>
+          <hr />
+          <div class="grey-form">
+            <div class="row" *ngIf="tipoDomanda == 1">
+              <div class="col-lg-7 col-md-9 col-12 mb-3">
+                <label for="titolaritaRichiedente" class="font-weight-bold"
+                  >Titolarità del richiedente
+                  <span class="text-danger" title="campo obbligatorio"
+                    >*</span
+                  ></label
+                >
+                <p-dropdown
+                  [options]="listTitolarita"
+                  autoHighlight="true"
+                  [autoWidth]="false"
+                  inputId="titolaritaRichiedente"
+                  placeholder="Selezionare"
+                  formControlName="titolaritaRichiedente"
+                  [styleClass]="
+                    'autoComplete form-control d-flex justify-content-end'
+                  "
+                >
+                </p-dropdown>
+                <div
+                  *ngIf="
+                    datiDomandaForm.controls['titolaritaRichiedente'].invalid &&
+                    (submited ||
+                      datiDomandaForm.controls['titolaritaRichiedente'].dirty ||
+                      datiDomandaForm.controls['titolaritaRichiedente'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      datiDomandaForm.controls['titolaritaRichiedente'].errors
+                        .required
+                    "
+                  >
+                    Attenzione! Campo obbligatorio
+                  </div>
+                </div>
+              </div>
+            </div>
+            <app-persona-form
+              [submited]="submited"
+              [idScopo]="idScopo"
+              [isDomandaGratuita]="tipoDomanda == 1"
+              [personalOrCompanyForm]="personaForm ? personaForm : companyForm"
+              [isForcedPersonaGiuridica]="isForcedPersonaGiuridica"
+              [isPersonaGiuridica]="companyForm != null"
+              (emitPersonTypeChange)="personTypeChange($event)"
+              (emitPersonForm)="fillPersonCompanyForm($event)"
+            >
+            </app-persona-form>
+          </div>
+
+          <div
+            *ngIf="
+              tipoDomanda == 1 &&
+              persCompForm &&
+              datiDomandaForm.controls['scopoAssegnGratuita'].value == 5 &&
+              (personaForm ||
+                (companyForm &&
+                  companyForm.get('flgEntePubblico').value != '1'))
+            "
+          >
+            <Hr />
+            <div class="grey-form">
+              <div class="row">
+                <div class="col-lg-9 col-md-12 col-12 mb-3">
+                  <br />
+                  <label for="marcaBollo" class="font-weight-bold"
+                    >Marca da bollo</label
+                  >
+                  <div style="font-style: oblique">
+                    Inserire il codice identificativo numerico di 14 caratteri
+                    presente sulla marca da bollo.<br />
+                    Nel caso di Onlus, non tenute al pagamento della marca da
+                    bollo, inserire un valore ‘00000000000000’.
+                  </div>
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="marcaBollo"
+                    maxlength="14"
+                    id="marcaBollo"
+                    style="width: 80%"
+                  />
+                  <div
+                    *ngIf="
+                      datiDomandaForm.controls['marcaBollo'].invalid &&
+                      (submited ||
+                        datiDomandaForm.controls['marcaBollo'].dirty ||
+                        datiDomandaForm.controls['marcaBollo'].touched)
+                    "
+                    class="alert alert-danger"
+                  >
+                    <div
+                      *ngIf="
+                        datiDomandaForm.controls['marcaBollo'].errors.minlength
+                      "
+                    >
+                      Attenzione! Il valore del campo deve essere di 14
+                      caratteri
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="tipoDomanda == 1">
+        <div class="col-md-12 my-4">
+          <h2>DESTINAZIONI</h2>
+          <div
+            [ngClass]="{
+              'alert alert-danger': submited && listDestinazioni.length == 0
+            }"
+            style="font-style: oblique"
+          >
+            Inserire i dati richiesti e cliccare su “Aggiungi”. E’ obbligatorio
+            inserire almeno una destinazione.
+          </div>
+          <hr />
+          <div class="grey-form">
+            <app-destinazioni-form
+              [destinazioniForm]="destinazioniForm"
+              [listDestinazioni]="listDestinazioni"
+              (emitRemove)="removeDestinazione($event)"
+              (emitAdd)="addDestinazione($event)"
+            ></app-destinazioni-form>
+          </div>
+        </div>
+      </div>
+
+      <app-specie-arboree-form
+        [submited]="submited"
+        [specieForm]="specieForm"
+        [listSpecieSelected]="specieForm.value"
+        (emitRemove)="removeSpecie($event)"
+        (emitAdd)="addSpecieForm($event)"
+      ></app-specie-arboree-form>
+
+      <div class="grey-form" *ngIf="specieForm && specieForm.length > 0">
+        <div
+          formArrayName="specieForm"
+          *ngFor="let spForm of specieForm.controls; let i = index"
+        >
+          <div [formGroupName]="i">
+            <div class="row form-group">
+              <div class="col">
+                <label
+                  [ngClass]="{ 'sr-only': i > 0 }"
+                  class="font-weight-bold"
+                  for="comune_{{ i }}"
+                >
+                  Nome comune
+                </label>
+                <input
+                  type="text"
+                  readonly
+                  class="form-control"
+                  id="comune_{{ i }}"
+                  formControlName="nomeComune"
+                />
+              </div>
+              <div class="col">
+                <label
+                  [ngClass]="{ 'sr-only': i > 0 }"
+                  class="font-weight-bold"
+                  for="nscientifico_{{ i }}"
+                  >Nome scientifico
+                </label>
+                <input
+                  type="text"
+                  readonly
+                  class="form-control"
+                  formControlName="nomeScientifico"
+                  id="nscientifico_{{ i }}"
+                />
+              </div>
+              <div class="col">
+                <label
+                  [ngClass]="{ 'sr-only': i > 0 }"
+                  class="font-weight-bold"
+                  for="quantita_{{ i }}"
+                  >Quantità
+                </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  maxlength="4"
+                  formControlName="qtaRichiesta"
+                  id="quantita_{{ i }}"
+                />
+
+                <div
+                  *ngIf="
+                    spForm.controls['qtaRichiesta'].invalid &&
+                    (submited ||
+                      spForm.controls['qtaRichiesta'].dirty ||
+                      spForm.controls['qtaRichiesta'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div *ngIf="spForm.controls['qtaRichiesta'].errors.required">
+                    Attenzione! Campo obbligatorio
+                  </div>
+                  <div *ngIf="spForm.controls['qtaRichiesta'].errors.pattern">
+                    Attenzione! Il campo ammette solo valori numerici
+                  </div>
+                  <div *ngIf="spForm.controls['qtaRichiesta'].errors.maxlength">
+                    Attenzione! Il valore del campo deve essere di lunghezza max
+                    11 caratteri
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <a
+                  style="position: absolute; bottom: 3px"
+                  pTooltip="Elimina"
+                  tooltipPosition="top"
+                  (click)="removeSpecieForm(i)"
+                  ><span icon="fa fa-plus" class="fa fa-trash"></span
+                ></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="specieForm.length == 0">Nessuna specie inserita</div>
+
+      <div class="row">
+        <div class="col-md-12 my-4">
+          <div class="grey-form">
+            <div class="row">
+              <div class="col-lg-2 col-md-3 col-12 mb-3">
+                <label for="note" class="font-weight-bold"
+                  >Note del richiedente</label
+                >
+              </div>
+              <div class="col-lg-10 col-md-3 col-12 mb-3">
+                <div style="font-style: oblique" *ngIf="tipoDomanda == 2">
+                  Per poter gestire al meglio l’assegnazione delle specie
+                  richieste, si consiglia di indicare in questo campo una
+                  Tipologia ed un Prezzo di preferenza per ogni specie
+                  (riferirsi al listino pubblicato sul sito regionale nella
+                  sezione relativa ai Vivai Forestali). Indicare inoltre il
+                  periodo preferenziale di ritiro piantine (orientativo e non
+                  vincolante).
+                </div>
+                <textarea
+                  formControlName="note"
+                  type="text"
+                  class="form-control"
+                  id="note"
+                  maxlength="200"
+                  rows="3"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-form-file
+    *ngIf="viewType != 'partOne' && datiDomandaForm"
+    [idDomanda]="idDomanda"
+    [tipoDomanda]="tipoDomanda"
+    [userType]="personaForm ? 'PF' : 'PG'"
+    [isEntePubblico]="
+      companyForm && companyForm.get('flgEntePubblico').value == 1
+    "
+    [viewType]="viewType"
+    [listDocumenti]="listDocumenti"
+    [isMarcaBolloPresent]="isMarcaBolloPresent()"
+    (emitAddAllegato)="addAllegato($event)"
+    (emitDeleteAllegato)="deleteAllegato($event)"
+  ></app-form-file>
+
+  <hr class="black-hr" />
+  <div class="row" *ngIf="viewType == 'partOne'">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="Conferma dati e visualizza riepilogo"
+        (onClick)="confermaDati()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="row" *ngIf="viewType == 'partTwo'">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="Modifica domanda"
+        (onClick)="modificaDomanda()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="Invia Domanda"
+        (onClick)="inviaDomanda()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+        [disabled]="!isFormPartOneValid()"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

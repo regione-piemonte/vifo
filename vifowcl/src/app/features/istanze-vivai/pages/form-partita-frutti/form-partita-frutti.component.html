@@ -1,0 +1,688 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div *ngIf="showAssociaCertificato == false && showEditCertificato == false">
+  <p class="hai-selezionato">Hai selezionato:</p>
+
+  <h1 *ngIf="idInventario == null">Inserisci Nuova Partita Frutti</h1>
+  <h1 *ngIf="idInventario != null">
+    <span *ngIf="isEdit == false">Modifica</span> Partita Frutti
+  </h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div
+    class="row"
+    [ngClass]="{ disabledALL: !isEdit }"
+    [formGroup]="partitaFruttiForm"
+    *ngIf="partitaFruttiForm"
+  >
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idInventarioFrutti" class="font-weight-bold"
+                >ID Partita Frutti</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <strong>{{ idInventario ? idInventario : "-" }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="idInventarioFrutti"
+                id="idInventarioFrutti"
+              />
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="idProvenienza"
+                id="idProvenienza"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="radio"
+                name="certificatoType"
+                formControlName="certificatoType"
+                id="certificatoType_c"
+                [checked]="certificatoType == 'C'"
+                (change)="changeSpecieRadio('C')"
+                value="C"
+              />
+              <label
+                for="certificatoType_c"
+                style="padding-left: 15px"
+                class="font-weight-bold"
+              >
+                Specie Allegato I del DLgs 386/03 - Certificato di provenienza
+                (calcolato)
+              </label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              {{ codiceCertificato }}
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <p-button
+                class="full-width-media"
+                label="APRI ANAGRAFICA"
+                [disabled]="'C' != certificatoType"
+                (onClick)="apriAnagrafica()"
+                [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+              >
+              </p-button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="radio"
+                name="certificatoType"
+                formControlName="certificatoType"
+                id="certificatoType_l"
+                [checked]="certificatoType == 'L'"
+                (change)="changeSpecieRadio('L')"
+                value="L"
+              />
+              <label
+                for="certificatoType_l"
+                style="padding-left: 15px"
+                class="font-weight-bold"
+              >
+                Specie Allegato I del DLgs 386/03 - Certificato di provenienza
+                (libero)
+              </label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control-inline"
+                [readonly]="certificatoType != 'L' || isSemiFather"
+                formControlName="codiceCertificato"
+                id="codiceCertificato"
+                maxlength="50"
+              />
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['codiceCertificato'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['codiceCertificato'].dirty ||
+                    partitaFruttiForm.controls['codiceCertificato'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['codiceCertificato'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="radio"
+                name="certificatoType"
+                formControlName="certificatoType"
+                id="certificatoType_n"
+                [checked]="certificatoType == 'N'"
+                (change)="changeSpecieRadio('N')"
+                value="N"
+              />
+              <label
+                for="certificatoType_n"
+                style="padding-left: 15px"
+                class="font-weight-bold"
+              >
+                Specie Allegato I del DLgs 386/03 - Non per fini forestali
+              </label>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="radio"
+                name="certificatoType"
+                formControlName="certificatoType"
+                id="certificatoType_a"
+                [checked]="certificatoType == 'A'"
+                (change)="changeSpecieRadio('A')"
+                value="A"
+              />
+              <label
+                for="certificatoType_a"
+                style="padding-left: 15px"
+                class="font-weight-bold"
+              >
+                Altra specie
+              </label>
+            </div>
+          </div>
+          <div
+            *ngIf="
+              partitaFruttiForm.controls['certificatoType'].invalid &&
+              (submited ||
+                partitaFruttiForm.controls['certificatoType'].dirty ||
+                partitaFruttiForm.controls['certificatoType'].touched)
+            "
+            class="alert alert-danger"
+          >
+            <div
+              *ngIf="
+                partitaFruttiForm.controls['certificatoType'].errors.required
+              "
+            >
+              Attenzione! La scelta di una delle 4 opzioni è obbligatoria
+            </div>
+          </div>
+          <br />
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkSpecie" class="font-weight-bold">Specie</label>
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listSpecieFiltered"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkSpecie"
+                placeholder="Selezionare"
+                formControlName="fkSpecie"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+                [readonly]="disabledFieldsCertificato || isSemiFather"
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['fkSpecie'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['fkSpecie'].dirty ||
+                    partitaFruttiForm.controls['fkSpecie'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="partitaFruttiForm.controls['fkSpecie'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="certificatoType == 'C' || certificatoType == 'L'"
+          >
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="dataCertificato" class="font-weight-bold"
+                >Data certificato</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <p-calendar
+                [locale]="it"
+                [yearNavigator]="true"
+                [disabled]="disabledFieldsCertificato"
+                [monthNavigator]="true"
+                yearRange="1970:{{ currentYear }}"
+                dateFormat="dd/mm/yy"
+                inputId="dataCertificato"
+                formControlName="dataCertificato"
+                showButtonBar="true"
+                [showIcon]="true"
+              >
+              </p-calendar>
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['dataCertificato'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['dataCertificato'].dirty ||
+                    partitaFruttiForm.controls['dataCertificato'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['dataCertificato'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="provenienza" class="font-weight-bold"
+                >Provenienza</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                [readonly]="disabledFieldsCertificato || isSemiFather"
+                class="form-control"
+                formControlName="provenienza"
+                id="provenienza"
+                maxlength="100"
+              />
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['provenienza'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['provenienza'].dirty ||
+                    partitaFruttiForm.controls['provenienza'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['provenienza'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="row"
+            *ngIf="certificatoType == 'C' || certificatoType == 'L'"
+          >
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkCategMateriale" class="font-weight-bold"
+                >Tipo materiale</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listCategoriaMateriali"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inpuId="fkCategMateriale"
+                placeholder="Selezionare"
+                formControlName="fkCategMateriale"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+                [readonly]="disabledFieldsCertificato || isSemiFather"
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['fkCategMateriale'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['fkCategMateriale'].dirty ||
+                    partitaFruttiForm.controls['fkCategMateriale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['fkCategMateriale'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="produttore" class="font-weight-bold"
+                >Produttore</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                [readonly]="disabledFieldsCertificato || isSemiFather"
+                class="form-control"
+                formControlName="produttore"
+                id="produttore"
+                maxlength="100"
+              />
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['produttore'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['produttore'].dirty ||
+                    partitaFruttiForm.controls['produttore'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['produttore'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="dataCarico" class="font-weight-bold"
+                >Data carico</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <p-calendar
+                [locale]="it"
+                [yearNavigator]="true"
+                [monthNavigator]="true"
+                yearRange="1970:{{ currentYear }}"
+                dateFormat="dd/mm/yy"
+                inputId="dataCarico"
+                formControlName="dataCarico"
+                showButtonBar="true"
+                [showIcon]="true"
+              >
+              </p-calendar>
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['dataCarico'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['dataCarico'].dirty ||
+                    partitaFruttiForm.controls['dataCarico'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['dataCarico'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaCaricoKg" class="font-weight-bold"
+                >Quantità carico di frutti (Kg)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaCaricoKg"
+                id="qtaCaricoKg"
+                maxlength="7"
+                (keyup)="onValueChange('qtaCaricoKg')"
+              />
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['qtaCaricoKg'].invalid &&
+                  (submited ||
+                    partitaFruttiForm.controls['qtaCaricoKg'].dirty ||
+                    partitaFruttiForm.controls['qtaCaricoKg'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaCaricoKg'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaCaricoKg'].errors.pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici con massimo
+                  3 decimali
+                </div>
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaCaricoKg'].errors.maxValue
+                  "
+                >
+                  Attenzione! La quantità disponibile residua per questo
+                  Certificato di Provenienza è
+                  {{ utilService.getItNum(qtaResidua) }} Kg
+                </div>
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaCaricoKg'].errors
+                      .quantitaNegative
+                  "
+                >
+                  Attenzione! La “quantità carico” non può essere inferiore a
+                  {{ utilService.getItNum(-qtaDisponibileDelta) }} Kg,
+                  altrimenti la “quantità disponibile residua” assume un valore
+                  negativo
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="idInventario">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaScaricoVenditaKg" class="font-weight-bold"
+                >Quantità scarico in vendita (Kg)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaScaricoVenditaKg"
+                id="qtaScaricoVenditaKg"
+                maxlength="7"
+                (keyup)="onValueChange('qtaScaricoVenditaKg')"
+              />
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['qtaScaricoVenditaKg'].invalid &&
+                  (submited ||
+                    isAnyTouched([
+                      'qtaCaricoKg',
+                      'qtaScaricoVenditaKg',
+                      'qtaDistruzioneKg'
+                    ]))
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaScaricoVenditaKg'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaScaricoVenditaKg'].errors
+                      .pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici con massimo
+                  3 decimali
+                </div>
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaScaricoVenditaKg'].errors
+                      .quantitaOk
+                  "
+                >
+                  Attenzione! La somma di “quantità scarico vendita” e “quantità
+                  distruzione rimanenze” non può essere superiore a
+                  {{ getQtaDisponibile() }} Kg , altrimenti la “quantità
+                  disponibile residua” assume un valore negativo
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="idInventario">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaDistruzioneKg" class="font-weight-bold"
+                >Distruzione rimanenze (Kg)</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaDistruzioneKg"
+                id="qtaDistruzioneKg"
+                maxlength="7"
+                (keyup)="onValueChange('qtaDistruzioneKg')"
+              />
+              <div
+                *ngIf="
+                  partitaFruttiForm.controls['qtaDistruzioneKg'].invalid &&
+                  (submited ||
+                    isAnyTouched([
+                      'qtaCaricoKg',
+                      'qtaScaricoVenditaKg',
+                      'qtaDistruzioneKg'
+                    ]))
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaDistruzioneKg'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaDistruzioneKg'].errors
+                      .pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici con massimo
+                  3 decimali
+                </div>
+                <div
+                  *ngIf="
+                    partitaFruttiForm.controls['qtaDistruzioneKg'].errors
+                      .quantitaOk
+                  "
+                >
+                  Attenzione! La somma di “quantità scarico vendita” e “quantità
+                  distruzione rimanenze” non può essere superiore a
+                  {{ getQtaDisponibile() }} Kg , altrimenti la “quantità
+                  disponibile residua” assume un valore negativo
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="CONFERMA {{ idInventario == null ? '' : 'MODIFICHE' }}"
+        *ngIf="isEdit"
+        (onClick)="conferma()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+
+      <p-button
+        class="full-width-media"
+        label="ELIMINA PARTITA"
+        *ngIf="idInventario != null && isEdit"
+        [disabled]="isSemiFather"
+        (onClick)="eliminaPartita()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+
+      <p-button
+        class="full-width-media"
+        label="CREA PARTITA SEMI DA QUESTA PARTITA FRUTTI"
+        *ngIf="idInventario != null && isEdit"
+        [disabled]="qtaPerCreaSemi <= 0"
+        (onClick)="creaPartitaSemiDaFrutti()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-inventario-certificati
+  *ngIf="showAssociaCertificato == true"
+  [tipoPartita]="'frutti'"
+  (emitIndietro)="hideAssociaCertificato()"
+  (emitCertificato)="editCertificato($event)"
+  (emitAssocciaCertificato)="associaCertificato($event)"
+>
+</app-inventario-certificati>
+
+<app-form-certificato
+  *ngIf="showEditCertificato == true"
+  [idProvenienza]="idProvenienza"
+  [isInternalPage]="true"
+  (emitIndietro)="apriAnagrafica()"
+>
+</app-form-certificato>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

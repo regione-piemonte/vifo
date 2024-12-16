@@ -1,0 +1,982 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+
+  <h1>
+    Anagrafica Certificati di Provenienza -
+    <span *ngIf="idProvenienza == null">Inserisci nuovo</span>
+    <span *ngIf="idProvenienza != null">Modifica</span>
+  </h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="row" [formGroup]="certificatoForm" *ngIf="certificatoForm">
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="numeroCertificato" class="font-weight-bold"
+                >Numero Certificato</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="numeroCertificato"
+                id="numeroCertificato"
+                maxlength="3"
+              />
+              <div
+                *ngIf="
+                  certificatoForm.controls['numeroCertificato'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['numeroCertificato'].dirty ||
+                    certificatoForm.controls['numeroCertificato'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['numeroCertificato'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    certificatoForm.controls['numeroCertificato'].errors.pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 col-md-3 col-12 mb-3">
+              <label for="flgTipoProduzione" class="font-weight-bold">
+                Si certifica che i materiali forestali di moltiplicazione
+                descritti si seguito sono stati prodotti
+              </label>
+              <div
+                class="col-lg-7 col-md-3 col-12 mb-3"
+                style="padding-left: 100px"
+              >
+                <input
+                  id="flgTipoProduzione1"
+                  type="radio"
+                  value="0"
+                  [checked]="
+                    certificatoForm.controls['flgTipoProduzione'].value == 0 &&
+                    certificatoForm.controls['flgTipoProduzione'].value + '' !=
+                      ''
+                  "
+                  formControlName="flgTipoProduzione"
+                />
+                <label
+                  for="flgTipoProduzione1"
+                  class="font-weight-bold"
+                  style="padding-left: 5px; padding-right: 50px"
+                >
+                  Conforme alla Direttiva CE
+                </label>
+                <input
+                  id="flgTipoProduzione2"
+                  type="radio"
+                  value="1"
+                  [checked]="
+                    certificatoForm.controls['flgTipoProduzione'].value == 1
+                  "
+                  formControlName="flgTipoProduzione"
+                />
+                <label
+                  for="flgTipoProduzione2"
+                  class="font-weight-bold"
+                  style="padding-left: 5px; padding-right: 30px"
+                >
+                  In base a misure transitorie
+                </label>
+                <div
+                  *ngIf="
+                    certificatoForm.controls['flgTipoProduzione'].invalid &&
+                    (submited ||
+                      certificatoForm.controls['flgTipoProduzione'].dirty ||
+                      certificatoForm.controls['flgTipoProduzione'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      certificatoForm.controls['flgTipoProduzione'].errors
+                        .required
+                    "
+                  >
+                    Attenzione! La scelta di una delle 2 opzioni è obbligatoria
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkSpecie" class="font-weight-bold"
+                >Specie botanica</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listSpecie"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkSpecie"
+                placeholder="Selezionare"
+                formControlName="fkSpecie"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  certificatoForm.controls['fkSpecie'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['fkSpecie'].dirty ||
+                    certificatoForm.controls['fkSpecie'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="certificatoForm.controls['fkSpecie'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkNaturaMateriale" class="font-weight-bold"
+                >Natura dei materiali di moltiplicazione</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listNaturaMateriali"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkNaturaMateriale"
+                placeholder="Selezionare"
+                formControlName="fkNaturaMateriale"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  certificatoForm.controls['fkNaturaMateriale'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['fkNaturaMateriale'].dirty ||
+                    certificatoForm.controls['fkNaturaMateriale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['fkNaturaMateriale'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkCategMateriale" class="font-weight-bold"
+                >Categoria dei materiali di moltiplicazione</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listCategoriaMateriali"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkCategMateriale"
+                placeholder="Selezionare"
+                formControlName="fkCategMateriale"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  certificatoForm.controls['fkCategMateriale'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['fkCategMateriale'].dirty ||
+                    certificatoForm.controls['fkCategMateriale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['fkCategMateriale'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkTipoMateriale" class="font-weight-bold"
+                >Tipo di materiale di base</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listTipoMateriali"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkTipoMateriale"
+                placeholder="Selezionare"
+                formControlName="fkTipoMateriale"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  certificatoForm.controls['fkTipoMateriale'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['fkTipoMateriale'].dirty ||
+                    certificatoForm.controls['fkTipoMateriale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['fkTipoMateriale'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="destinazione" class="font-weight-bold"
+                >Destinazione per fini forestali</label
+              >
+            </div>
+
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <input
+                type="radio"
+                name="destinazione"
+                formControlName="destinazione"
+                [checked]="
+                  certificatoForm.controls['destinazione'].value == '0'
+                "
+                value="0"
+              />
+              <label
+                style="padding-left: 5px; padding-right: 30px"
+                class="font-weight-bold"
+              >
+                SI
+              </label>
+              <input
+                type="radio"
+                name="destinazione"
+                formControlName="destinazione"
+                [checked]="
+                  certificatoForm.controls['destinazione'].value == '1'
+                "
+                value="1"
+              />
+              <label
+                style="padding-left: 5px; padding-right: 30px"
+                class="font-weight-bold"
+              >
+                NO
+              </label>
+              <div
+                *ngIf="
+                  certificatoForm.controls['destinazione'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['destinazione'].dirty ||
+                    certificatoForm.controls['destinazione'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['destinazione'].errors.required
+                  "
+                >
+                  Attenzione! La scelta di una delle 2 opzioni è obbligatoria
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkPopolamento" class="font-weight-bold"
+                >Riferimento di registro</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listPopolamentoDaSeme"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkPopolamento"
+                placeholder="Selezionare"
+                formControlName="fkPopolamento"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  certificatoForm.controls['fkPopolamento'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['fkPopolamento'].dirty ||
+                    certificatoForm.controls['fkPopolamento'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['fkPopolamento'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="miscuglio" class="font-weight-bold">Miscuglio</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="miscuglio"
+                id="miscuglio"
+                maxlength="50"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkOrigine" class="font-weight-bold">Origine</label>
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listOrigini"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkOrigine"
+                placeholder="Selezionare"
+                formControlName="fkOrigine"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  certificatoForm.controls['fkOrigine'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['fkOrigine'].dirty ||
+                    certificatoForm.controls['fkOrigine'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="certificatoForm.controls['fkOrigine'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="row"
+            *ngIf="
+              certificatoForm.controls['fkOrigine'].value == 3 ||
+              certificatoForm.controls['fkOrigine'].value == 4
+            "
+          >
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="origineNonAutoctoni" class="font-weight-bold"
+                >Descrizione origine</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <textarea
+                type="text"
+                class="form-control"
+                formControlName="origineNonAutoctoni"
+                id="origineNonAutoctoni"
+                maxlength="200"
+                rows="3"
+              >
+              </textarea>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="provenienza" class="font-weight-bold"
+                >Provenienza</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="provenienza"
+                id="provenienza"
+                maxlength="50"
+              />
+              <div
+                *ngIf="
+                  certificatoForm.controls['provenienza'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['provenienza'].dirty ||
+                    certificatoForm.controls['provenienza'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['provenienza'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="produttore" class="font-weight-bold"
+                >Produttore</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="produttore"
+                id="produttore"
+                maxlength="50"
+              />
+              <div
+                *ngIf="
+                  certificatoForm.controls['produttore'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['produttore'].dirty ||
+                    certificatoForm.controls['produttore'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="certificatoForm.controls['produttore'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="altitudine" class="font-weight-bold"
+                >Altitudine</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="altitudine"
+                id="altitudine"
+                maxlength="20"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="annoMaturazioneSemi" class="font-weight-bold"
+                >Anno di maturazione delle sementi</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                maxlength="4"
+                formControlName="annoMaturazioneSemi"
+                id="annoMaturazioneSemi"
+              />
+              <div
+                *ngIf="
+                  certificatoForm.controls['annoMaturazioneSemi'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['annoMaturazioneSemi'].dirty ||
+                    certificatoForm.controls['annoMaturazioneSemi'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['annoMaturazioneSemi'].errors
+                      .minlength
+                  "
+                >
+                  Attenzione! Il valore del campo deve essere numerico di 4
+                  cifre
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaMaterialeBase" class="font-weight-bold"
+                >Quantità del materiale di moltiplicazione</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaMaterialeBase"
+                id="qtaMaterialeBase"
+                maxlength="7"
+                (keyup)="onValueChange('qtaMaterialeBase')"
+              />
+              <div
+                *ngIf="
+                  certificatoForm.controls['qtaMaterialeBase'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['qtaMaterialeBase'].dirty ||
+                    certificatoForm.controls['qtaMaterialeBase'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['qtaMaterialeBase'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    certificatoForm.controls['qtaMaterialeBase'].errors.pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici con massimo
+                  3 decimali
+                </div>
+                <div
+                  *ngIf="
+                    certificatoForm.controls['qtaMaterialeBase'].errors.min
+                  "
+                >
+                  Attenzione! Il valore non può essere inferiore alla quantità
+                  già utilizzata: {{ qtaCertificatoUtilizzata }} Kg
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listUdmMateriale"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkUdmMateriale"
+                placeholder="Selezionare udm"
+                formControlName="fkUdmMateriale"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  certificatoForm.controls['fkUdmMateriale'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['fkUdmMateriale'].dirty ||
+                    certificatoForm.controls['fkUdmMateriale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['fkUdmMateriale'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="flgPartitaPrecedente" class="font-weight-bold"
+                >Derivazione da partita precedente</label
+              >
+            </div>
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <input
+                type="radio"
+                name="flgPartitaPrecedente"
+                formControlName="flgPartitaPrecedente"
+                value="S"
+                id="flgPartitaPrecedente"
+                [checked]="
+                  certificatoForm.controls['flgPartitaPrecedente'].value == 'S'
+                "
+              />
+              <label
+                style="padding-left: 5px; padding-right: 30px"
+                class="font-weight-bold"
+              >
+                SI
+              </label>
+              <input
+                type="radio"
+                name="flgPartitaPrecedente"
+                formControlName="flgPartitaPrecedente"
+                value="N"
+                [checked]="
+                  certificatoForm.controls['flgPartitaPrecedente'].value == 'N'
+                "
+              />
+              <label
+                style="padding-left: 5px; padding-right: 30px"
+                class="font-weight-bold"
+              >
+                NO
+              </label>
+              <div
+                *ngIf="
+                  certificatoForm.controls['flgPartitaPrecedente'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['flgPartitaPrecedente'].dirty ||
+                    certificatoForm.controls['flgPartitaPrecedente'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['flgPartitaPrecedente'].errors
+                      .required
+                  "
+                >
+                  Attenzione! La scelta di una delle 2 opzioni è obbligatoria
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            *ngIf="
+              certificatoForm.controls['flgPartitaPrecedente'].value == 'S'
+            "
+          >
+            <div class="row">
+              <div
+                class="col-lg-4 col-md-3 col-12 mb-3"
+                style="text-align: right"
+              >
+                <label for="nCertificatoPrecedente" class="font-weight-bold">
+                  Numero del precedente certificato
+                </label>
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nCertificatoPrecedente"
+                  id="nCertificatoPrecedente"
+                  maxlength="20"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="col-lg-4 col-md-3 col-12 mb-3"
+                style="text-align: right"
+              >
+                <label for="qtaPartitaIniziale" class="font-weight-bold"
+                  >Quantità nella partita iniziale</label
+                >
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="qtaPartitaIniziale"
+                  id="qtaPartitaIniziale"
+                  maxlength="4"
+                />
+                <div
+                  *ngIf="
+                    certificatoForm.controls['qtaPartitaIniziale'].invalid &&
+                    (submited ||
+                      certificatoForm.controls['qtaPartitaIniziale'].dirty ||
+                      certificatoForm.controls['qtaPartitaIniziale'].touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div
+                    *ngIf="
+                      certificatoForm.controls['qtaPartitaIniziale'].errors
+                        .pattern
+                    "
+                  >
+                    Attenzione! Il campo ammette solo valori numerici
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="durataAllevamento" class="font-weight-bold"
+                >Durata allevamento in vivaio</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="durataAllevamento"
+                id="durataAllevamento"
+                maxlength="20"
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="flgPropagazione" class="font-weight-bold"
+                >Successiva propagazione vegetativa</label
+              >
+            </div>
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <input
+                type="radio"
+                name="flgPropagazione"
+                formControlName="flgPropagazione"
+                [checked]="
+                  certificatoForm.controls['flgPropagazione'].value == 'S'
+                "
+                value="S"
+              />
+              <label
+                style="padding-left: 5px; padding-right: 30px"
+                class="font-weight-bold"
+              >
+                SI
+              </label>
+              <input
+                type="radio"
+                name="flgPropagazione"
+                formControlName="flgPropagazione"
+                [checked]="
+                  certificatoForm.controls['flgPropagazione'].value == 'N'
+                "
+                value="N"
+              />
+              <label
+                style="padding-left: 5px; padding-right: 30px"
+                class="font-weight-bold"
+              >
+                NO
+              </label>
+              <div
+                *ngIf="
+                  certificatoForm.controls['flgPropagazione'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['flgPropagazione'].dirty ||
+                    certificatoForm.controls['flgPropagazione'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['flgPropagazione'].errors.required
+                  "
+                >
+                  Attenzione! La scelta di una delle 2 opzioni è obbligatoria
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="certificatoForm.controls['flgPropagazione'].value == 'S'">
+            <div class="row">
+              <div
+                class="col-lg-4 col-md-3 col-12 mb-3"
+                style="text-align: right"
+              >
+                <label for="metodoPropagazione" class="font-weight-bold"
+                  >Metodo di propagazione</label
+                >
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="metodoPropagazione"
+                  id="metodoPropagazione"
+                  maxlength="50"
+                />
+              </div>
+            </div>
+            <div class="row">
+              <div
+                class="col-lg-4 col-md-3 col-12 mb-3"
+                style="text-align: right"
+              >
+                <label for="nCicliPropagazione" class="font-weight-bold"
+                  >Numero di cicli di propagazione</label
+                >
+              </div>
+              <div class="col-lg-3 col-md-3 col-12 mb-3">
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="nCicliPropagazione"
+                  id="altitudine"
+                  maxlength="20"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="note" class="font-weight-bold">Note finali</label>
+            </div>
+            <div class="col-lg-8 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="note"
+                id="note"
+                maxlength="500"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="dataCertificato" class="font-weight-bold"
+                >Data certificato</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <p-calendar
+                [locale]="it"
+                [yearNavigator]="true"
+                [monthNavigator]="true"
+                yearRange="1970:{{ currentYear }}"
+                dateFormat="dd/mm/yy"
+                inputId="dataCertificato"
+                formControlName="dataCertificato"
+                showButtonBar="true"
+                [showIcon]="true"
+              >
+              </p-calendar>
+              <div
+                *ngIf="
+                  certificatoForm.controls['dataCertificato'].invalid &&
+                  (submited ||
+                    certificatoForm.controls['dataCertificato'].dirty ||
+                    certificatoForm.controls['dataCertificato'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    certificatoForm.controls['dataCertificato'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <p-button
+        *ngIf="idProvenienza"
+        class="full-width-media"
+        label="SCARICA CERTIFICATO"
+        (onClick)="downloadCertificato()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+
+      <p-button
+        class="full-width-media"
+        label="CONFERMA"
+        (onClick)="conferma()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+
+  <app-alert-utente
+    [typeMessage]="popUpType"
+    [textMessage]="popUpMsg"
+    [btn1Label]="popUpBtn1"
+    (btn1Emitter)="closePopUp()"
+  >
+  </app-alert-utente>
+</div>

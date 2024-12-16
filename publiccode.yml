@@ -1,0 +1,72 @@
+publiccodeYmlVersion: "0.4"
+name: VIFO
+applicationSuite: SIFOR
+url: https://github.com/regione-piemonte/vifo.git
+landingURL: https://github.com/regione-piemonte/vifo
+softwareVersion: 1.1.3
+releaseDate: 2024-10-02
+platforms:
+  - web
+categories:
+  - business-process-management
+  - office
+  - document-management
+usedBy:
+  - Regione Piemonte
+developmentStatus: stable
+softwareType: standalone/web
+description:
+  it:
+    shortDescription: "Gestionale Vivai Forestali della Regione Piemonte "
+    longDescription: >-
+      Il servizio permette la compilazione da parte dei soggetti richiedenti
+      privati e pubblici l’inserimento e l’invio ai vivai regionali di domande
+      di piantine forestali a titolo oneroso e gratuito e permette ai referenti
+      dei vivai di assegnare le partite richieste e di tenere aggiornati gli
+      inventari di frutti, semi e piante. Permette anche ai gestori il
+      caricamento in anagrafica dei certificati principali di identità dei
+      materiali di base utilizzati dai vivai regionali.
+
+      La Regione provvede direttamente alla gestione dei propri vivai, la cui
+      attività è finalizzata alla produzione di piante forestali autoctone,
+      controllate e certificate. 
+
+      L'assegnazione a pagamento delle piante prodotte è concessa a soggetti
+      pubblici e privati, a prescindere dallo scopo e dalla localizzazione del
+      terreno di messa a dimora. 
+
+      Le piante possono anche essere assegnate gratuitamente per la
+      realizzazione in territorio piemontese di specifici obiettivi (ad es.
+      interventi di educazione e didattica ambientale, sperimentazione e
+      divulgazione sulle tematiche della biodiversità forestale, recupero
+      ambientale, imboschimento, rinaturalizzazione e sistemazione del
+      territorio, ricostituzione di boschi danneggiati da incendi e altre
+      calamità naturali)
+    features:
+      - Accreditamento dati utente
+      - Inserimento di una nuova domanda per assegnazione gratuita di piantine
+      - Inserimento di  una nuova domanda per assegnazione onerosa di piantine
+        (vendita)
+      - Visualizzazione l’elenco delle domande inserite
+      - Invio delle domande
+      - Pagamento online piantine
+      - Gestione degli Inventari
+      - Gestione anagrafiche
+    screenshots:
+      - screenshots/VIFO-1.png
+      - screenshots/VIFO-2.png
+      - screenshots/VIFO-3.png
+      - screenshots/VIFO-4.png
+legal:
+  license: EUPL-1.2
+maintenance:
+  type: internal
+  contacts:
+    - name: Marisa Matta
+      email: marisa.matta@csi.it
+      phone: ""
+      affiliation: ""
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - it-IT

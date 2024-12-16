@@ -1,0 +1,217 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<header>
+  <nav class="navbar navbar-light">
+    <div class="container border1">
+      <div class="navbar pl-0">
+        <a class="navbar-brand" href="/sifor/index.shtml">
+          Sistema gestionale vivai forestali della Regione Piemonte
+        </a>
+      </div>
+      <!--/navbar-->
+      <div class="right">
+        <ul class="navbar-nav navbar-expand">
+          <li class="nav-item info-item">
+            <a
+              class="nav-link"
+              href="#"
+              data-toggle="modal"
+              data-target="#info"
+              title="Informazioni"
+              ><i class="fas fa-info-circle"></i
+              ><span class="sr-only">Informazioni</span></a
+            >
+          </li>
+
+          <li class="nav-item dropdown">
+            <button
+              class="btn-name dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span class="utente">{{ userIniziali }}</span>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="/idf"
+                ><i class="fas fa-user"></i> {{ user?.nome }}
+                {{ user?.cognome }}</a
+              >
+              <div class="dropdown-divider"></div>
+              <a
+                class="dropdown-item esci popup-link"
+                href="#"
+                data-toggle="modal"
+                data-target="#logout"
+                title="Esci"
+              >
+                <i class="fas fa-sign-out-alt"></i> Esci
+              </a>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!-- /navbar-collapse -->
+    </div>
+    <!--container-->
+  </nav>
+</header>
+
+<!-- Modal logout -->
+<div
+  class="modal fade"
+  id="logout"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="logout"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Esci</h2>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Chiudi"
+          title="Chiudi"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="grey mb-5">Sei sicuro di voler uscire?</div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-primary float-left"
+          data-dismiss="modal"
+        >
+          No
+        </button>
+        <button
+          type="button"
+          (click)="logout()"
+          class="btn btn-primary float-right"
+          data-dismiss="modal"
+        >
+          Si
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--/ Modal logout -->
+
+<!-- Modal info -->
+<div
+  class="modal fade"
+  id="info"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="info"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title">Informazioni / Aiuto</h2>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Chiudi"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="headerModalInfo">
+        <div class="grey mb-5 text-left">
+          <p>
+            Per <strong>informazioni</strong> e
+            <strong>chiarimenti</strong> relativi alla gestione dei vivai
+            forestali e alla normativa vigente scrivere a:
+          </p>
+          <p>
+            Regione Piemonte Direzione Opere Pubbliche, Difesa del Suolo,
+            Protezione Civile, Trasporti e Logistica <br />
+            Settore Lavori in amministrazione diretta di sistemazione
+            idraulico-forestale, di tutela del territorio e vivaistica forestale
+            <br />
+            Piazza Piemonte 1, 10127 Torino
+          </p>
+          <p>
+            mail:
+            <a
+              href="mailto:vivai@regione.piemonte.it"
+              target="_blank"
+              title="Si apre in una nuova finestra"
+              ><span
+                class="sr-only"
+                aria-label="Clicca per inviare una email"
+              ></span
+              >vivai@regione.piemonte.it <i class="fas fa-external-link-alt"></i
+            ></a>
+          </p>
+          <p>telefono: 0114321035</p>
+          <p>
+            pec:
+            <a
+              href="mailto:lavoriforestalivivai@cert.regione.piemonte.it"
+              target="_blank"
+              title="Si apre in una nuova finestra"
+              ><span
+                class="sr-only"
+                aria-label="Clicca per inviare una email"
+              ></span
+              >lavoriforestalivivai@cert.regione.piemonte.it
+              <i class="fas fa-external-link-alt"></i
+            ></a>
+          </p>
+          <br />
+          <p>
+            Per richieste di <strong>supporto tecnico</strong> compilare
+            <a
+              href="https://www.servizi.piemonte.it/assistenza/spcatserv/?codice_applicativo=CFI4048"
+              target="_blank"
+              title="Si apre in una nuova finestra"
+              ><span
+                class="sr-only"
+                aria-label="Clicca per inviare una email"
+              ></span
+              >il form di assistenza <i class="fas fa-external-link-alt"></i
+            ></a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="navbar green">
+  <div class="container">
+    <div></div>
+    <div class="right">
+      <ul class="navbar-nav navbar-expand">
+        <li class="nav-item">
+          <a
+            class="nav-link guida"
+            href="https://www.servizi.piemonte.it/srv/vifo/dwd/manuali/manuale_utente_vifo.pdf"
+            target="_blank"
+            title="Guida - Il link si apre in una nuova finestra"
+            ><i class="fas fa-book-open"></i
+            ><span class="sr-only">Guida</span></a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!--container-->
+</nav>

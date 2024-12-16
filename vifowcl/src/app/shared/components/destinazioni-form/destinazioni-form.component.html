@@ -1,0 +1,123 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+
+<div class="row" [formGroup]="destinazioniForm">
+  <div class="col-lg-5 col-md-5 col-12 mb-3">
+    <div>
+      <label for="istatComune" class="font-weight-bold"
+        >&nbsp;<br />COMUNE</label
+      >
+
+      <p-autoComplete
+        formControlName="istatComune"
+        [forceSelection]="'true'"
+        [required]="'true'"
+        autoHighlight="true"
+        [suggestions]="comune"
+        (completeMethod)="filterComune($event)"
+        inputId="istatComune"
+        (onSelect)="onComuneSelect($event)"
+        [minLength]="3"
+        [forceSelection]="true"
+        emptyMessage="Nessun comune trovato"
+        field="nome"
+        [styleClass]="
+          'autoComplete d-flex formControlName.invalid?autoComplete-touched:autoComplete-touched'
+        "
+        [inputStyleClass]="'autoComplete-input'"
+      >
+      </p-autoComplete>
+    </div>
+  </div>
+  <div class="col-lg-1 col-md-1 col-12 mb-3">
+    <div>
+      <label for="sezione" class="font-weight-bold">&nbsp;<br />SEZIONE</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="sezione"
+        id="sezione"
+        maxlength="1"
+      />
+    </div>
+  </div>
+  <div class="col-lg-1 col-md-1 col-12 mb-3">
+    <div>
+      <label for="foglio" class="font-weight-bold">&nbsp;<br />FOGLIO</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="foglio"
+        id="foglio"
+        maxlength="5"
+      />
+    </div>
+  </div>
+  <div class="col-lg-1 col-md-1 col-12 mb-3">
+    <div>
+      <label for="particella" class="font-weight-bold"
+        >&nbsp;<br />
+        PARTICELLA</label
+      >
+      <input
+        type="text"
+        class="form-control"
+        formControlName="particella"
+        id="particella"
+        maxlength="6"
+      />
+    </div>
+  </div>
+  <div class="col-lg-1 col-md-1 col-12 mb-3">
+    <div>
+      <label for="metriLineari" class="font-weight-bold">METRI LINEARI</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="metriLineari"
+        id="metriLineari"
+        maxlength="6"
+        (keyup)="refresh('metriQuadri')"
+      />
+    </div>
+  </div>
+  <div class="col-lg-1 col-md-1 col-12 mb-3">
+    <div>
+      <label for="metriQuadri" class="font-weight-bold">SUPERFICIE MQ</label>
+      <input
+        type="text"
+        class="form-control"
+        formControlName="metriQuadri"
+        id="metriQuadri"
+        maxlength="6"
+        (keyup)="refresh('metriLineari')"
+      />
+    </div>
+  </div>
+  <div class="col-lg-2 col-md-2 col-12 mb-3">
+    <div>
+      <br />
+      <p-button
+        style="position: absolute; bottom: 0"
+        label="Aggiungi"
+        [disabled]="!this.destinazioniForm.valid"
+        pTooltip="Aggiungi destinazione"
+        tooltipPosition="top"
+        (onClick)="addDestinazione()"
+      ></p-button>
+    </div>
+  </div>
+</div>
+<div class="row" *ngIf="listDestinazioni.length > 0">
+  <app-reusable-front-table
+    [initiallySortedColumn]="sortedColumn"
+    [headers]="tableHeaders"
+    [data]="listDestinazioni"
+    [delete]="true"
+    [fieldToDelete]="'idDomanda'"
+    (deleteRow)="deleteDestinazione($event)"
+  ></app-reusable-front-table>
+</div>

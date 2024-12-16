@@ -1,0 +1,8 @@
+// import della shared library passando il branch develop se non ne viene passato
+// esplicitamente come env parameter
+def ampBranch = env.PIPELINE_LIBRARY_BRANCH ?: 'develop'
+library("amp-library@${ampBranch}") _
+
+// invocazione della classe principale contenente la struttura generale della Pipeline
+//StandardPipeline{}
+ComponentPipeline{}

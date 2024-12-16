@@ -1,0 +1,60 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>Verifica notifica trasferimento partita specie arborea tra vivai</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="col-md-12" *ngIf="tableData">
+    <div>
+      <strong>Risultati trovati: {{ totalCount }}</strong>
+    </div>
+    <br />
+    <app-reusable-no-select-table
+      [totalSize]="totalCount"
+      [initiallySortedColumn]="sortedColumn"
+      [headers]="tableHeaders"
+      [data]="tableData ? tableData : []"
+      (updateTableChanges)="getUpdatedTable($event)"
+      [visualizaTable]="true"
+      [view]="true"
+      (viewRowEmitter)="viewRow($event)"
+      [edit]="true"
+      (editRowEmitter)="editRow($event)"
+    ></app-reusable-no-select-table>
+    <div>
+      <strong>Risultati trovati: {{ totalCount }}</strong>
+    </div>
+  </div>
+  <div class="col-md-12" *ngIf="!tableData" style="background: lightgray">
+    <strong>Nessuna notifica di trasferimento da gestire!</strong>
+    <br />
+  </div>
+  <hr />
+
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,488 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>Ricerca in archivio</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-12 mb-3">
+            <input
+              type="radio"
+              name="ricercaType"
+              id="r-domande"
+              [checked]="ricercaType == 'domande'"
+              (change)="changeRicercaType('domande')"
+            />
+            <label class="font-weight-bold ml-1" for="r-domande"
+              >Ricerca domande</label
+            >
+          </div>
+          <div class="col-lg-4 col-md-4 col-12 mb-3">
+            <input
+              type="radio"
+              name="ricercaType"
+              id="r-ddt"
+              [checked]="ricercaType == 'ddt'"
+              (change)="changeRicercaType('ddt')"
+            />
+            <label class="font-weight-bold ml-1" for="r-ddt">Ricerca DDT</label>
+          </div>
+        </div>
+        <hr />
+        <div *ngIf="ricercaType == 'domande'" [formGroup]="ricercaDomandeForm">
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idDomanda" class="font-weight-bold"
+                >Identificativo domanda</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="idDomanda"
+                id="idDomanda"
+              />
+            </div>
+          </div>
+          <div class="row" *ngIf="this.userProfile == 'GESTORE'">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idVivaio" class="font-weight-bold"
+                >Vivaio forestale</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listVivai"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="idVivaio"
+                placeholder="Selezionare"
+                formControlName="idVivaio"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="tipo" class="font-weight-bold">Tipo domanda</label>
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <select
+                formControlName="tipo"
+                class="'autoComplete form-control d-flex justify-content-end'"
+                id="tipo"
+              >
+                <option value="">-- Seleziona --</option>
+                <option value="2">
+                  Domande di assegnazione onerosa (vendita)
+                </option>
+                <option value="1">
+                  Domande di assegnazione gratuita (tutte)
+                </option>
+                <option value="1-1">
+                  Domande di assegnazione gratuita - progetti di educazione,
+                  didattica ambientale, ecc.
+                </option>
+                <option value="1-2">
+                  Domande di assegnazione gratuita - finalità di recupero
+                  ambientale, ecc.
+                </option>
+                <option value="1-3">
+                  Domande di assegnazione gratuita - gli adempimenti previsti
+                  dalla L. 113/92
+                </option>
+                <option value="1-4">
+                  Domande di assegnazione gratuita - “Giornata Nazionale
+                  dell’Albero”
+                </option>
+                <option value="1-5">
+                  Domande di assegnazione gratuita - interventi di
+                  ricostituzione di boschi danneggiati
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label class="font-weight-bold">Data invio domanda</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="dataInvioDa" class="font-weight-bold">da</label>
+              <p-calendar
+                [locale]="it"
+                [yearNavigator]="true"
+                [monthNavigator]="true"
+                yearRange="1970:{{ currentYear }}"
+                dateFormat="dd-mm-yy"
+                inputId="dataInvioDa"
+                formControlName="dataInvioDa"
+                showButtonBar="true"
+                [showIcon]="true"
+              >
+              </p-calendar>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="dataInvioA" class="font-weight-bold">a</label>
+              <p-calendar
+                [locale]="it"
+                [yearNavigator]="true"
+                [monthNavigator]="true"
+                yearRange="1970:{{ currentYear }}"
+                dateFormat="dd-mm-yy"
+                inputId="dataInvioA"
+                formControlName="dataInvioA"
+                showButtonBar="true"
+                [showIcon]="true"
+              >
+              </p-calendar>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="stato" class="font-weight-bold">Stato domanda</label>
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listStatoDomanda"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="stato"
+                placeholder="Selezionare"
+                formControlName="stato"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="cognome" class="font-weight-bold"
+                >Cognome Richiedente (PF)</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-autoComplete
+                formControlName="cognome"
+                autoHighlight="true"
+                [suggestions]="listFilteredCognomeRichiedente"
+                (completeMethod)="filterCognomeRichiedente($event)"
+                inputId="cognome"
+                (onSelect)="resetAutocomplete('denominazione')"
+                [minLength]="3"
+                [dropdown]="true"
+                (onClear)="clearValue('cognome')"
+                emptyMessage="{{ emptyMessageAC }}"
+                field="label"
+                [styleClass]="'autoComplete d-flex'"
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="denominazione" class="font-weight-bold"
+                >Denominazione Richiedente (PG)</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-autoComplete
+                formControlName="denominazione"
+                autoHighlight="true"
+                [suggestions]="listFilteredDenominazioneRichiedente"
+                (completeMethod)="filterDenominazioneRichiedente($event)"
+                inputId="denominazione"
+                (onSelect)="resetAutocomplete('cognome')"
+                [minLength]="3"
+                [dropdown]="true"
+                (onClear)="clearValue('denominazione')"
+                emptyMessage="{{ emptyMessageAC }}"
+                field="label"
+                [styleClass]="'autoComplete d-flex'"
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="comune" class="font-weight-bold"
+                >Comune di destinazione</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-autoComplete
+                formControlName="comune"
+                autoHighlight="true"
+                [suggestions]="listFilteredComuni"
+                (completeMethod)="filterComune($event)"
+                inputId="comune"
+                [minLength]="3"
+                [dropdown]="false"
+                emptyMessage="{{ emptyMessageAC }}"
+                field="nome"
+                [styleClass]="'autoComplete d-flex'"
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="specieRichieste" class="font-weight-bold"
+                >Specie richieste</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-multiSelect
+                [options]="listSpecieRichieste"
+                [(ngModel)]="selectedSpecie"
+                [styleClass]="
+                  'autoComplete d-flex formControlName.invalid?autoComplete-touched:autoComplete-touched'
+                "
+                optionLabel="nomeComune"
+                optionValue="idSpecie"
+                formControlName="specieRichieste"
+                defaultLabel="Seleziona una o più specie"
+                selectedItemsLabel="{3} specie selezionate"
+                inputId="specieRichieste"
+              >
+              </p-multiSelect>
+            </div>
+          </div>
+          <div class="row" *ngIf="userProfile == 'VIVAIO'">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="domandaVivaio" class="font-weight-bold"
+                >Solo domande compilate dal vivaio</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <input
+                type="checkbox"
+                class="checkboxDomandeVivaio"
+                formControlName="domandaVivaio"
+                id="domandaVivaio"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="escludiDomandeChiuse" class="font-weight-bold"
+                >Escludi domande archiviate</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <input
+                type="checkbox"
+                class="checkboxDomandeVivaio"
+                formControlName="escludiDomandeChiuse"
+                id="escludiDomandeChiuse"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="ricercaType == 'ddt'" [formGroup]="ricercaDdtForm">
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="numeroDdt" class="font-weight-bold">Numero DDT</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="numeroDdt"
+                id="numeroDdt"
+                maxlength="10"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="annoDdt" class="font-weight-bold">Anno</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="annoDdt"
+                id="annoDdt"
+                maxlength="4"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idDomanda" class="font-weight-bold"
+                >Identificativo Domanda di appartenenza</label
+              >
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="idDomanda"
+                id="idDomanda"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="cognome" class="font-weight-bold"
+                >Cognome Richiedente (PF)</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-autoComplete
+                formControlName="cognome"
+                autoHighlight="true"
+                [suggestions]="listFilteredCognomeRichiedente"
+                (completeMethod)="filterCognomeRichiedente($event)"
+                id="cognome"
+                (onSelect)="resetAutocomplete('denominazione')"
+                [minLength]="3"
+                [dropdown]="true"
+                emptyMessage="{{ emptyMessageAC }}"
+                field="label"
+                [styleClass]="'autoComplete d-flex'"
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="denominazione" class="font-weight-bold"
+                >Denominazione Richiedente (PG)</label
+              >
+            </div>
+            <div class="col-lg-7 col-md-3 col-12 mb-3">
+              <p-autoComplete
+                formControlName="denominazione"
+                autoHighlight="true"
+                [suggestions]="listFilteredDenominazioneRichiedente"
+                (completeMethod)="filterDenominazioneRichiedente($event)"
+                id="denominazione"
+                (onSelect)="resetAutocomplete('cognome')"
+                [minLength]="3"
+                [dropdown]="true"
+                emptyMessage="{{ emptyMessageAC }}"
+                field="label"
+                [styleClass]="'autoComplete d-flex'"
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="black-hr" />
+  <div class="row" *ngIf="ricercaType == 'domande'">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="Pulisci"
+        (onClick)="resetFormDomande()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="Ricerca"
+        [disabled]="!ricercaDomandeForm.valid"
+        (onClick)="ricercaDomande()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="row" *ngIf="ricercaType == 'ddt'">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="Pulisci"
+        (onClick)="resetFormDdt()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        label="Ricerca"
+        [disabled]="!ricercaDdtForm.valid"
+        (onClick)="ricercaDdt()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<br />
+<div class="row" *ngIf="ricercaType == 'domande'">
+  <app-risultati-ricerca
+    style="width: 100%"
+    [first]="first"
+    [totalCountDomande]="totalCountDomande"
+    [domandeTableData]="domandeTableData"
+    [rowsPerPageOptions]="[10, 50, 100]"
+    (emitRicerca)="ricerca()"
+    (emitUpdatedTable)="getUpdatedTable($event)"
+  >
+    >
+  </app-risultati-ricerca>
+</div>
+
+<div class="row" *ngIf="ricercaType == 'ddt'">
+  <div *ngIf="ddtTableData && ddtTableData.length == 0">
+    Nessun risultato trovato con i parametri di ricerca inseriti!
+  </div>
+  <div class="col-md-12" *ngIf="ddtTableData && ddtTableData.length > 0">
+    <div>
+      <strong>Risultati trovati: {{ totalCountDdt }}</strong>
+    </div>
+    <br />
+    <app-reusable-no-select-table
+      [first]="first"
+      [totalSize]="totalCountDdt"
+      [initiallySortedColumn]="sortedColumn"
+      [rowsPerPageOptions]="[10, 50, 100]"
+      [headers]="ddtTableHeaders"
+      [data]="ddtTableData ? ddtTableData : []"
+      (updateTableChanges)="getUpdatedTable($event)"
+      [visualizaTable]="true"
+      [view]="true"
+      (viewRowEmitter)="viewDdt($event)"
+    ></app-reusable-no-select-table>
+    <div>
+      <strong>Risultati trovati: {{ totalCountDdt }}</strong>
+    </div>
+  </div>
+</div>

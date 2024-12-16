@@ -1,0 +1,170 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12 my-4 grey-form">
+      <div class="row" [formGroup]="specieForm" *ngIf="specieForm">
+        <div class="col-lg-4 col-md-4 col-12 mb-3">
+          <h2>SPECIE RICHIESTE</h2>
+        </div>
+        <div class="col-lg-2 col-md-4 col-12 mb-3 mt-3 text-right">
+          <label class="font-weight-bold" for="nomeSpecie"
+            >Filtra per nome</label
+          >
+        </div>
+        <div class="col-lg-3 col-md-4 col-12 mt-1 mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="nomeSpecie"
+            maxlength="50"
+            (keyup.enter)="filterSpecie()"
+            formControlName="nomeSpecie"
+          />
+        </div>
+        <div class="col-lg-3 col-md-4 col-12 mb-3">
+          <p-button
+            label="APPLICA FILTRO"
+            pTooltip="Applica filtro"
+            tooltipPosition="top"
+            (onClick)="filterSpecie()"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="listSpecie && listSpecie.length > 0">
+    <div>
+      <strong>Totali: {{ totalSize }}</strong>
+    </div>
+    <div class="row">
+      <p-table
+        [(first)]="first"
+        [tableStyle]="{ 'width.%': 100 }"
+        [hidden]="!listSpecie || listSpecie.length === 0"
+        [columns]="tableHeaders"
+        [rows]="5"
+        [value]="listSpecie"
+        [lazy]="true"
+        [paginator]="simpleTable ? false : true"
+        [totalRecords]="totalSize ? totalSize : 5"
+        [rowsPerPageOptions]="[5, 10, 15]"
+        (onLazyLoad)="getUpdatedTable($event)"
+        [customSort]="simpleTable ? false : true"
+        [sortField]="simpleTable ? null : initiallySortedColumn"
+        [sortOrder]="simpleTable ? null : 1"
+        [sortMode]="simpleTable ? 'off' : 'single'"
+        [tableStyleClass]="'no-select-table'"
+        [styleClass]="'mb-3'"
+        [resizableColumns]="true"
+        [responsive]="true"
+        [autoLayout]="false"
+      >
+        >
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <ng-container *ngFor="let col of columns">
+              <th *ngIf="col.header.length < 2"></th>
+              <th
+                *ngIf="col.header.length > 1"
+                [pSortableColumn]="col.field"
+                [ngSwitch]="col.field"
+              >
+                {{ col.header }}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </ng-container>
+            <th *ngIf="listSpecieSelected" style="width: 100px"></th>
+            <th *ngIf="!listSpecieSelected" style="width: 50px"></th>
+          </tr>
+        </ng-template>
+        <ng-template
+          pTemplate="body"
+          let-car
+          let-columns="columns"
+          let-index="rowIndex"
+        >
+          <tr>
+            <td *ngFor="let col of columns">
+              <span *ngIf="col.field != 'path'">{{ car[col.field] }}</span>
+              <span *ngIf="col.field == 'path'"
+                ><img alt="immagine specie" height="100" [src]="getUrlImg(car)"
+              /></span>
+            </td>
+            <td>
+              <span *ngIf="listSpecieSelected">
+                <!-- <span *ngIf="isInserted(car)">Inserito</span> -->
+                <!-- <p-button *ngIf="!isInserted(car)" label="+" pTooltip="Aggiungi" tooltipPosition="top" (onClick)="addSpecie(car)"
+                ></p-button> -->
+                <!-- <em *ngIf="isInserted(car)" class="fa fa-check" aria-hidden="true"></em> -->
+                <button
+                  [disabled]="true"
+                  *ngIf="isInserted(car)"
+                  type="button"
+                  title="Inserito"
+                  class="action-button check"
+                >
+                  <em
+                    class="fa fa-check"
+                    style="font-size: 27px"
+                    aria-hidden="true"
+                  ></em>
+                </button>
+                <button
+                  *ngIf="!isInserted(car)"
+                  type="button"
+                  (click)="addSpecie(car)"
+                  title="Aggiungi {{ getDescr(car) }}"
+                  class="action-button"
+                >
+                  <em
+                    class="fa fa-plus-square"
+                    style="font-size: 27px"
+                    aria-hidden="true"
+                  ></em>
+                </button>
+              </span>
+              <button
+                *ngIf="listSpecieSelected && car.flgSchedaPubblicabile"
+                type="button"
+                (click)="viewRow(car)"
+                title="Dettaglio"
+                class="action-button"
+              >
+                <em
+                  class="fa fa-file"
+                  style="font-size: 27px"
+                  aria-hidden="true"
+                ></em>
+              </button>
+              <button
+                *ngIf="!listSpecieSelected"
+                type="button"
+                (click)="viewRow(car)"
+                title="Dettaglio"
+                class="action-button"
+              >
+                <em
+                  class="fas fa-pencil-alt"
+                  style="font-size: 27px"
+                  aria-hidden="true"
+                ></em>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+    <div>
+      <strong>Totali: {{ totalSize }}</strong>
+    </div>
+  </div>
+
+  <div *ngIf="!listSpecie || listSpecie.length === 0">
+    <div class="alert alert-info">Nessun risultato trovato!</div>
+  </div>
+</div>

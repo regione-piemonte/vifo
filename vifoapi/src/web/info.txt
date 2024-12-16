@@ -1,0 +1,1 @@
+La directory non è da cancellare. Serve, lato Jenkins, per permettere il corretto caricamento della parte angular

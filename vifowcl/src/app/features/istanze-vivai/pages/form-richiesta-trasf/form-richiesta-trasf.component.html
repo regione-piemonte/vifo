@@ -1,0 +1,364 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>RICHIESTA DI TRASFERIMENTO SPECIE ARBOREA</h1>
+
+  <div class="row" [formGroup]="richiestaTrasfForm" *ngIf="richiestaTrasfForm">
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="idInventario" class="font-weight-bold"
+                >ID Partita</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong>{{ idInventario ? idInventario : "-" }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="idInventario"
+                id="idInventario"
+              />
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="isTrasferimento"
+                id="isTrasferimento"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkInventarioPiante" class="font-weight-bold"
+                >ID riferimento partita originale</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong>{{
+                richiestaTrasferimentoPartita?.fkInventarioPiante
+              }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="fkInventarioPiante"
+                id="fkInventarioPiante"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkSpecie" class="font-weight-bold">Specie</label>
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong>{{ richiestaTrasferimentoPartita?.specieName }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="fkSpecie"
+                id="fkSpecie"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="qtaCarico" class="font-weight-bold">
+                Quantità
+                {{
+                  richiestaTrasferimentoPartita?.isTrasferimento
+                    ? "trasferita"
+                    : "richiesta"
+                }}
+              </label>
+            </div>
+            <div *ngIf="idInventario" class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong>{{ richiestaTrasferimentoPartita?.qtaCarico }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="qtaCarico"
+                id="qtaCarico"
+              />
+            </div>
+            <div *ngIf="!idInventario" class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaCarico"
+                id="qtaCarico"
+                maxlength="7"
+              />
+              <div
+                *ngIf="
+                  richiestaTrasfForm.controls['qtaCarico'].invalid &&
+                  (submited ||
+                    richiestaTrasfForm.controls['qtaCarico'].dirty ||
+                    richiestaTrasfForm.controls['qtaCarico'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    richiestaTrasfForm.controls['qtaCarico'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    richiestaTrasfForm.controls['qtaCarico'].errors.pattern
+                  "
+                >
+                  Attenzione! Il campo ammette solo valori numerici interi
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkVivaioFrom" class="font-weight-bold"
+                >Vivaio di origine partita</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong>{{
+                richiestaTrasferimentoPartita?.vivaioFromName
+              }}</strong>
+              <input
+                type="hidden"
+                class="form-control"
+                formControlName="fkVivaioFrom"
+                id="fkVivaioFrom"
+              />
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="fkVivaioTo" class="font-weight-bold"
+                >Vivaio di destinazione partita</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong *ngIf="richiestaTrasferimentoPartita?.vivaioToName">{{
+                richiestaTrasferimentoPartita?.vivaioToName
+              }}</strong>
+              <input
+                *ngIf="richiestaTrasferimentoPartita?.vivaioToName"
+                type="hidden"
+                class="form-control"
+                formControlName="fkVivaioTo"
+                id="fkVivaioTo"
+              />
+
+              <p-dropdown
+                *ngIf="!richiestaTrasferimentoPartita?.vivaioToName"
+                [options]="listVivai"
+                autoHighlight="true"
+                [autoWidth]="false"
+                inputId="fkVivaioTo"
+                placeholder="Selezionare"
+                formControlName="fkVivaioTo"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+              <div
+                *ngIf="
+                  richiestaTrasfForm.controls['fkVivaioTo'].invalid &&
+                  (submited ||
+                    richiestaTrasfForm.controls['fkVivaioTo'].dirty ||
+                    richiestaTrasfForm.controls['fkVivaioTo'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    richiestaTrasfForm.controls['fkVivaioTo'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="vivaioNotifica" class="font-weight-bold"
+                >Vivaio inserimento notifica</label
+              >
+            </div>
+            <div class="col-lg-8 col-md-3 col-12 mb-3">
+              <strong id="vivaioNotifica">
+                {{
+                  richiestaTrasferimentoPartita.isTrasferimento
+                    ? richiestaTrasferimentoPartita.vivaioFromName
+                    : richiestaTrasferimentoPartita.vivaioToName
+                }}
+                - Operatore:
+                {{ richiestaTrasferimentoPartita?.operatoreName }}</strong
+              >
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="dataInvioNotifica" class="font-weight-bold"
+                >Data invio notifica</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong id="dataInvioNotifica">{{
+                getFormatDate(richiestaTrasferimentoPartita.dataInvioNotifica)
+              }}</strong>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="motivoRichiesta" class="font-weight-bold"
+                >Motivo richiesta</label
+              >
+            </div>
+            <div *ngIf="idInventario" class="col-lg-6 col-md-3 col-12 mb-3">
+              <strong>{{
+                richiestaTrasferimentoPartita.motivoRichiesta
+              }}</strong>
+              <input
+                type="hidden"
+                formControlName="motivoRichiesta"
+                id="motivoRichiesta"
+              />
+            </div>
+            <div *ngIf="!idInventario" class="col-lg-6 col-md-3 col-12 mb-3">
+              <textarea
+                formControlName="motivoRichiesta"
+                id="motivoRichiesta"
+                [rows]="4"
+                maxlength="500"
+                class="form-control"
+              >
+              </textarea>
+              <div
+                *ngIf="
+                  richiestaTrasfForm.controls['motivoRichiesta'].invalid &&
+                  (submited ||
+                    richiestaTrasfForm.controls['motivoRichiesta'].dirty ||
+                    richiestaTrasfForm.controls['motivoRichiesta'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    richiestaTrasfForm.controls['motivoRichiesta'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="idInventario && isEdit">
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <label for="noteValidInvalidTrasf" class="font-weight-bold"
+                >Note validazione / motivazione rifiuto</label
+              >
+            </div>
+
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <textarea
+                formControlName="noteValidInvalidTrasf"
+                id="noteValidInvalidTrasf"
+                [rows]="4"
+                maxlength="500"
+                class="form-control"
+              >
+              </textarea>
+              <div
+                *ngIf="
+                  richiestaTrasfForm.controls['noteValidInvalidTrasf']
+                    .invalid &&
+                  (submited ||
+                    richiestaTrasfForm.controls['noteValidInvalidTrasf']
+                      .dirty ||
+                    richiestaTrasfForm.controls['noteValidInvalidTrasf']
+                      .touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    richiestaTrasfForm.controls['noteValidInvalidTrasf'].errors
+                      .required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row" *ngIf="isEdit">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        *ngIf="idInventario"
+        label="{{
+          isTrasferimento
+            ? 'ACCETTA TRASFERIMENTO PARTITA NEL PROPRIO VIVAIO'
+            : 'ACCETTA TRASFERIMENTO PARTITA VERSO ALTRO VIVAIO'
+        }}"
+        (onClick)="accettaTrasferimento()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        class="full-width-media"
+        *ngIf="idInventario"
+        label="{{
+          isTrasferimento
+            ? 'RIFIUTA TRASFERIMENTO PARTITA NEL PROPRIO VIVAIO'
+            : 'RIFIUTA TRASFERIMENTO PARTITA VERSO VERSO ALTRO VIVAIO'
+        }}"
+        (onClick)="rifiutaTrasferimento()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+      <p-button
+        *ngIf="!idInventario"
+        class="full-width-media"
+        label="INVIA RICHIESTA DI TRASFERIMENTO"
+        (onClick)="inviaRichiestaTrasferimento()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

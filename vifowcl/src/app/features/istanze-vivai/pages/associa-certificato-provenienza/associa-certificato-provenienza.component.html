@@ -1,0 +1,110 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>Anagrafica Certificati di provenienza</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div
+    class="row"
+    [formGroup]="associaCertificatoForm"
+    *ngIf="associaCertificatoForm"
+  >
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div class="row">
+          <div class="col-lg-5 col-md-3 col-12 mb-3">
+            <label
+              *ngIf="idProvenienza"
+              for="fkOrigine"
+              class="font-weight-bold"
+            >
+              Modifica e Associa Certificato di Provenienza in archivio
+            </label>
+            <label
+              *ngIf="!idProvenienza"
+              for="fkOrigine"
+              class="font-weight-bold"
+            >
+              Modifica Certificato di Provenienza in archivio
+            </label>
+          </div>
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <p-dropdown
+              [options]="listCertificati"
+              autoHighlight="true"
+              [autoWidth]="false"
+              inputId="idProvenienza"
+              placeholder="Selezionare"
+              formControlName="idProvenienza"
+              [styleClass]="
+                'autoComplete form-control d-flex justify-content-end'
+              "
+            >
+            </p-dropdown>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <p-button
+              [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+              label="VAI"
+              [disabled]="associaCertificatoForm.invalid"
+              (onClick)="editCertificato()"
+            ></p-button>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-5 col-md-3 col-12 mb-3">
+            <label
+              *ngIf="idProvenienza"
+              for="fkOrigine"
+              class="font-weight-bold"
+            >
+              Oppure inserisci e Associa nuovo Certificato di Provenienza
+            </label>
+            <label
+              *ngIf="!idProvenienza"
+              for="fkOrigine"
+              class="font-weight-bold"
+            >
+              Oppure inserisci nuovo Certificato di Provenienza
+            </label>
+          </div>
+          <div class="col-lg-4 col-md-3 col-12 mb-3"></div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <p-button
+              [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+              label="VAI"
+              (onClick)="newCertificato()"
+            ></p-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>

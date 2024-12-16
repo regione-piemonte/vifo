@@ -1,0 +1,228 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1 *ngIf="domanda">Inserisci documento di Trasporto (DDT)</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+  <hr />
+  <div class="col-md-12 my-4" *ngIf="domanda">
+    <div class="grey-form" [formGroup]="fatturaAccontoForm">
+      <div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Identificativo domanda:</label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            {{ idDomanda }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold">Identificativo DDT:</label>
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            {{ getIdentificativoDdt() }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label class="font-weight-bold"
+              >Data creazione DDT / operatore:</label
+            >
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            {{ today }}, {{ user.nome }} {{ user.cognome }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label for="numeroFatturaAcconto" class="font-weight-bold"
+              >Numero fattura di acconto:</label
+            >
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <input
+              type="text"
+              class="form-control"
+              formControlName="numeroFatturaAcconto"
+              id="numeroFatturaAcconto"
+            />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-4 col-md-3 col-12 mb-3">
+            <label for="dataFatturaAcconto" class="font-weight-bold"
+              >Data fattura acconto:</label
+            >
+          </div>
+          <div class="col-lg-3 col-md-3 col-12 mb-3">
+            <p-calendar
+              [locale]="it"
+              [yearNavigator]="true"
+              [monthNavigator]="true"
+              yearRange="1970:{{ currentYear }}"
+              dateFormat="dd-mm-yy"
+              inputId="dataFatturaAcconto"
+              formControlName="dataFatturaAcconto"
+              showButtonBar="true"
+              [showIcon]="true"
+            >
+            </p-calendar>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+    <h2>SPECIE RITIRATE</h2>
+    <div class="grey-form" [formGroup]="datiAssegnazioneForm">
+      <table>
+        <tr>
+          <th style="width: 200px" class="font-weight-bold">SPECIE</th>
+          <th class="font-weight-bold">ID PARTITA</th>
+          <th style="width: 200px" class="font-weight-bold">VIVAIO</th>
+          <th class="font-weight-bold">ALLEVAMENTO</th>
+          <th class="font-weight-bold">ETA'</th>
+          <th class="font-weight-bold">ALTEZZA (cm)</th>
+          <th class="font-weight-bold">CERTIFICAZIONE PROVENIENZA</th>
+          <th class="font-weight-bold">QUANTITA' ASSEGNATA RIMANENTE</th>
+          <th class="font-weight-bold">QUANTITA' IN DDT</th>
+        </tr>
+        <ng-container
+          *ngFor="let spForm of datiAssegnazioneForm.controls; let i = index"
+        >
+          <tr [formGroupName]="i">
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="specie"
+                title="{{ tooltip(i, 'specie') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="idPartita"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="vivaio"
+                title="{{ tooltip(i, 'vivaio') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="allevamento"
+                title="{{ tooltip(i, 'allevamento') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="eta"
+                title="{{ tooltip(i, 'eta') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="altezza"
+                title="{{ tooltip(i, 'altezza') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="certificato"
+                title="{{ tooltip(i, 'certificato') }}"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                readonly
+                class="form-control"
+                formControlName="qtaAssegnataRimanente"
+              />
+            </td>
+            <td>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="qtaInDdt"
+                (change)="onChangeQtaDdt(i)"
+                maxlength="7"
+              />
+            </td>
+          </tr>
+        </ng-container>
+      </table>
+      <br />
+    </div>
+  </div>
+
+  <div *ngIf="userProfile != 'RICHIEDENTE'">
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <p-button
+          class="full-width-media"
+          label="CONFERMA"
+          (onClick)="confermaDDT()"
+          [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+        >
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

@@ -1,0 +1,253 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>Anagrafica soggetti beneficiari - Ricerca soggetto</h1>
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+  <div
+    class="row"
+    [formGroup]="ricercaForm"
+    *ngIf="ricercaForm && !tableSoggetti"
+  >
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div>
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="cognome" class="font-weight-bold">Cognome</label>
+            </div>
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                (change)="reset('ragioneSociale')"
+                formControlName="cognome"
+                id="cognome"
+                maxlength="50"
+              />
+              <div
+                *ngIf="
+                  ricercaForm.controls['cognome'].invalid &&
+                  (submited ||
+                    ricercaForm.controls['cognome'].dirty ||
+                    ricercaForm.controls['cognome'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="ricercaForm.controls['cognome'].errors.minlength">
+                  Attenzione! Inserire almeno 3 caratteri.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="ragioneSociale" class="font-weight-bold"
+                >Ragione Sociale</label
+              >
+            </div>
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                (change)="reset('cognome')"
+                formControlName="ragioneSociale"
+                id="ragioneSociale"
+                maxlength="50"
+              />
+              <div
+                *ngIf="
+                  ricercaForm.controls['ragioneSociale'].invalid &&
+                  (submited ||
+                    ricercaForm.controls['ragioneSociale'].dirty ||
+                    ricercaForm.controls['ragioneSociale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    ricercaForm.controls['ragioneSociale'].errors.minlength
+                  "
+                >
+                  Attenzione! Inserire almeno 3 caratteri.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="codFiscalePiva" class="font-weight-bold"
+                >Codice Fiscale / Partita IVA</label
+              >
+            </div>
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="codFiscalePiva"
+                id="codFiscalePiva"
+                maxlength="16"
+              />
+              <div
+                *ngIf="
+                  ricercaForm.controls['codFiscalePiva'].invalid &&
+                  (submited ||
+                    ricercaForm.controls['codFiscalePiva'].dirty ||
+                    ricercaForm.controls['codFiscalePiva'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    ricercaForm.controls['codFiscalePiva'].errors.minlength
+                  "
+                >
+                  Attenzione! Inserire almeno 3 caratteri.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="provincia" class="font-weight-bold">Provincia</label>
+            </div>
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <p-dropdown
+                [options]="listProvince"
+                autoHighlight="true"
+                [autoWidth]="false"
+                (onChange)="onChangeProvincia($event)"
+                inputId="provincia"
+                placeholder="Selezionare"
+                formControlName="provincia"
+                [styleClass]="
+                  'autoComplete form-control d-flex justify-content-end'
+                "
+              >
+              </p-dropdown>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="comune" class="font-weight-bold">Comune</label>
+              <span style="padding-left: 20px">&nbsp;</span>
+              <input
+                type="checkbox"
+                class="checkboxCustom"
+                (change)="chengeComuneEstero()"
+                id="comuneEstero"
+                [checked]="isComuneEstero"
+              />
+              <label for="comuneEstero">estero</label>
+            </div>
+            <div class="col-lg-5 col-md-3 col-12 mb-3">
+              <p-autoComplete
+                formControlName="comune"
+                [forceSelection]="'true'"
+                [required]="'true'"
+                autoHighlight="true"
+                [suggestions]="comune"
+                (completeMethod)="filterComune($event)"
+                inputId="comune"
+                [minLength]="3"
+                [forceSelection]="true"
+                dropdown="true"
+                emptyMessage="Selezionare prima una provincia"
+                field="nome"
+                (onClear)="clearValue()"
+                [styleClass]="
+                  'autoComplete d-flex formControlName.invalid?autoComplete-touched:autoComplete-touched'
+                "
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+
+              <!-- <p-dropdown [disabled]="!listComuni"
+                [options]='listComuni' autoHighlight="true" [autoWidth]="false"              
+                id="comune" placeholder="Selezionare" formControlName="comune"
+                optionLabel="nome" optionValue="codIstat"
+                [styleClass]="'autoComplete form-control d-flex justify-content-end'">
+              </p-dropdown> -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="ricercaForm && !tableSoggetti">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="RICERCA"
+        [disabled]="ricercaForm.invalid"
+        (onClick)="avviaRicerca()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+  </div>
+
+  <div class="col-md-12" *ngIf="tableSoggetti">
+    <div>
+      <strong>Risultati trovati: {{ totalCount }}</strong>
+    </div>
+    <br />
+    <app-reusable-no-select-table
+      [first]="first"
+      [totalSize]="totalCount"
+      [initiallySortedColumn]="sortedColumn"
+      [headers]="tableHeaders"
+      [data]="tableSoggetti ? tableSoggetti : []"
+      (updateTableChanges)="getUpdatedTable($event)"
+      [visualizaTable]="true"
+      [edit]="true"
+      (editRowEmitter)="viewRow($event)"
+    ></app-reusable-no-select-table>
+    <div>
+      <strong>Risultati trovati: {{ totalCount }}</strong>
+    </div>
+  </div>
+
+  <div class="col-md-12 alert alert-warning" *ngIf="totalCount == 0">
+    Nessun soggetto trovato con i parametri di ricerca inseriti!
+    <br /><br />
+  </div>
+  <hr />
+  <div class="row">
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

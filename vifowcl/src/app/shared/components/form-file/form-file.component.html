@@ -1,0 +1,178 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <div *ngIf="tipoDomanda == 2 && !isEntePubblico">
+    <div class="grey1 px-3">
+      <div>
+        <button
+          _ngcontent-c14=""
+          title="Scarica"
+          type="button"
+          (click)="downloadDichiarazione('FIRMA_AUTOGRAFA')"
+          class="ng-star-inserted action-button mr-2"
+        >
+          <em _ngcontent-c14="" aria-hidden="true" class="fa fa-download"></em>
+        </button>
+        <span>Scarica domanda</span>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="grey1 px-3" *ngIf="tipoDomanda == 1 || isEntePubblico">
+      <div>
+        <button
+          _ngcontent-c14=""
+          title="Scarica"
+          type="button"
+          (click)="downloadDichiarazione('FIRMA_DIGITALE')"
+          class="ng-star-inserted action-button mr-2"
+        >
+          <em _ngcontent-c14="" aria-hidden="true" class="fa fa-download"></em>
+        </button>
+        <span>Scarica domanda per firma digitale</span><br />
+        <ng-container *ngIf="!isEntePubblico">
+          <button
+            _ngcontent-c14=""
+            title="Scarica"
+            type="button"
+            (click)="downloadDichiarazione('FIRMA_AUTOGRAFA')"
+            class="ng-star-inserted action-button mr-2"
+          >
+            <em
+              _ngcontent-c14=""
+              aria-hidden="true"
+              class="fa fa-download"
+            ></em>
+          </button>
+          <span>Scarica domanda per firma autografa</span>
+        </ng-container>
+      </div>
+
+      <br />
+
+      <div [ngClass]="{ disabledALL: viewType != 'partTwo' }">
+        <div class="col-md-12 my-4">
+          <h2>Carica la domanda firmata da inviare al vivaio competente</h2>
+          <hr />
+          <div class="col-md-12">
+            <label for="digitalSignature" class="font-weight-bold"
+              >Allega Domanda
+            </label>
+            <div style="font-style: oblique; padding-bottom: 12px">
+              Selezionare l’opzione “Digitale” o “Autografa” a seconda che il
+              file che si intende caricare sia stato firmato digitalmente (firma
+              Cades o Pades) o con firma autografa. Procedere cliccando su
+              “Scegli file” per recuperare il file dal proprio pc. Una volta
+              selezionato, cliccare su “Carica”: il file verrà aggiunto
+              nell’”Elenco allegati caricati” sottostante. Il sistema accetta
+              file di dimensione massima 5 Mb e di formato .pdf/.p7m e jpeg.
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div>
+              <input
+                type="radio"
+                name="radio-docType"
+                [disabled]="listDocumenti.length > 0 || viewType != 'partTwo'"
+                [checked]="docType == 'D'"
+                (change)="changeDocType('D')"
+                id="digitale"
+              />
+              <label
+                style="padding-left: 5px; padding-right: 30px"
+                for="digitale"
+                >Digitale</label
+              >
+              <ng-container *ngIf="!isEntePubblico">
+                <input
+                  type="radio"
+                  name="radio-docType"
+                  [disabled]="listDocumenti.length > 0 || viewType != 'partTwo'"
+                  [checked]="docType == 'A'"
+                  (change)="changeDocType('A')"
+                  id="autografa"
+                />
+                <label
+                  style="padding-left: 5px; padding-right: 30px"
+                  for="autografa"
+                  >Autografa</label
+                >
+              </ng-container>
+            </div>
+
+            <p-fileUpload
+              *ngIf="
+                userType == 'PF' || docType || isDocPresent([1, 2, 3, 4, 5, 6])
+              "
+              [disabled]="
+                isDocPresent([1, 2, 3, 4, 5, 6]) || viewType != 'partTwo'
+              "
+              id="fileUpload_0"
+              chooseLabel="Scegli file"
+              uploadLabel="Carica"
+              cancelLabel="Cancella"
+              name="image"
+              maxFileSize="5000000"
+              invalidFileSizeMessageSummary="{0}: dimensione file non ammessa"
+              invalidFileSizeMessageDetail="(max {0})"
+              customUpload="true"
+              (uploadHandler)="uploadFile($event, 0)"
+              [styleClass]="'mb-3'"
+            ></p-fileUpload>
+          </div>
+        </div>
+        <div *ngIf="docType == 'A'">
+          <div class="col-md-12 my-4">
+            <div class="col-md-12">
+              <label for="signature" class="font-weight-bold"
+                >Allega scansione documento</label
+              ><p-fileUpload
+                [disabled]="isDocPresent([13]) || viewType != 'partTwo'"
+                chooseLabel="Scegli file"
+                uploadLabel="Carica"
+                cancelLabel="Cancella"
+                name="image"
+                maxFileSize="5000000"
+                invalidFileSizeMessageSummary="{0}: dimensione file non ammessa"
+                invalidFileSizeMessageDetail="(max {0})"
+                customUpload="true"
+                (uploadHandler)="uploadFile($event, 13)"
+                [styleClass]="'mb-3'"
+                id="fileUpload_13"
+              ></p-fileUpload>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <app-list-of-attachments [tableData]=""></app-list-of-attachments> -->
+    <br />
+    <h4 class="header" *ngIf="listDocumenti && listDocumenti.length > 0">
+      ELENCO ALLEGATI CARICATI
+    </h4>
+    <app-reusable-front-table
+      *ngIf="listDocumenti && listDocumenti.length > 0"
+      [data]="listDocumenti"
+      [headers]="allegatiTableHeaders"
+      [download]="true"
+      [delete]="viewType == 'partTwo' ? true : false"
+      [fieldToDownload]="'idAllegato'"
+      [fieldToDelete]="'idDocumentoAllegato'"
+      (deleteRow)="deleteAllegato($event)"
+      (downloadEmitter)="downloadAllegato($event)"
+    >
+    </app-reusable-front-table>
+  </div>
+</div>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+>
+</app-alert-utente>

@@ -1,0 +1,36 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<p-dialog
+  header=""
+  [(visible)]="textMessage"
+  [contentStyle]="{ 'max-height': '600px' }"
+  [transitionOptions]="'0ms'"
+  [modal]="true"
+>
+  <p-header>
+    {{ typeMessage }}
+  </p-header>
+  <h5 *ngIf="isLongText" style="width: 900px" class="{{ getTextColor() }}">
+    {{ textMessage }}
+  </h5>
+  <h5 *ngIf="!isLongText" class="{{ getTextColor() }}">{{ textMessage }}</h5>
+  <p-footer>
+    <div class="col-md-12 text-center">
+      <p-button
+        *ngIf="btn1Label"
+        (click)="btn1Clik()"
+        label="{{ btn1Label }}"
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+      ></p-button>
+      <p-button
+        *ngIf="btn2Label"
+        (click)="btn2Clik()"
+        label="{{ btn2Label }}"
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+      ></p-button>
+    </div>
+  </p-footer>
+</p-dialog>

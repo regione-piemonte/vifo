@@ -1,0 +1,476 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div *ngIf="variazioneForm && domanda && !showPagamento">
+  <p class="hai-selezionato">Hai selezionato:</p>
+
+  <h1 *ngIf="domanda && tipoDomanda == 'gratuita'">
+    Riepilogo domanda per assegnazione gratuita di piantine
+  </h1>
+  <h1 *ngIf="domanda && tipoDomanda == 'vendita'">
+    Riepilogo domanda per assegnazione onerosa di piantine
+  </h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+  <hr />
+
+  <app-header-riepilogo
+    [domanda]="domanda"
+    [infoDomanda]="infoDomanda"
+    [personData]="personData"
+    [vivaio]="vivaio"
+  ></app-header-riepilogo>
+
+  <p-accordion [styleClass]="'my-4'">
+    <p-accordionTab header="DATI DEL RICHIEDENTE">
+      <app-show-richiedente
+        [titolarita]="infoDomanda?.titolarita"
+        [richiedente]="personData"
+      >
+      </app-show-richiedente>
+    </p-accordionTab>
+    <p-accordionTab header="DESTINAZIONI" *ngIf="tipoDomanda == 'gratuita'">
+      <app-show-destinazioni
+        [listDestinazioni]="listDestinazioni"
+      ></app-show-destinazioni>
+    </p-accordionTab>
+    <p-accordionTab header="SPECIE RICHIESTE">
+      <app-show-specie-richieste
+        [listSpecie]="listSpecie"
+      ></app-show-specie-richieste>
+    </p-accordionTab>
+    <p-accordionTab header="ELENCO ALLEGATI CARICATI">
+      <app-show-allegati [listDocumenti]="listDocumenti"></app-show-allegati>
+    </p-accordionTab>
+    <p-accordionTab
+      header="DATI RELATIVI ALL'ASSEGNAZIONE DI PIANTINE DA PARTE DEL VIVAIO"
+    >
+      <app-show-assegnazioni
+        [tipoDomanda]="tipoDomanda"
+        [listAssegnazioni]="listAssegnazioni"
+      >
+      </app-show-assegnazioni>
+    </p-accordionTab>
+  </p-accordion>
+  <hr />
+
+  <app-sezione-importi
+    *ngIf="domanda && tipoDomanda == 'vendita'"
+    [domanda]="domanda"
+  >
+  </app-sezione-importi>
+
+  <hr
+    class="black-hr"
+    *ngIf="
+      isUserUploadEnbled &&
+      stepAssegnazione == 1 &&
+      domanda.statoDomanda == 'ASSEGNATA'
+    "
+  />
+  <div
+    class="row"
+    *ngIf="
+      isUserUploadEnbled &&
+      stepAssegnazione == 1 &&
+      domanda.statoDomanda == 'ASSEGNATA'
+    "
+  >
+    <div *ngIf="tipoDomanda == 'vendita'">
+      <button
+        _ngcontent-c14=""
+        title="Scarica"
+        type="button"
+        (click)="downloadAssegnazione('FIRMA_DIGITALE')"
+        class="ng-star-inserted action-button mr-2"
+      >
+        <em _ngcontent-c14="" aria-hidden="true" class="fa fa-download"></em>
+      </button>
+      <span>Scarica assegnazione per firma digitale</span><br />
+      <ng-container *ngIf="!isEntePubblico">
+        <button
+          _ngcontent-c14=""
+          title="Scarica"
+          type="button"
+          (click)="downloadAssegnazione('FIRMA_AUTOGRAFA')"
+          class="ng-star-inserted action-button mr-2"
+        >
+          <em _ngcontent-c14="" aria-hidden="true" class="fa fa-download"></em>
+        </button>
+        <span>Scarica assegnazione per firma autografa</span>
+      </ng-container>
+    </div>
+    <br />
+
+    <div class="col-md-12 my-4">
+      <h2>
+        Carica l'assegnazione firmata da inviare al vivaio competente per
+        accettazione
+      </h2>
+      <hr />
+      <div class="col-md-9">
+        <label class="font-weight-bold">Allega assegnazione</label>
+        <div style="font-style: oblique; padding-bottom: 12px">
+          Selezionare l’opzione “Digitale” o “Autografa” a seconda che il file
+          che si intende caricare sia stato firmato digitalmente (firma Cades o
+          Pades) o con firma autografa. Procedere cliccando su “Scegli file” per
+          recuperare il file dal proprio pc. Una volta selezionato, cliccare su
+          “Carica”: il file verrà aggiunto nell’”Elenco allegati caricati”
+          sottostante. Il sistema accetta file di dimensione massima 5 Mb e di
+          formato .pdf/.p7m e jpeg.
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div *ngIf="tipoDomanda == 'vendita'">
+          <input
+            type="radio"
+            name="radio-docType"
+            [disabled]="isDocPresent([11, 12])"
+            [checked]="docType == 'D' || isEntePubblico"
+            (change)="changeDocType('D')"
+          />
+          <label style="padding-left: 5px; padding-right: 30px">Digitale</label>
+          <ng-container *ngIf="!isEntePubblico">
+            <input
+              type="radio"
+              name="radio-docType"
+              [disabled]="isDocPresent([11, 12])"
+              [checked]="docType == 'A'"
+              (change)="changeDocType('A')"
+            />
+            <label style="padding-left: 5px; padding-right: 30px"
+              >Autografa</label
+            >
+          </ng-container>
+        </div>
+
+        <p-fileUpload
+          [disabled]="isDocPresent([11, 12]) || !docType"
+          id="fileUpload_0"
+          chooseLabel="Scegli file"
+          uploadLabel="Carica"
+          cancelLabel="Cancella"
+          name="image"
+          maxFileSize="5000000"
+          invalidFileSizeMessageSummary="{0}: dimensione file non ammessa"
+          invalidFileSizeMessageDetail="(max {0})"
+          customUpload="true"
+          (uploadHandler)="uploadFile($event, 0)"
+          [styleClass]="'mb-3'"
+        ></p-fileUpload>
+      </div>
+      <div *ngIf="docType == 'A'">
+        <div class="col-md-9">
+          <label class="font-weight-bold">Allega scansione documento </label>
+        </div>
+        <div class="col-md-9">
+          <p-fileUpload
+            [disabled]="isDocPresent([13])"
+            id="fileUpload_13"
+            chooseLabel="Scegli file"
+            uploadLabel="Carica"
+            cancelLabel="Cancella"
+            name="image"
+            maxFileSize="5000000"
+            invalidFileSizeMessageSummary="{0}: dimensione file non ammessa"
+            invalidFileSizeMessageDetail="(max {0})"
+            customUpload="true"
+            (uploadHandler)="uploadFile($event, 13)"
+            [styleClass]="'mb-3'"
+            id="fileUpload_13"
+          ></p-fileUpload>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <app-reusable-front-table
+    *ngIf="
+      isUserUploadEnbled &&
+      stepAssegnazione == 1 &&
+      listDocumentiEditing &&
+      listDocumentiEditing.length > 0
+    "
+    [data]="listDocumentiEditing"
+    [headers]="allegatiTableHeaders"
+    [download]="true"
+    [delete]="true"
+    [fieldToDownload]="'idAllegato'"
+    [fieldToDelete]="'idDocumentoAllegato'"
+    (deleteRow)="deleteAllegato($event)"
+    (downloadEmitter)="downloadAllegato($event)"
+  >
+  </app-reusable-front-table>
+  <hr class="black-hr" *ngIf="stepAssegnazione == 1" />
+
+  <div>
+    <div
+      class="row"
+      [formGroup]="variazioneForm"
+      *ngIf="
+        stepAssegnazione == 2 || domanda?.statoDomanda == 'RICHIESTA VARIAZIONI'
+      "
+    >
+      <div class="col-md-12 my-4">
+        <div>
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <label for="note" class="font-weight-bold"
+                >Note richiesta variazioni</label
+              >
+            </div>
+            <div class="col-lg-9 col-md-3 col-12 mb-3">
+              <textarea
+                type="text"
+                class="form-control"
+                formControlName="note"
+                id="note"
+                maxlength="200"
+                rows="2"
+              >
+              </textarea>
+              <div
+                *ngIf="
+                  variazioneForm.controls['note'].invalid &&
+                  (variazioneForm.controls['note'].dirty ||
+                    variazioneForm.controls['note'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="variazioneForm.controls['note'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div *ngIf="variazioneForm.controls['note'].errors.minlength">
+                  Attenzione! Il valore del campo deve essere di lunghezza
+                  minima 20 caratteri
+                </div>
+                <div *ngIf="variazioneForm.controls['note'].errors.maxlength">
+                  Attenzione! Il valore del campo deve essere di lunghezza max
+                  200 caratteri
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="col-md-12 text-center"
+        *ngIf="domanda?.statoDomanda == 'ASSEGNATA'"
+      >
+        <p-button
+          class="full-width-media"
+          label="Conferma richiesta variazione"
+          [disabled]="variazioneForm.controls['note'].errors"
+          (onClick)="confermaVariazioni()"
+          [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+        >
+        </p-button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div>
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <span
+            *ngIf="
+              userProfile == 'RICHIEDENTE' &&
+              stepAssegnazione == 0 &&
+              domanda?.statoDomanda == 'ASSEGNATA'
+            "
+          >
+            <p-button
+              class="full-width-media"
+              label="ACCETTA ASSEGNAZIONE"
+              *ngIf="tipoDomanda == 'vendita'"
+              (onClick)="accettaAssegnazione()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+            <p-button
+              class="full-width-media"
+              label="RICHIEDI VARIAZIONI"
+              *ngIf="tipoDomanda == 'vendita'"
+              (onClick)="richiediVariazioni()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+          </span>
+          <span
+            *ngIf="
+              stepAssegnazione == 1 &&
+              tipoDomanda == 'vendita' &&
+              domanda?.statoDomanda == 'ASSEGNATA'
+            "
+          >
+            <p-button
+              class="full-width-media"
+              label="CONFERMA ACCETTAZIONE"
+              *ngIf="isUserUploadEnbled"
+              [disabled]="
+                !isDocPresent([11, 12]) ||
+                (isDocPresent([12]) && !isDocPresent([13]))
+              "
+              (onClick)="confermaAssegnazione()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+          </span>
+          <span *ngIf="stepAssegnazione == 3 && infoDomanda && !isEntePubblico">
+            <p-button
+              class="full-width-media"
+              label="EFFETTUA PAGAMENTO"
+              *ngIf="
+                tipoDomanda == 'vendita' &&
+                (!infoDomanda.statoPagamento ||
+                  infoDomanda.statoPagamento == 'Annullato')
+              "
+              (onClick)="effettuaPagamento()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+            <p-button
+              class="full-width-media"
+              label="ANNULLA PAGAMENTO"
+              *ngIf="
+                tipoDomanda == 'vendita' &&
+                infoDomanda.statoPagamento == 'Attesa Pagamento'
+              "
+              (onClick)="modalAnnullaPagamento()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+            <p-button
+              class="full-width-media"
+              label="SCARICA AVVISO DI PAGAMENTO"
+              *ngIf="
+                tipoDomanda == 'vendita' &&
+                infoDomanda.statoPagamento == 'Attesa Pagamento'
+              "
+              (onClick)="downloadAvvisoPagamento()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+            <p-button
+              class="full-width-media"
+              label="SCARICA RICEVUTA DI PAGAMENTO"
+              *ngIf="
+                tipoDomanda == 'vendita' &&
+                infoDomanda.statoPagamento == 'Pagamento eseguito'
+              "
+              (onClick)="downloadRicevutaPagamento()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+          </span>
+          <span *ngIf="userProfile != 'RICHIEDENTE'">
+            <!-- <p-button class="full-width-media" label="ANNULLA ASSEGNAZIONE" 
+              (onClick)="annullaAssegnazione()" [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'">
+            </p-button>   -->
+            <p-button
+              class="full-width-media"
+              label="INSERISCI RITIRO"
+              *ngIf="tipoDomanda == 'gratuita'"
+              (onClick)="inserisciRitiro()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+            <p-button
+              class="full-width-media"
+              label="CREA DDT"
+              *ngIf="tipoDomanda == 'vendita'"
+              (onClick)="creaDdt()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+            <p-button
+              class="full-width-media"
+              label="STAMPA ETICHETTE"
+              [disabled]="
+                tipoDomanda == 'vendita' && !isDocPresent([10, 11, 12])
+              "
+              (onClick)="stampaEtichette()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+          </span>
+          <span
+            *ngIf="
+              userProfile != 'RICHIEDENTE' &&
+              domanda.statoDomanda == 'RICHIESTA VARIAZIONI'
+            "
+          >
+            <p-button
+              class="full-width-media"
+              label="MODIFICA ASSEGNAZIONE"
+              (onClick)="modificaAssegnazione()"
+              [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+            >
+            </p-button>
+          </span>
+          <p-button
+            class="full-width-media"
+            label="CHIUDI DOMANDA"
+            *ngIf="userProfile != 'RICHIEDENTE'"
+            (onClick)="chiudiDomanda()"
+            [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+          >
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div *ngIf="isLocalhost()" class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="TEST RICEVI RT"
+        (onClick)="testRiceviRT()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
+
+<app-pagamenti-pa
+  *ngIf="showPagamento"
+  [domanda]="domanda"
+  (emitBack)="chiudiPagamento()"
+>
+</app-pagamenti-pa>
+
+<app-alert-utente
+  [typeMessage]="popUpType"
+  [textMessage]="popUpMsg"
+  [btn1Label]="popUpBtn1"
+  (btn1Emitter)="closePopUp()"
+  [btn2Label]="popUpBtn2"
+  (btn2Emitter)="
+    isAnnullaPagamento ? annullaPagamento() : eseguiChiudiDomanda()
+  "
+>
+</app-alert-utente>

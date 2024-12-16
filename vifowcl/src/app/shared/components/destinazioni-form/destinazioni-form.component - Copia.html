@@ -1,0 +1,98 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="row">
+  <div class="col-md-12 my-4" [formGroup]="destinazioniForm">
+    <h2>DESTINAZIONI</h2>
+    <hr />
+    <div class="grey-form">
+      <div class="row">
+        <div class="col-lg-4 col-md-4 col-12 mb-3">
+          <label class="font-weight-bold">COMUNE</label>
+        </div>
+        <div class="col-lg-1 col-md-1 col-12 mb-3">
+          <label class="font-weight-bold">SEZIONE</label>
+        </div>
+        <div class="col-lg-1 col-md-1 col-12 mb-3">
+          <label class="font-weight-bold">FOGLIO</label>
+        </div>
+        <div class="col-lg-1 col-md-1 col-12 mb-3">
+          <label class="font-weight-bold">PARTICELLA</label>
+        </div>
+        <div class="col-lg-2 col-md-2 col-12 mb-3">
+          <label class="font-weight-bold">METRI LINEARI</label>
+        </div>
+        <div class="col-lg-2 col-md-2 col-12 mb-3">
+          <label class="font-weight-bold">SUPERFICIE MQ</label>
+        </div>
+        <div class="col-md-1 text-right"></div>
+      </div>
+      <div
+        formArrayName="destinazioniList"
+        *ngFor="let dest of destinazioniList.controls; let i = index"
+      >
+        <div [formGroupName]="i">
+          <div class="row form-group">
+            <div class="col-lg-4 col-md-4 col-12 mb-3">
+              <div>
+                <p-autoComplete
+                  formControlName="istatComune"
+                  [forceSelection]="'true'"
+                  [required]="'true'"
+                  autoHighlight="true"
+                  [suggestions]="comune"
+                  (completeMethod)="filterComune($event)"
+                  id="istatComune_{{i}}"
+                  [minLength]="3"
+                  [dropdown]="true"
+                  [forceSelection]="true"
+                  emptyMessage="{{emptyMessageAC}}"
+                  field="denominazione"
+                  [inputStyleClass]="'autoComplete-input'"
+                >
+                </p-autoComplete>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-1 col-12 mb-3">
+              <input type="text" size="8" />
+            </div>
+            <div class="col-lg-1 col-md-1 col-12 mb-3">
+              <input type="text" size="8" />
+            </div>
+            <div class="col-lg-1 col-md-1 col-12 mb-3">
+              <input type="text" size="8" />
+            </div>
+            <div class="col-lg-2 col-md-2 col-12 mb-3">
+              <input type="text" size="8" />
+            </div>
+            <div class="col-lg-2 col-md-2 col-12 mb-3">
+              <input type="text" size="10" />
+            </div>
+            <div class="col-lg-1 col-md-1 col-12 mb-3">
+              <a
+                pTooltip="'Remove'"
+                tooltipPosition="top"
+                *ngIf="i > 0"
+                (click)="removeDestinazione(i)"
+                ><span icon="fa fa-plus" class="fa fa-trash"></span
+              ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row form-group">
+        <div class="col-md-12 text-right border-add">
+          <p-button
+            label="+"
+            pTooltip="'Aggiungi'"
+            tooltipPosition="top"
+            (onClick)="addDestinazione()"
+            [styleClass]="'form-outline-button add'"
+          ></p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

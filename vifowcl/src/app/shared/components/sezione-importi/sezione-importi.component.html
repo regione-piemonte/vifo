@@ -1,0 +1,71 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div class="col-md-12 my-4" *ngIf="domanda && domanda.fkTipoDomanda == 2">
+  <div class="grey-form">
+    <div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold"
+            >Totale importi al netto di IVA (euro):</label
+          >
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ formatTwoDecimal(domanda.totImportiEuro) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Sconto applicato (%):</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ formatIfDecimal(domanda.scontoApplicato) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Importo sconto (euro):</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{
+            formatTwoDecimal(domanda.totImportiEuro - domanda.totImponibileEuro)
+          }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Imponibile (euro):</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ formatTwoDecimal(domanda.totImponibileEuro) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Aliquota IVA applicata (%):</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ domanda.aliquotaIva }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">Importo IVA (euro):</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ formatTwoDecimal(domanda.importoIva) }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-3 col-12 mb-3">
+          <label class="font-weight-bold">TOTALE DA PAGARE (euro):</label>
+        </div>
+        <div class="col-lg-3 col-md-3 col-12 mb-3">
+          {{ formatTwoDecimal(domanda.totFattura) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

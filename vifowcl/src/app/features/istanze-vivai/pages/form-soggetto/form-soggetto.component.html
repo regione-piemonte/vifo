@@ -1,0 +1,571 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+<div>
+  <p class="hai-selezionato">Hai selezionato:</p>
+  <h1>Gestione dati soggetto beneficiario</h1>
+
+  <div class="row">
+    <div class="col text-right mt-3 mb-3">
+      <p-button
+        [styleClass]="'mr-2 f-18 font-weight-bold form-button'"
+        label="TORNA ALLA HOME"
+        icon="fa fa-home fa-lg ui-button-icon-left-home"
+        iconPos="left"
+        (onClick)="goToHome()"
+      ></p-button>
+    </div>
+  </div>
+
+  <div
+    class="row"
+    [formGroup]="soggettoForm"
+    *ngIf="soggettoForm && domandeTableData == null"
+  >
+    <div class="col-md-12 my-4">
+      <div class="grey-form">
+        <div class="row">
+          <div class="col-lg-4 col-md-4 col-12 mb-3">
+            <input
+              type="radio"
+              disabled
+              name="soggettoType"
+              [checked]="isPF == true"
+            />
+            <label class="font-weight-bold ml-1">Persona Fisica</label>
+          </div>
+          <div class="col-lg-4 col-md-4 col-12 mb-3">
+            <input
+              type="radio"
+              disabled
+              name="soggettoType"
+              [checked]="isPF == false"
+            />
+            <label class="font-weight-bold ml-1">Persona Giuridica</label>
+          </div>
+        </div>
+
+        <div class="row" *ngIf="isPF == false">
+          <div class="col-lg-9 col-md-9 col-12 mb-3">
+            <label for="pec" class="font-weight-bold"
+              >Tipologia soggetto
+            </label>
+            <div>
+              <input
+                id="tipologiaSoggetto1"
+                type="radio"
+                value="0"
+                (change)="changeSoggettoType(false)"
+                [checked]="soggettoForm.get('flgEntePubblico').value == 0"
+                formControlName="flgEntePubblico"
+              />
+              <label
+                for="tipologiaSoggetto1"
+                style="padding-left: 5px; padding-right: 50px"
+                >Privato</label
+              >
+              <input
+                id="tipologiaSoggetto2"
+                type="radio"
+                value="1"
+                formControlName="flgEntePubblico"
+                [checked]="soggettoForm.get('flgEntePubblico').value == 1"
+                (change)="changeSoggettoType(true)"
+              />
+              <label
+                for="tipologiaSoggetto2"
+                style="padding-left: 5px; padding-right: 30px"
+                >Pubblico</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="row">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="codiceFiscale" class="font-weight-bold"
+                >Codice fiscale</label
+              >
+            </div>
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <input type="hidden" formControlName="idSoggetto" />
+              <input
+                type="text"
+                class="form-control"
+                formControlName="codiceFiscale"
+                id="codiceFiscale"
+                maxlength="16"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['codiceFiscale'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['codiceFiscale'].dirty ||
+                    soggettoForm.controls['codiceFiscale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="soggettoForm.controls['codiceFiscale'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div
+                  *ngIf="
+                    soggettoForm.controls['codiceFiscale'].errors.codiceFiscale
+                  "
+                >
+                  Attenzione! Codice fiscale errato. Controllare errori di
+                  battitura
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="isPF">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="cognome" class="font-weight-bold">Cognome</label>
+            </div>
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="cognome"
+                id="cognome"
+                maxlength="50"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['cognome'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['cognome'].dirty ||
+                    soggettoForm.controls['cognome'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['cognome'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="isPF">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="nome" class="font-weight-bold">Nome</label>
+            </div>
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="nome"
+                id="nome"
+                maxlength="50"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['nome'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['nome'].dirty ||
+                    soggettoForm.controls['nome'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['nome'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="!isPF">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="partitaIva" class="font-weight-bold"
+                >{{ isEntePubblico ? "Codice iPA" : "Partita IVA" }}
+              </label>
+            </div>
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="partitaIva"
+                id="partitaIva"
+                maxlength="11"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['partitaIva'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['partitaIva'].dirty ||
+                    soggettoForm.controls['partitaIva'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="soggettoForm.controls['partitaIva'].errors.required"
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div *ngIf="soggettoForm.controls['partitaIva'].errors.pattern">
+                  Attenzione! Il campo ammette solo valori numerici
+                </div>
+                <div
+                  *ngIf="
+                    !soggettoForm.controls['partitaIva'].errors.pattern &&
+                    (soggettoForm.controls['partitaIva'].errors.minlength ||
+                      soggettoForm.controls['partitaIva'].errors.maxlength)
+                  "
+                >
+                  Attenzione! Il valore del campo deve essere
+                  {{ isEntePubblico ? "di almeno 4" : "di 11" }} caratteri
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="!isPF">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="ragioneSociale" class="font-weight-bold"
+                >Denominazione</label
+              >
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="ragioneSociale"
+                id="ragioneSociale"
+                maxlength="500"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['ragioneSociale'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['ragioneSociale'].dirty ||
+                    soggettoForm.controls['ragioneSociale'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    soggettoForm.controls['ragioneSociale'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row" *ngIf="!isPF">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="pec" class="font-weight-bold">PEC</label>
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="pec"
+                id="pec"
+                maxlength="100"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['pec'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['pec'].dirty ||
+                    soggettoForm.controls['pec'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['pec'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div *ngIf="soggettoForm.controls['pec'].errors.pattern">
+                  Attenzione! email non valida!
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="indirizzo" class="font-weight-bold">Indirizzo</label>
+            </div>
+            <div class="col-lg-6 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="indirizzo"
+                id="indirizzo"
+                maxlength="500"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['indirizzo'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['indirizzo'].dirty ||
+                    soggettoForm.controls['indirizzo'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['indirizzo'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="comune" class="font-weight-bold">Comune</label>
+              <span style="padding-left: 20px">&nbsp;</span>
+              <input
+                type="checkbox"
+                class="checkboxCustom"
+                (change)="chengeComuneEstero()"
+                id="comuneEstero"
+                [checked]="isComuneEstero"
+              />
+              <label for="comuneEstero">estero</label>
+            </div>
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <p-autoComplete
+                formControlName="comune"
+                [forceSelection]="'true'"
+                [required]="'true'"
+                autoHighlight="true"
+                [suggestions]="comune"
+                (completeMethod)="filterComune($event)"
+                inputId="comune"
+                [minLength]="3"
+                [forceSelection]="true"
+                emptyMessage="Nessun comune trovato"
+                field="nome"
+                (onClear)="clearValue()"
+                (change)="onComuneChange()"
+                [styleClass]="
+                  'autoComplete d-flex formControlName.invalid?autoComplete-touched:autoComplete-touched'
+                "
+                [inputStyleClass]="'autoComplete-input'"
+              >
+              </p-autoComplete>
+
+              <!-- <input type="text" class="form-control" formControlName='istatComune' id="istatComune" maxlength="16"> -->
+              <div
+                *ngIf="
+                  soggettoForm.controls['comune'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['comune'].dirty ||
+                    soggettoForm.controls['comune'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['comune'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-3 col-12 mb-3"></div>
+            <div class="col-lg-1 col-md-3 col-12 mb-3">
+              <label for="cap" class="font-weight-bold">C.A.P.</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="cap"
+                id="cap"
+                maxlength="5"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['cap'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['cap'].dirty ||
+                    soggettoForm.controls['cap'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['cap'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div *ngIf="soggettoForm.controls['cap'].errors.pattern">
+                  Attenzione! Il campo ammette solo valori numerici
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="mail" class="font-weight-bold">Mail</label>
+            </div>
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="mail"
+                id="mail"
+                maxlength="100"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['mail'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['mail'].dirty ||
+                    soggettoForm.controls['mail'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['mail'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div *ngIf="soggettoForm.controls['mail'].errors.pattern">
+                  Attenzione! email non valida!
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-1 col-md-3 col-12 mb-3"></div>
+            <div class="col-lg-1 col-md-3 col-12 mb-3">
+              <label for="telefono" class="font-weight-bold">Telefono</label>
+            </div>
+            <div class="col-lg-3 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="telefono"
+                id="telefono"
+                maxlength="16"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['telefono'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['telefono'].dirty ||
+                    soggettoForm.controls['telefono'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div *ngIf="soggettoForm.controls['telefono'].errors.required">
+                  Attenzione! Campo obbligatorio
+                </div>
+                <div *ngIf="soggettoForm.controls['telefono'].errors.pattern">
+                  Attenzione! Il campo ammette solo valori numerici
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-2 col-md-3 col-12 mb-3">
+              <label for="codiceBeneficiario" class="font-weight-bold">
+                {{
+                  isEntePubblico
+                    ? "Codice Unico Ufficio"
+                    : "Codice Beneficiario"
+                }}
+              </label>
+            </div>
+            <div class="col-lg-4 col-md-3 col-12 mb-3">
+              <input
+                type="text"
+                class="form-control"
+                formControlName="codiceBeneficiario"
+                id="codiceBeneficiario"
+                maxlength="16"
+              />
+              <div
+                *ngIf="
+                  soggettoForm.controls['codiceBeneficiario'].invalid &&
+                  (submited ||
+                    soggettoForm.controls['codiceBeneficiario'].dirty ||
+                    soggettoForm.controls['codiceBeneficiario'].touched)
+                "
+                class="alert alert-danger"
+              >
+                <div
+                  *ngIf="
+                    soggettoForm.controls['codiceBeneficiario'].errors.required
+                  "
+                >
+                  Attenzione! Campo obbligatorio
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngIf="numDomandeBySoggetto > 0">
+          <br /><br />
+          <div class="col-lg-6 col-md-3 col-12 mb-3">
+            <a
+              id="consultaDomandeAssociate"
+              href="javascript:void(0)"
+              (click)="ricerca()"
+            >
+              Consulta elenco domande associate
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="domandeTableData == null">
+    <div class="col-md-12 text-right">
+      <p-button
+        class="full-width-media"
+        label="CONFERMA DATI"
+        (onClick)="conferma()"
+        [styleClass]="'ml-2 mb-3 f-18 font-weight-bold form-button'"
+      >
+      </p-button>
+    </div>
+    <div class="col-md-12">
+      <p-button
+        class="full-width-media"
+        label="INDIETRO"
+        (onClick)="indietro()"
+        [styleClass]="'mb-3 btn-outline-primary'"
+      >
+      </p-button>
+    </div>
+  </div>
+
+  <app-alert-utente
+    [typeMessage]="popUpType"
+    [textMessage]="popUpMsg"
+    [btn1Label]="popUpBtn1"
+    (btn1Emitter)="closePopUp()"
+  >
+  </app-alert-utente>
+
+  <div *ngIf="domandeTableData != null">
+    <div class="row" *ngIf="domandeTableData != null">
+      <app-risultati-ricerca
+        style="width: 100%"
+        [totalCountDomande]="totalCountDomande"
+        [domandeTableData]="domandeTableData"
+        (emitRicerca)="ricerca()"
+        (emitUpdatedTable)="getUpdatedTable($event)"
+      >
+        >
+      </app-risultati-ricerca>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="col-md-12">
+        <p-button
+          class="full-width-media"
+          label="INDIETRO"
+          (onClick)="hideDomande()"
+          [styleClass]="'mb-3 btn-outline-primary'"
+        >
+        </p-button>
+      </div>
+    </div>
+  </div>
+</div>

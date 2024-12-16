@@ -1,0 +1,35 @@
+<!--
+  SPDX-FileCopyrightText: (C) Copyright 2024 Regione Piemonte
+  
+  SPDX-License-Identifier: EUPL-1.2
+-->
+
+<div *ngIf="domandeTableData && domandeTableData.length == 0">
+  Nessun risultato trovato con i parametri di ricerca inseriti!
+</div>
+<div class="col-md-12" *ngIf="domandeTableData && domandeTableData.length > 0">
+  <div>
+    <strong>Risultati trovati: {{ totalCountDomande }}</strong>
+  </div>
+  <br />
+  <app-domande-no-select-table
+    [first]="first"
+    [totalSize]="totalCountDomande"
+    [initiallySortedColumn]="sortedColumn"
+    [headers]="domandeTableHeaders"
+    [data]="domandeTableData ? domandeTableData : []"
+    (rowIdEmitter)="getRowId($event)"
+    (updateTableChanges)="getUpdatedTable($event)"
+    [rowsPerPageOptions]="rowsPerPageOptions"
+    [visualizaTable]="true"
+    [edit]="true"
+    [view]="true"
+    [delete]="true"
+    (editRowEmitter)="editRow($event)"
+    (viewRowEmitter)="viewDomanda($event)"
+    (deleteRowEmitter)="deleteRow($event)"
+  ></app-domande-no-select-table>
+  <div>
+    <strong>Risultati trovati: {{ totalCountDomande }}</strong>
+  </div>
+</div>
