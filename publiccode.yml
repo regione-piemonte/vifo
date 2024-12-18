@@ -11,29 +11,28 @@ categories:
   - business-process-management
   - office
   - document-management
+  - erp
 usedBy:
   - Regione Piemonte
 developmentStatus: stable
 softwareType: standalone/web
 description:
   it:
-    shortDescription: "Gestionale Vivai Forestali della Regione Piemonte "
+    shortDescription: Gestionale Vivai Forestali della Regione Piemonte
     longDescription: >-
       Il servizio permette la compilazione da parte dei soggetti richiedenti
       privati e pubblici l’inserimento e l’invio ai vivai regionali di domande
       di piantine forestali a titolo oneroso e gratuito e permette ai referenti
       dei vivai di assegnare le partite richieste e di tenere aggiornati gli
-      inventari di frutti, semi e piante. Permette anche ai gestori il
+      inventari di frutti, semi e piante. Permette  anche ai gestori il
       caricamento in anagrafica dei certificati principali di identità dei
       materiali di base utilizzati dai vivai regionali.
 
       La Regione provvede direttamente alla gestione dei propri vivai, la cui
       attività è finalizzata alla produzione di piante forestali autoctone,
-      controllate e certificate. 
-
-      L'assegnazione a pagamento delle piante prodotte è concessa a soggetti
-      pubblici e privati, a prescindere dallo scopo e dalla localizzazione del
-      terreno di messa a dimora. 
+      controllate e certificate. L'assegnazione a pagamento delle piante
+      prodotte è concessa a soggetti pubblici e privati, a prescindere dallo
+      scopo e dalla localizzazione del terreno di messa a dimora. 
 
       Le piante possono anche essere assegnate gratuitamente per la
       realizzazione in territorio piemontese di specifici obiettivi (ad es.
@@ -45,8 +44,8 @@ description:
     features:
       - Accreditamento dati utente
       - Inserimento di una nuova domanda per assegnazione gratuita di piantine
-      - Inserimento di  una nuova domanda per assegnazione onerosa di piantine
-        (vendita)
+      - Inserimento di  una nuova domanda per assegnazione onerosa di
+        piantine         (vendita)
       - Visualizzazione l’elenco delle domande inserite
       - Invio delle domande
       - Pagamento online piantine
